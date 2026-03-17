@@ -299,7 +299,7 @@ export default function AnalyticsPage() {
             </Button>
             <Button
               variant="outline"
-              className="text-white border-white/30 hover:bg-white/10 font-bold px-8 py-3 h-auto text-sm uppercase tracking-wider"
+              className="bg-white text-[#0F172A] hover:bg-gray-100 font-bold px-8 py-3 h-auto text-sm uppercase tracking-wider"
             >
               View Similar Roles
             </Button>
