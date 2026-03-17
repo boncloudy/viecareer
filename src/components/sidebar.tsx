@@ -1,88 +1,87 @@
 "use client";
 
-import React, { useRef } from "react";
-import { FileText, Briefcase, Loader2 } from "lucide-react";
+import React from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard,
+  MessageSquare,
+  LineChart,
+  User,
+  Sparkles,
+} from "lucide-react";
 
-interface UploadDropzoneProps {
-  title: string;
-  subtitle: string;
-  isUploading: boolean;
-  isUploaded: boolean;
-  onUpload: () => void;
-  variant?: "cv" | "jd";
-}
+const navItems = [
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Interviews", href: "/interview", icon: MessageSquare },
+  { label: "Action Plan", href: "/analytics", icon: LineChart },
+  { label: "Profile", href: "#", icon: User },
+];
 
-export function UploadDropzone({
-  title,
-  subtitle,
-  isUploading,
-  isUploaded,
-  onUpload,
-  variant = "cv",
-}: UploadDropzoneProps) {
-  const Icon = variant === "cv" ? FileText : Briefcase;
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const handleContainerClick = () => {
-    if (!isUploading && !isUploaded) {
-      fileInputRef.current?.click();
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      console.log("Selected file:", file.name);
-      onUpload();
-    }
-  };
+export function Sidebar() {
+  const pathname = usePathname();
+  const router = useRouter();
 
   return (
-    <div
-      onClick={handleContainerClick}
-      className={`
-        relative flex flex-col items-center justify-center w-full p-12
-        border-2 border-dashed rounded-xl transition-all duration-300
-        ${isUploaded
-          ? "border-teal-400 bg-teal-50/50 cursor-default"
-          : isUploading
-          ? "border-gray-200 bg-gray-50 cursor-not-allowed"
-          : "border-gray-300 hover:border-teal-500 hover:bg-slate-50 cursor-pointer"
-        }
-      `}
-    >
-      <input
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="hidden"
-        accept=".pdf,.doc,.docx"
-      />
-
-      {isUploading ? (
-        <Loader2 className="w-12 h-12 text-teal-500 animate-spin mb-4" />
-      ) : (
-        <div
-          className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
-            isUploaded ? "bg-teal-100" : "bg-gray-100"
-          }`}
-        >
-          <Icon
-            className={`w-7 h-7 ${
-              isUploaded ? "text-teal-600" : "text-gray-500"
-            }`}
-          />
+    <aside className="fixed left-0 top-0 h-screen w-[220px] bg-[#0F172A] text-white flex flex-col z-50">
+      {/* Logo */}
+      <div className="p-5 pb-8">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
+            <Sparkles className="w-4 h-4 text-white" />
+          </div>
+          <div>
+            <h1 className="text-lg font-bold tracking-tight">VieCareer</h1>
+            <p className="text-[10px] text-slate-400 uppercase tracking-widest">
+              Job Readiness
+            </p>
+          </div>
         </div>
-      )}
-      <h3 className="text-lg font-semibold text-gray-800 mb-1">{title}</h3>
-      <p className="text-sm text-gray-500">
-        {isUploading
-          ? "Processing..."
-          : isUploaded
-          ? "✓ File uploaded successfully"
-          : subtitle}
-      </p>
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex-1 px-3 space-y-1">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.label}
+              href={item.href}
+              className={`
+                flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
+                transition-all duration-200
+                ${
+                  isActive
+                    ? "bg-white/10 text-white"
+                    : "text-slate-400 hover:bg-white/5 hover:text-white"
+                }
+              `}
+            >
+              <item.icon className="w-5 h-5" />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
+
+      {/* Pro Plan Card */}
+      <div className="p-4">
+      <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+        <p className="text-[10px] text-teal-400 uppercase tracking-wider font-semibold mb-1">
+          Pro Plan
+        </p>
+        <p className="text-sm font-semibold mb-1">
+          Upgrade for AI Mock Interviews
+        </p>
+        <button 
+          onClick={() => router.push("/pricing")}
+          className="mt-3 w-full bg-teal-500 hover:bg-teal-600 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
+        >
+          UPGRADE NOW
+        </button>
+      </div>
     </div>
+    </aside>
   );
 }
