@@ -1,9 +1,10 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useRouter  } from "next/navigation";
+
 import {
   LayoutDashboard,
   MessageSquare,
@@ -14,7 +15,7 @@ import {
 
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { label: "Interviews", href: "/interview", icon: MessageSquare },
+  { label: "Interviews", href: "/setup", icon: MessageSquare },
   { label: "Action Plan", href: "/analytics", icon: LineChart },
   { label: "Profile", href: "#", icon: User },
 ];
