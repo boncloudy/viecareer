@@ -74,7 +74,7 @@ export default function InterviewPage() {
 
   const handleEndInterview = useCallback(() => {
     if (timerRef.current) clearInterval(timerRef.current);
-    router.push("/analytics");
+    router.push("/loading");
   }, [router]);
 
   const handleNextCodingInterview = useCallback(() => {

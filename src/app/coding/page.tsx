@@ -54,7 +54,7 @@ export default function CodingPage() {
       // Redirect to analytics after a brief success display
       setTimeout(() => {
         app.setCurrentFlow("analytics");
-        router.push("/analytics");
+        router.push("/loading");
       }, 1500);
     }, 2000);
   }, [app, router]);
@@ -74,7 +74,7 @@ export default function CodingPage() {
             <span className="text-sm text-slate-300">Recording Live</span>
           </div>
           <button
-            onClick={() => router.push("/analytics")}
+            onClick={() => router.push("/loading")}
             className="bg-white/10 hover:bg-white/20 text-white text-sm px-4 py-1.5 rounded-lg transition-colors"
           >
             Exit Session

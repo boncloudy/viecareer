@@ -56,7 +56,7 @@ export default function DashboardPage() {
           </div>
         </header>
 
-        <main className="p-6 max-w-6xl">
+        <main className="p-6">
           {/* JDI Score Card */}
           <Card className="p-8 mb-6">
             <div className="flex items-start justify-between">
