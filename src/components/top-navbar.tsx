@@ -9,7 +9,7 @@ const navLinks = [
   { label: "Dashboard", href: "/dashboard" },
   { label: "Resume Analysis", href: "/setup" },
   { label: "Interview Prep", href: "/interview" },
-  { label: "History", href: "/analytics" },
+  { label: "Report", href: "/analytics" },
 ];
 
 export function TopNavbar() {
@@ -36,10 +36,9 @@ export function TopNavbar() {
                 href={link.href}
                 className={`
                   text-sm font-medium transition-colors
-                  ${
-                    isActive
-                      ? "text-gray-900 underline underline-offset-[20px] decoration-2"
-                      : "text-gray-500 hover:text-gray-900"
+                  ${isActive
+                    ? "text-gray-900 underline underline-offset-[20px] decoration-2"
+                    : "text-gray-500 hover:text-gray-900"
                   }
                 `}
               >

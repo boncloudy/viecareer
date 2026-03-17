@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { TopNavbar } from "@/components/top-navbar";
 import { UploadDropzone } from "@/components/upload-dropzone";
@@ -8,44 +8,109 @@ import { CircularScore } from "@/components/circular-score";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useApp } from "@/lib/app-context";
 import {
   userProfile,
   jobRequirements,
   atsMatchScore,
 } from "@/lib/mock-data";
-import { Lock, ShieldCheck, ArrowRight, Sparkles, CheckCircle2 } from "lucide-react";
+import { Lock, ShieldCheck, ArrowRight, Sparkles, CheckCircle2, Loader2 } from "lucide-react";
 
 export default function SetupPage() {
   const router = useRouter();
+  const app = useApp();
+
   const [cvUploading, setCvUploading] = useState(false);
   const [cvUploaded, setCvUploaded] = useState(false);
+  const [cvFileName, setCvFileName] = useState("");
+
   const [jdUploading, setJdUploading] = useState(false);
   const [jdUploaded, setJdUploaded] = useState(false);
+  const [jdFileName, setJdFileName] = useState("");
+
+  const [isExtracting, setIsExtracting] = useState(false);
   const [showExtraction, setShowExtraction] = useState(false);
 
-  const handleCvUpload = useCallback(() => {
-    if (cvUploaded || cvUploading) return;
+  // Track if both files are ready so we can start extraction
+  const jdUploadedRef = useRef(false);
+  const cvUploadedRef = useRef(false);
+
+  const startExtraction = useCallback(() => {
+    if (cvUploadedRef.current && jdUploadedRef.current && !showExtraction) {
+      setIsExtracting(true);
+      // Simulate AI extraction processing for 2 seconds
+      setTimeout(() => {
+        setIsExtracting(false);
+        setShowExtraction(true);
+        app.setExtractionVisible(true);
+      }, 2000);
+    }
+  }, [showExtraction, app]);
+
+  const handleCvFile = useCallback((file: File) => {
     setCvUploading(true);
+    setCvFileName(file.name);
+    // Simulate upload processing
     setTimeout(() => {
       setCvUploading(false);
       setCvUploaded(true);
-      if (jdUploaded) {
-        setTimeout(() => setShowExtraction(true), 400);
+      cvUploadedRef.current = true;
+      app.setCvUploaded(true);
+      app.setCvFileName(file.name);
+      // Check if JD is also uploaded to start extraction
+      if (jdUploadedRef.current) {
+        setIsExtracting(true);
+        setTimeout(() => {
+          setIsExtracting(false);
+          setShowExtraction(true);
+          app.setExtractionVisible(true);
+        }, 2000);
       }
-    }, 2000);
-  }, [cvUploaded, cvUploading, jdUploaded]);
+    }, 1500);
+  }, [app]);
 
-  const handleJdUpload = useCallback(() => {
-    if (jdUploaded || jdUploading) return;
+  const handleJdFile = useCallback((file: File) => {
     setJdUploading(true);
+    setJdFileName(file.name);
+    // Simulate upload processing
     setTimeout(() => {
       setJdUploading(false);
       setJdUploaded(true);
-      if (cvUploaded) {
-        setTimeout(() => setShowExtraction(true), 400);
+      jdUploadedRef.current = true;
+      app.setJdUploaded(true);
+      app.setJdFileName(file.name);
+      // Check if CV is also uploaded to start extraction
+      if (cvUploadedRef.current) {
+        setIsExtracting(true);
+        setTimeout(() => {
+          setIsExtracting(false);
+          setShowExtraction(true);
+          app.setExtractionVisible(true);
+        }, 2000);
       }
-    }, 2000);
-  }, [jdUploaded, jdUploading, cvUploaded]);
+    }, 1500);
+  }, [app]);
+
+  const handleRescan = useCallback(() => {
+    setCvUploaded(false);
+    setCvUploading(false);
+    setCvFileName("");
+    cvUploadedRef.current = false;
+
+    setJdUploaded(false);
+    setJdUploading(false);
+    setJdFileName("");
+    jdUploadedRef.current = false;
+
+    setShowExtraction(false);
+    setIsExtracting(false);
+
+    app.setCvUploaded(false);
+    app.setJdUploaded(false);
+    app.setCvFileName("");
+    app.setJdFileName("");
+    app.setExtractionVisible(false);
+  }, [app]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -70,7 +135,8 @@ export default function SetupPage() {
             subtitle="Drag and drop your PDF or Docx here"
             isUploading={cvUploading}
             isUploaded={cvUploaded}
-            onUpload={handleCvUpload}
+            fileName={cvFileName}
+            onFileSelected={handleCvFile}
             variant="cv"
           />
           <UploadDropzone
@@ -78,10 +144,24 @@ export default function SetupPage() {
             subtitle="Drag and drop the JD PDF or Docx here"
             isUploading={jdUploading}
             isUploaded={jdUploaded}
-            onUpload={handleJdUpload}
+            fileName={jdFileName}
+            onFileSelected={handleJdFile}
             variant="jd"
           />
         </div>
+
+        {/* Extraction Loading */}
+        {isExtracting && (
+          <Card className="p-12 text-center border border-gray-200 mb-8 animate-fade-in-up">
+            <Loader2 className="w-10 h-10 text-teal-500 animate-spin mx-auto mb-4" />
+            <h3 className="text-lg font-semibold text-gray-800 mb-1">
+              AI is analyzing your documents...
+            </h3>
+            <p className="text-sm text-gray-500">
+              Extracting profile data and matching against job requirements
+            </p>
+          </Card>
+        )}
 
         {/* AI Preview & Extraction */}
         {showExtraction && (
@@ -99,6 +179,20 @@ export default function SetupPage() {
                 <span className="text-xs font-semibold text-teal-600 uppercase tracking-wider">
                   Valid Condition: Structured CV & JD Detected
                 </span>
+              </div>
+            </div>
+
+            {/* Uploaded Files Info */}
+            <div className="flex gap-4 mb-6">
+              <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 text-sm">
+                <CheckCircle2 className="w-4 h-4 text-teal-500" />
+                <span className="text-gray-600">CV:</span>
+                <span className="font-medium text-gray-800">{cvFileName}</span>
+              </div>
+              <div className="flex items-center gap-2 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200 text-sm">
+                <CheckCircle2 className="w-4 h-4 text-teal-500" />
+                <span className="text-gray-600">JD:</span>
+                <span className="font-medium text-gray-800">{jdFileName}</span>
               </div>
             </div>
 
@@ -209,11 +303,15 @@ export default function SetupPage() {
               <Button
                 variant="ghost"
                 className="text-gray-600 hover:text-gray-800 text-base"
+                onClick={handleRescan}
               >
                 Re-scan Documents
               </Button>
               <Button
-                onClick={() => router.push("/dashboard")}
+                onClick={() => {
+                  app.setCurrentFlow("interview");
+                  router.push("/interview");
+                }}
                 className="bg-[#0F172A] hover:bg-[#1E293B] text-white px-8 py-3 text-base h-auto rounded-lg"
               >
                 Proceed to Interview

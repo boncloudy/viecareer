@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { AudioWave } from "@/components/audio-wave";
+import { useApp } from "@/lib/app-context";
 import { codingProblem } from "@/lib/mock-data";
 import {
   ChevronDown,
@@ -10,6 +11,8 @@ import {
   Send,
   Sparkles,
   Circle,
+  CheckCircle2,
+  Loader2,
 } from "lucide-react";
 import dynamic from "next/dynamic";
 
@@ -24,11 +27,37 @@ const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
 
 export default function CodingPage() {
   const router = useRouter();
+  const app = useApp();
   const [code, setCode] = useState(codingProblem.defaultCode);
   const [language, setLanguage] = useState("python");
   const [showLangDropdown, setShowLangDropdown] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [runOutput, setRunOutput] = useState<string | null>(null);
 
   const languages = ["python", "javascript", "typescript", "java", "cpp"];
+
+  const handleRun = useCallback(() => {
+    setRunOutput(null);
+    setTimeout(() => {
+      setRunOutput("Test case 1: PASSED ✓\nTest case 2: PASSED ✓\nAll tests passed!");
+    }, 1500);
+  }, []);
+
+  const handleSubmit = useCallback(() => {
+    setIsSubmitting(true);
+    // Simulate submission processing
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      app.setCodeSubmitted(true);
+      // Redirect to analytics after a brief success display
+      setTimeout(() => {
+        app.setCurrentFlow("analytics");
+        router.push("/analytics");
+      }, 1500);
+    }, 2000);
+  }, [app, router]);
 
   return (
     <div className="h-screen bg-[#0F172A] text-white flex flex-col overflow-hidden">
@@ -88,11 +117,10 @@ export default function CodingPage() {
               {codingProblem.constraints.map((c, i) => (
                 <li
                   key={i}
-                  className={`text-sm ${
-                    i === codingProblem.constraints.length - 1
+                  className={`text-sm ${i === codingProblem.constraints.length - 1
                       ? "text-teal-400"
                       : "text-slate-400"
-                  }`}
+                    }`}
                 >
                   {c}
                 </li>
@@ -131,13 +159,30 @@ export default function CodingPage() {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <button className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-4 py-1.5 rounded-lg text-sm transition-colors border border-white/10">
+              <button
+                onClick={handleRun}
+                className="flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white px-4 py-1.5 rounded-lg text-sm transition-colors border border-white/10"
+              >
                 <Play className="w-3.5 h-3.5" />
                 Run
               </button>
-              <button className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors">
-                <Send className="w-3.5 h-3.5" />
-                Submit
+              <button
+                onClick={handleSubmit}
+                disabled={isSubmitting || isSubmitted}
+                className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-4 py-1.5 rounded-lg text-sm font-semibold transition-colors"
+              >
+                {isSubmitting ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : isSubmitted ? (
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                ) : (
+                  <Send className="w-3.5 h-3.5" />
+                )}
+                {isSubmitting
+                  ? "Submitting..."
+                  : isSubmitted
+                    ? "Submitted ✓"
+                    : "Submit"}
               </button>
             </div>
           </div>
@@ -164,11 +209,26 @@ export default function CodingPage() {
             />
           </div>
 
-          {/* Status Bar */}
-          <div className="flex items-center justify-between px-4 py-1.5 text-xs text-slate-500 border-t border-white/10 bg-[#151B2B] shrink-0">
-            <span>LINE 12, COLUMN 18</span>
-            <span>UTF-8 | PYTHON SYNTAX</span>
-          </div>
+          {/* Run Output / Status Bar */}
+          {runOutput ? (
+            <div className="px-4 py-3 text-sm bg-[#151B2B] border-t border-white/10 shrink-0">
+              <div className="flex items-center justify-between mb-1">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Console Output</span>
+                <button
+                  onClick={() => setRunOutput(null)}
+                  className="text-xs text-slate-500 hover:text-slate-300"
+                >
+                  Clear
+                </button>
+              </div>
+              <pre className="text-green-400 font-mono text-xs whitespace-pre-wrap">{runOutput}</pre>
+            </div>
+          ) : (
+            <div className="flex items-center justify-between px-4 py-1.5 text-xs text-slate-500 border-t border-white/10 bg-[#151B2B] shrink-0">
+              <span>LINE 12, COLUMN 18</span>
+              <span>UTF-8 | PYTHON SYNTAX</span>
+            </div>
+          )}
         </div>
 
         {/* Right Panel: Feedback */}
@@ -250,6 +310,32 @@ export default function CodingPage() {
           </div>
         </div>
       </div>
+
+      {/* Submission Overlay */}
+      {isSubmitting && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-[#1E293B] rounded-2xl p-8 text-center">
+            <div className="animate-spin w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full mx-auto mb-4" />
+            <p className="text-white font-semibold">Submitting your solution...</p>
+            <p className="text-slate-400 text-sm mt-1">
+              AI is evaluating your code
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Success Overlay */}
+      {isSubmitted && !isSubmitting && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-[#1E293B] rounded-2xl p-8 text-center animate-fade-in-up">
+            <CheckCircle2 className="w-12 h-12 text-teal-400 mx-auto mb-4" />
+            <p className="text-white font-semibold text-lg">Code Submitted Successfully!</p>
+            <p className="text-slate-400 text-sm mt-1">
+              Redirecting to your analytics report...
+            </p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
