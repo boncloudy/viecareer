@@ -16,7 +16,7 @@ import {
 const navItems = [
   { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { label: "Interviews", href: "/setup", icon: MessageSquare },
-  { label: "Action Plan", href: "/actionplan", icon: LineChart },
+  { label: "Action Plan", href: "/action-plan", icon: LineChart },
   { label: "Profile", href: "#", icon: User },
 ];
 
