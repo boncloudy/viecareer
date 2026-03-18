@@ -171,9 +171,14 @@ export default function AnalyticsPage() {
               <div>
                 <Button
                   size="sm"
-                  className="bg-[#0F172A] hover:bg-[#1E293B] text-white text-xs h-8 uppercase tracking-wider font-bold"
+                  className="bg-[#0F172A] hover:bg-teal-600 text-white text-xs h-8 uppercase tracking-wider font-bold transition-all active:scale-95 group"
+                  onClick={() => {
+                    alert("Skill added to your Action Plan!");
+                    router.push("/action-plan");
+                  }}
                 >
                   {rec.actionLabel}
+                  <ArrowRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </div>
               <div>
