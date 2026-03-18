@@ -266,3 +266,71 @@ export const recommendedResources = [
     iconColor: "text-purple-500",
   },
 ];
+
+// ---------- Coding Feedback Data ----------
+export interface CodingTestCase {
+  id: number;
+  label: string;
+  passed: boolean;
+  input: string;
+  expected: string;
+  output: string;
+  runtime: string;
+}
+
+export interface CodingFeedbackScore {
+  label: string;
+  value: number;
+  max: number;
+  color: string;
+}
+
+export interface FeedbackStep {
+  icon: string;
+  label: string;
+}
+
+export const codingOverallScore = 90;
+export const codingOverallLabel = "Exceptional";
+
+export const codingSubScores: CodingFeedbackScore[] = [
+  { label: "Correctness", value: 95, max: 100, color: "#22C55E" },
+  { label: "Optimization", value: 70, max: 100, color: "#F59E0B" },
+  { label: "Code Quality", value: 85, max: 100, color: "#3B82F6" },
+  { label: "Learning", value: 80, max: 100, color: "#A855F7" },
+];
+
+export const codingTestCases: CodingTestCase[] = [
+  { id: 1, label: "Case 1", passed: true, input: "nums = [2,7,11,15], target = 9", expected: "[0,1]", output: "[0,1]", runtime: "4ms" },
+  { id: 2, label: "Case 2", passed: true, input: "nums = [3,2,4], target = 6", expected: "[1,2]", output: "[1,2]", runtime: "3ms" },
+  { id: 3, label: "Case 3", passed: true, input: "nums = [3,3], target = 6", expected: "[0,1]", output: "[0,1]", runtime: "2ms" },
+  { id: 4, label: "Case 4", passed: true, input: "nums = [-1,-2,-3,-4,-5], target = -8", expected: "[2,4]", output: "[2,4]", runtime: "5ms" },
+  { id: 5, label: "Case 5", passed: true, input: "nums = [1000000,500000,-1500000], target = -1000000", expected: "[1,2]", output: "[1,2]", runtime: "3ms" },
+];
+
+export const codingCorrectnessAnalysis = {
+  score: 95,
+  summary: "All tests passed!",
+  description: "Your solution correctly handles all test cases including edge cases with negative numbers and large values. The hash map approach ensures O(1) lookup for complement values.",
+  suggestions: [
+    "Consider adding input validation for empty arrays",
+    "Handle the case where no solution exists more explicitly",
+    "Add type hints for better code documentation",
+  ],
+};
+
+export const codingComplexityAnalysis = {
+  timeComplexity: "O(n)",
+  timeExplanation: "Single pass through the array with hash map lookups",
+  spaceComplexity: "O(n)",
+  spaceExplanation: "Hash map stores at most n key-value pairs",
+};
+
+export const feedbackSteps: FeedbackStep[] = [
+  { icon: "code", label: "Analyzing Code Structure" },
+  { icon: "search", label: "Deep Analysis" },
+  { icon: "zap", label: "Performance Review" },
+  { icon: "shield", label: "Quality Assessment" },
+  { icon: "lightbulb", label: "Generating Insights" },
+  { icon: "check", label: "Finalizing Feedback" },
+];
