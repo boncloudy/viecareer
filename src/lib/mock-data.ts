@@ -266,3 +266,28 @@ export const recommendedResources = [
     iconColor: "text-purple-500",
   },
 ];
+
+// --- Action Plan Page Data ---
+export const roadmapSteps = [
+  {
+    phase: "Phase 1: Foundation Recovery",
+    status: "In Progress",
+    tasks: [
+      { id: 1, title: "Advanced State Management Patterns", duration: "4 hours", type: "Technical", completed: false },
+      { id: 2, title: "System Design: Scalability Basics", duration: "6 hours", type: "Technical", completed: true },
+    ]
+  },
+  {
+    phase: "Phase 2: Performance Optimization",
+    status: "Locked",
+    tasks: [
+      { id: 3, title: "Optimizing React Rendering", duration: "3 hours", type: "Performance", completed: false },
+      { id: 4, title: "Next.js Server Side Rendering Deep-dive", duration: "5 hours", type: "Technical", completed: false },
+    ]
+  }
+];
+
+export const aiLibraryResources = [
+  { title: "The STAR Method Handbook", type: "PDF Guide", detail: "12 Pages" },
+  { title: "System Design Interview Vol. 1", type: "Interactive Course", detail: "6 Modules" },
+];
