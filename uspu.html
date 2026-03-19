@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VieCareer — User Stories & USP</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&family=Lora:ital,wght@0,400;1,400;1,600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0B0F11;
+      --surface: #111518;
+      --surface2: #181e23;
+      --border: #1f2930;
+      --teal: #00c9a7;
+      --teal-dim: #00c9a720;
+      --teal-mid: #00c9a740;
+      --amber: #f5a623;
+      --amber-dim: #f5a62320;
+      --red: #ff5c5c;
+      --muted: #5a7080;
+      --text: #d8e8f0;
+      --text-dim: #7a9aaa;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+    }
+
+    /* Grain overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 60px 32px 100px;
+    }
+
+    /* Header */
+    .masthead {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 40px;
+      margin-bottom: 56px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--teal);
+      background: var(--teal-dim);
+      border: 1px solid var(--teal-mid);
+      padding: 4px 12px;
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+
+    h1 span {
+      color: var(--teal);
+    }
+
+    .subtitle {
+      font-family: 'Lora', serif;
+      font-style: italic;
+      color: var(--text-dim);
+      font-size: 1.05rem;
+      max-width: 520px;
+    }
+
+    /* Section headers */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 32px;
+      margin-top: 64px;
+    }
+
+    .section-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--teal);
+      letter-spacing: 0.1em;
+      min-width: 28px;
+    }
+
+    .section-line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--teal-mid), transparent);
+    }
+
+    h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+
+    /* USP Grid */
+    .usp-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 600px) {
+      .usp-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .usp-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 22px 24px;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+
+    .usp-card:hover {
+      border-color: var(--teal-mid);
+      transform: translateY(-2px);
+    }
+
+    .usp-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 3px;
+      height: 100%;
+      background: var(--teal);
+    }
+
+    .usp-card.amber::before {
+      background: var(--amber);
+    }
+
+    .usp-card.amber:hover {
+      border-color: #f5a62360;
+    }
+
+    .usp-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--teal);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+      display: block;
+    }
+
+    .usp-card.amber .usp-num {
+      color: var(--amber);
+    }
+
+    .usp-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+      letter-spacing: -0.01em;
+    }
+
+    .usp-body {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.6;
+      font-family: 'Lora', serif;
+    }
+
+    /* Story cards */
+    .story-group {
+      margin-bottom: 48px;
+    }
+
+    .persona-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--amber);
+      background: var(--amber-dim);
+      border: 1px solid #f5a62330;
+      padding: 3px 10px;
+      border-radius: 2px;
+      display: inline-block;
+      margin-bottom: 18px;
+    }
+
+    .story-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0;
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+
+    .story-card-inner {
+      padding: 20px 24px;
+    }
+
+    .story-statement {
+      font-family: 'Lora', serif;
+      font-size: 0.97rem;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    .story-statement strong {
+      color: #fff;
+      font-style: italic;
+    }
+
+    .story-meta {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+    }
+
+    .meta-item {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--text-dim);
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+    }
+
+    .meta-label {
+      color: var(--teal);
+      min-width: 70px;
+    }
+
+    .acceptance-list {
+      list-style: none;
+      padding: 0;
+    }
+
+    .acceptance-list li {
+      font-family: 'DM Mono', monospace;
+      font-size: 11.5px;
+      color: var(--text-dim);
+      padding: 3px 0;
+      padding-left: 16px;
+      position: relative;
+    }
+
+    .acceptance-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: var(--teal);
+      font-size: 10px;
+      top: 4px;
+    }
+
+    .priority-badge {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 2px 8px;
+      border-radius: 2px;
+    }
+
+    .p-critical {
+      background: #ff5c5c20;
+      color: var(--red);
+      border: 1px solid #ff5c5c30;
+    }
+
+    .p-high {
+      background: #f5a62320;
+      color: var(--amber);
+      border: 1px solid #f5a62330;
+    }
+
+    .p-medium {
+      background: var(--teal-dim);
+      color: var(--teal);
+      border: 1px solid var(--teal-mid);
+    }
+
+    .story-id {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 10px;
+    }
+
+    /* Footer note */
+    .footnote {
+      margin-top: 64px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- Masthead -->
+    <div class="masthead">
+      <div class="tag">Product Artifact — VieCareer v0.1</div>
+      <h1>User Stories &amp;<br><span>Unique Selling Points</span></h1>
+      <p class="subtitle">An AI-powered mock interview platform built for Vietnamese job seekers. Structured discovery
+        of who uses it, what they need, and why it wins.</p>
+    </div>
+
+    <!-- ───────────────────────── USP SECTION ───────────────────────── -->
+    <div class="section-header">
+      <span class="section-number">01</span>
+      <h2>Unique Selling Points</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="usp-grid">
+      <div class="usp-card">
+        <span class="usp-num">USP 01</span>
+        <div class="usp-title">Job Readiness Index (JRI)</div>
+        <div class="usp-body">A single evolving score that tracks a candidate's readiness over time — not just a one-off
+          grade. No competitor in the Vietnamese market offers a longitudinal, composite readiness metric.</div>
+      </div>
+      <div class="usp-card amber">
+        <span class="usp-num">USP 02</span>
+        <div class="usp-title">CV + JD Personalization</div>
+        <div class="usp-body">Every interview is generated from the candidate's actual CV and the specific job
+          description they're targeting. Generic question banks are replaced by context-aware, role-specific sessions.
+        </div>
+      </div>
+      <div class="usp-card amber">
+        <span class="usp-num">USP 03</span>
+        <div class="usp-title">Built for the Vietnamese Market</div>
+        <div class="usp-body">VND-denominated pricing (free → 100K → 299K/month), simulations tailored to FPT, VNG,
+          Viettel, Momo, and Grab Vietnam — not a global product translated to Vietnamese.</div>
+      </div>
+      <div class="usp-card">
+        <span class="usp-num">USP 04</span>
+        <div class="usp-title">Integrated Coding Round</div>
+        <div class="usp-body">A full LeetCode-style coding environment is embedded directly in the interview flow — not
+          a separate tool. Candidates practice both behavioral and technical rounds in one unbroken session.</div>
+      </div>
+      <div class="usp-card">
+        <span class="usp-num">USP 05</span>
+        <div class="usp-title">AI Tutor Mode (Learn Mode)</div>
+        <div class="usp-body">Find you are not ready? Toogle Mentor mode on and you will be guided to learn, offering
+          Socratic hints without giving away the solution. Supports learning, not just grading.
+        </div>
+      </div>
+      <div class="usp-card amber">
+        <span class="usp-num">USP 06</span>
+        <div class="usp-title">Radar-Based Skill Gap Analysis</div>
+        <div class="usp-body">Multi-dimensional readiness across Technical Skills, Communication, Problem Solving,
+          Attitude, and Cultural Fit — visualized as a radar chart comparing current vs. target for each role.</div>
+      </div>
+      <div class="usp-card amber">
+        <span class="usp-num">USP 07</span>
+        <div class="usp-title">University Partnership Channel</div>
+        <div class="usp-body">A dedicated portal for career centers to track student cohort readiness at scale — opening
+          a B2B revenue channel alongside the direct-to-candidate model.</div>
+      </div>
+      <div class="usp-card">
+        <span class="usp-num">USP 08</span>
+        <div class="usp-title">24/7 Availability, No Scheduling</div>
+        <div class="usp-body">Replaces the traditional mock interview — expensive, hard to book, and inconsistent.
+          Candidates practice at 2am before a big interview day without coordinating anyone else's calendar.</div>
+      </div>
+    </div>
+
+    <!-- ───────────────────────── USER STORIES ───────────────────────── -->
+    <div class="section-header">
+      <span class="section-number">02</span>
+      <h2>User Stories</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <!-- PERSONA: Fresh Graduate / Student -->
+    <div class="story-group">
+      <div class="persona-label">Persona — Fresh Graduate / Student</div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-01</div>
+          <div class="story-statement">As a <strong>final-year computer science student</strong>, I want to upload my CV
+            and a job description so the platform can simulate an interview specifically matched to that role, so that I
+            stop practicing generic questions that never appear in real interviews.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-critical">Critical</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/setup, /interview</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>CV (PDF/Docx) and JD file are both accepted by the upload dropzone</li>
+                <li>AI extraction completes and returns name, target role, tech stack, and ATS match %</li>
+                <li>Interview questions generated reflect skills listed in the JD, not generic prompts</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-02</div>
+          <div class="story-statement">As a <strong>student with no previous interview experience</strong>, I want to
+            see a Job Readiness Index score after each session so I can track whether my preparation is actually
+            improving week over week.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-critical">Critical</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/dashboard, /analytics</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>JDI score (0–100) is shown on the dashboard after every completed session</li>
+                <li>Score history chart shows trend across at least 3 sessions</li>
+                <li>Score changes are explained with a one-line AI summary of what improved or declined</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-03</div>
+          <div class="story-statement">As a <strong>student preparing for a technical internship</strong>, I want to
+            attempt a live coding challenge inside the platform so that I can practice algorithms in the same session as
+            my behavioral interview, mirroring real hiring pipelines.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-critical">Critical</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/coding, /coding-results</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>Monaco editor loads with the problem statement, examples, and constraints</li>
+                <li>Run button executes code and returns real test case pass/fail results</li>
+                <li>Submit triggers AI analysis scoring correctness, optimization, and code quality</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-04</div>
+          <div class="story-statement">As a <strong>student who gets nervous in high-pressure coding sessions</strong>,
+            I want a "Learn Mode" toggle that gives me Socratic hints on the coding challenge without revealing the
+            answer, so I can build genuine problem-solving intuition rather than just memorizing solutions.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-high">High</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/coding</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>Learn Mode toggle is visible and clearly labeled in the coding top bar</li>
+                <li>"Get AI Coach Help" returns a hint that guides without giving the solution</li>
+                <li>Learn Mode sessions are flagged separately in analytics (not mixed with assessment scores)</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSONA: Fresh Graduate applying to specific companies -->
+    <div class="story-group">
+      <div class="persona-label">Persona — Fresh Graduate Targeting Specific Companies</div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-05</div>
+          <div class="story-statement">As a <strong>fresh graduate applying to FPT Software</strong>, I want a
+            company-specific interview simulation that mirrors FPT's known interview format, so that I'm not caught off
+            guard by their specific style of technical and HR screening.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-high">High</span></div>
+            <div class="meta-item"><span class="meta-label">Phase</span><span>P4 — Platform</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>Company pack is selectable from the setup screen alongside or instead of a custom JD</li>
+                <li>Questions and evaluation rubrics are adapted to the target company's known format</li>
+                <li>Analytics report highlights gaps specific to that company's requirements</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-06</div>
+          <div class="story-statement">As a <strong>fresh graduate on a tight budget</strong>, I want to try the full
+            interview flow for free before committing to a paid plan, so I can evaluate whether the platform genuinely
+            improves my readiness before spending money.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-critical">Critical</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/pricing, /dashboard</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>Freemium tier allows at least 1 complete interview session (behavioral + coding) per month</li>
+                <li>Upgrade prompt appears contextually — after session results, not mid-session</li>
+                <li>Pricing page clearly shows VND amounts and what each tier unlocks</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSONA: Career Switcher -->
+    <div class="story-group">
+      <div class="persona-label">Persona — Career Switcher</div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-07</div>
+          <div class="story-statement">As a <strong>career switcher entering tech from a non-CS background</strong>, I
+            want to see a radar chart comparing my current skills against the target role's requirements, so I know
+            exactly which dimensions to close before applying.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-high">High</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/dashboard, /analytics</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>Radar chart shows both "current" and "target" overlaid on 5 axes</li>
+                <li>Action plan table maps skill gaps to specific, prioritized learning recommendations</li>
+                <li>Each recommendation shows a predicted JDI boost if completed</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-08</div>
+          <div class="story-statement">As a <strong>career switcher who struggles to articulate past
+              experience</strong>, I want post-session feedback that breaks down each interview answer by strengths,
+            areas to improve, and an optimal answer suggestion, so I can learn exactly how to reframe my background.
+          </div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-critical">Critical</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/analytics</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>Analytics accordion shows every question with the user's recorded answer</li>
+                <li>Each entry has three labelled sections: Strengths, Improve, Optimal Answer</li>
+                <li>Optimal answer reflects the role and company context, not a generic template</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSONA: University Career Center -->
+    <div class="story-group">
+      <div class="persona-label">Persona — University Career Center Staff</div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-09</div>
+          <div class="story-statement">As a <strong>career center advisor</strong>, I want to view cohort-level
+            readiness metrics across all students using the platform, so I can identify which graduating classes or
+            departments need targeted intervention before internship season.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-medium">Medium</span></div>
+            <div class="meta-item"><span class="meta-label">Phase</span><span>P4 — University Portal</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>University dashboard shows aggregate JDI distribution across enrolled students</li>
+                <li>Filters available by department, cohort year, and target company type</li>
+                <li>Individual student reports are accessible with student's consent</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-10</div>
+          <div class="story-statement">As a <strong>career advisor reviewing a student's application</strong>, I want to
+            share a student's analytics report directly with a hiring partner via a secure link, so that a verified
+            readiness score accompanies their CV submission.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-medium">Medium</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/analytics — Share feature</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>"Share with University" generates a time-limited, read-only link to the analytics report</li>
+                <li>Shared view shows JDI score, radar chart, and action plan — not raw answer transcripts</li>
+                <li>Student must explicitly consent before any advisor can generate a share link</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PERSONA: Admin -->
+    <div class="story-group">
+      <div class="persona-label">Persona — Platform Admin</div>
+
+      <div class="story-card">
+        <div class="story-card-inner">
+          <div class="story-id">US-11</div>
+          <div class="story-statement">As a <strong>platform admin</strong>, I want a dashboard showing total active
+            users, session counts, revenue by plan tier, and flagged activity, so I can monitor platform health and
+            catch abuse without needing to query the database manually.</div>
+          <div class="story-meta">
+            <div class="meta-item"><span class="meta-label">Priority</span><span
+                class="priority-badge p-high">High</span></div>
+            <div class="meta-item"><span class="meta-label">Page</span><span>/admin</span></div>
+          </div>
+          <div class="story-meta" style="border-top:none; padding-top:4px;">
+            <div class="meta-item" style="flex-direction:column; gap:4px;">
+              <span class="meta-label" style="min-width:auto;">Acceptance Criteria</span>
+              <ul class="acceptance-list">
+                <li>Admin page shows user count, session count, and revenue metrics at a glance</li>
+                <li>Session log is searchable and filterable by user, date, and status</li>
+                <li>Admin routes are protected and inaccessible to regular users</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footnote">
+      VieCareer · Generated by Lee - X23D8 · March 2026
+    </div>
+
+  </div>
+</body>
+
+</html>

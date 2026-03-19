@@ -84,20 +84,20 @@ export default function InterviewPage() {
   }, [router, app]);
 
   return (
-    <div className="h-screen bg-[#0F172A] text-white flex flex-col overflow-hidden">
+    <div className="h-screen bg-[#191A23] text-white flex flex-col overflow-hidden">
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-3 border-b border-white/10 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
+          <div className="w-8 h-8 bg-[#5378EF] rounded-lg flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
           <span className="text-lg font-bold">VieCareer</span>
-          <span className="text-teal-400 text-sm font-semibold ml-1">
+          <span className="text-[#5378EF] text-sm font-semibold ml-1">
             AI INTERVIEW
           </span>
         </div>
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-1.5">
+          <div className="flex items-center gap-2 bg-[#5378EF]/20 border border-[#5378EF]/30 rounded-full px-4 py-1.5">
             <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse-dot" />
             <span className="text-sm font-medium">REC {formatTime(timer)}</span>
           </div>
@@ -114,8 +114,8 @@ export default function InterviewPage() {
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-4 relative min-h-0">
         {/* Question Banner */}
         <div className="absolute top-4 left-1/2 -translate-x-1/2 z-20 w-full max-w-2xl px-4">
-          <div className="bg-[#1E293B]/90 backdrop-blur-md rounded-xl px-6 py-3 border border-white/10 text-center animate-fade-in-up">
-            <p className="text-xs font-bold text-teal-400 uppercase tracking-widest mb-1">
+          <div className="bg-white/10 backdrop-blur-md rounded-xl px-6 py-3 border border-white/10 text-center animate-fade-in-up">
+            <p className="text-xs font-bold text-[#5378EF] uppercase tracking-widest mb-1">
               Current Question ({currentQ + 1}/{interviewQuestions.length})
             </p>
             <p className="text-white text-base font-medium leading-relaxed">
@@ -132,15 +132,15 @@ export default function InterviewPage() {
           <div className="relative w-full flex-1 max-h-[50vh] bg-gradient-to-br from-slate-700 via-slate-600 to-slate-800 rounded-2xl overflow-hidden shadow-2xl">
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-32 h-32 rounded-full bg-slate-500/30 flex items-center justify-center">
-                <User className="w-16 h-16 text-slate-400" />
+                <User className="w-16 h-16 text-white/50" />
               </div>
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute top-4 right-4">
               <div className="flex gap-1">
-                <div className="w-1 h-3 bg-teal-400 rounded-full animate-audio-wave" style={{ animationDelay: "0s" }} />
-                <div className="w-1 h-4 bg-teal-400 rounded-full animate-audio-wave" style={{ animationDelay: "0.1s" }} />
-                <div className="w-1 h-5 bg-teal-400 rounded-full animate-audio-wave" style={{ animationDelay: "0.2s" }} />
+                <div className="w-1 h-3 bg-[#5378EF] rounded-full animate-audio-wave" style={{ animationDelay: "0s" }} />
+                <div className="w-1 h-4 bg-[#5378EF] rounded-full animate-audio-wave" style={{ animationDelay: "0.1s" }} />
+                <div className="w-1 h-5 bg-[#5378EF] rounded-full animate-audio-wave" style={{ animationDelay: "0.2s" }} />
               </div>
             </div>
             <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1.5">
@@ -153,20 +153,20 @@ export default function InterviewPage() {
           <div className="flex items-center gap-4">
             <div className="w-56 h-32 bg-slate-800 rounded-xl overflow-hidden border border-white/10 shadow-xl relative">
               <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full bg-teal-500/20 flex items-center justify-center">
-                  <Sparkles className="w-7 h-7 text-teal-400" />
+                <div className="w-14 h-14 rounded-full bg-[#5378EF]/20 flex items-center justify-center">
+                  <Sparkles className="w-7 h-7 text-[#5378EF]" />
                 </div>
               </div>
               <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2">
-                <AudioWave barCount={8} color="#14B8A6" />
-                <span className="text-[10px] font-bold text-teal-400 uppercase tracking-wider">
+                <AudioWave barCount={8} color="#5378EF" />
+                <span className="text-[10px] font-bold text-[#5378EF] uppercase tracking-wider">
                   AI Speaking...
                 </span>
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Sparkles className="w-3.5 h-3.5 text-teal-400" />
-              <span className="text-sm text-slate-400 font-medium">VieCareer AI Panel</span>
+              <Sparkles className="w-3.5 h-3.5 text-[#5378EF]" />
+              <span className="text-sm text-white/50 font-medium">VieCareer AI Panel</span>
             </div>
           </div>
         </div>
@@ -184,7 +184,7 @@ export default function InterviewPage() {
                 hour12: true,
               })}
             </p>
-            <p className="text-xs text-slate-400">React Developer Interview</p>
+            <p className="text-xs text-white/50">React Developer Interview</p>
           </div>
 
           {/* Center: Controls */}
@@ -221,7 +221,7 @@ export default function InterviewPage() {
               <button
                 onClick={handleSubmitAnswer}
                 disabled={isProcessing}
-                className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-colors ml-2"
+                className="flex items-center gap-2 bg-[#5378EF] hover:bg-[#5378EF]/80 disabled:opacity-50 disabled:cursor-not-allowed text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-colors ml-2"
               >
                 <ChevronRight className="w-4 h-4" />
                 {currentQ < interviewQuestions.length - 1
@@ -234,7 +234,7 @@ export default function InterviewPage() {
             {allQuestionsAnswered && (
               <button
                 onClick={handleNextCodingInterview}
-                className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-colors ml-2 animate-fade-in-up"
+                className="flex items-center gap-2 bg-[#5378EF] hover:bg-[#5378EF]/80 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-colors ml-2 animate-fade-in-up"
               >
                 <Code2 className="w-4 h-4" />
                 Next: Code Interview
@@ -252,15 +252,15 @@ export default function InterviewPage() {
 
           {/* Right: Extra icons */}
           <div className="flex items-center gap-2 min-w-[100px] justify-end">
-            <button className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 transition-colors">
+            <button className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 transition-colors">
               <Info className="w-4 h-4" />
             </button>
-            <button className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 transition-colors">
+            <button className="w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 transition-colors">
               <Users className="w-4 h-4" />
             </button>
-            <button className="relative w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 transition-colors">
+            <button className="relative w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 transition-colors">
               <MessageSquare className="w-4 h-4" />
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-teal-400 rounded-full border-2 border-[#0F172A]" />
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-teal-400 rounded-full border-2 border-[#191A23]" />
             </button>
           </div>
         </div>
@@ -273,7 +273,7 @@ export default function InterviewPage() {
             </span>
             <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
               <div
-                className="h-full bg-teal-500 rounded-full transition-all duration-500"
+                className="h-full bg-[#5378EF] rounded-full transition-all duration-500"
                 style={{
                   width: `${
                     (answeredQuestions.size / interviewQuestions.length) * 100
@@ -293,12 +293,12 @@ export default function InterviewPage() {
       {/* Processing Overlay */}
       {isProcessing && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#1E293B] rounded-2xl p-8 text-center">
-            <div className="animate-spin w-10 h-10 border-4 border-teal-500 border-t-transparent rounded-full mx-auto mb-4" />
+          <div className="bg-[#191A23] border-2 border-[#5378EF]/30 rounded-2xl p-8 text-center">
+            <div className="animate-spin w-10 h-10 border-4 border-[#5378EF] border-t-transparent rounded-full mx-auto mb-4" />
             <p className="text-white font-semibold">
               AI is processing your response...
             </p>
-            <p className="text-slate-400 text-sm mt-1">
+            <p className="text-white/50 text-sm mt-1">
               Generating next question
             </p>
           </div>
