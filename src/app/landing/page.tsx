@@ -25,7 +25,7 @@ export default function LandingPage() {
       </div>
 
       {/* TopNavbar */}
-      <TopNavbar />
+      <TopNavbar extraLinks={[{ label: "Pricing", href: "/pricing" }]} />
 
       {/* --- Background Effects --- */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-teal-100/50 blur-[120px] rounded-full pointer-events-none opacity-60" />

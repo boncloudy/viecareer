@@ -12,8 +12,13 @@ const navLinks = [
   { label: "Report", href: "/analytics" },
 ];
 
-export function TopNavbar() {
+interface TopNavbarProps {
+  extraLinks?: { label: string; href: string }[];
+}
+
+export function TopNavbar({ extraLinks = [] }: TopNavbarProps) {
   const pathname = usePathname();
+  const allLinks = [...navLinks, ...extraLinks];
 
   return (
     <header className="w-full bg-white border-b border-gray-200 sticky top-0 z-50">
@@ -28,7 +33,7 @@ export function TopNavbar() {
 
         {/* Center Nav */}
         <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => {
+          {allLinks.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
