@@ -359,3 +359,114 @@ export const aiLibraryResources = [
   { title: "The STAR Method Handbook", type: "PDF Guide", detail: "12 Pages" },
   { title: "System Design Interview Vol. 1", type: "Interactive Course", detail: "6 Modules" },
 ];
+
+// --- Admin Dashboard Data ---
+export const adminKPIs = [
+  { title: "Total Users", value: "2,845", trend: "+12.5%", isPositive: true },
+  { title: "Active Sessions", value: "842", trend: "+5.2%", isPositive: true },
+  { title: "Monthly Revenue", value: "125,400,000 ₫", trend: "+15.3%", isPositive: true },
+  { title: "Suspended Accounts", value: "12", trend: "-2.1%", isPositive: false },
+];
+
+export const adminRevenueData = [
+  { month: "Jan", revenue: 45000000 },
+  { month: "Feb", revenue: 52000000 },
+  { month: "Mar", revenue: 48000000 },
+  { month: "Apr", revenue: 70000000 },
+  { month: "May", revenue: 95000000 },
+  { month: "Jun", revenue: 125400000 },
+];
+
+// --- Admin Users Management ---
+export type UserStatus = "Active" | "Suspended" | "Pending";
+export type UserPlan = "Free" | "Pro" | "Enterprise";
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: string;
+  status: UserStatus;
+  plan: UserPlan;
+  joinDate: string;
+  lastActive: string;
+  totalSessions: number;
+  avatarInitials: string;
+  avatarColor: string;
+}
+
+export const adminUsers: AdminUser[] = [
+  { id: "U001", name: "Nguyen Thi Lan", email: "lan.nguyen@email.com", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-01-15", lastActive: "2 mins ago", totalSessions: 24, avatarInitials: "NL", avatarColor: "bg-teal-500" },
+  { id: "U002", name: "Tran Minh Duc", email: "duc.tran@fpt.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-02-03", lastActive: "1 hour ago", totalSessions: 8, avatarInitials: "TD", avatarColor: "bg-blue-500" },
+  { id: "U003", name: "Le Thi Hoa", email: "hoa.le@company.vn", role: "Job Seeker", status: "Pending", plan: "Free", joinDate: "2025-03-10", lastActive: "3 days ago", totalSessions: 2, avatarInitials: "LH", avatarColor: "bg-purple-500" },
+  { id: "U004", name: "Pham Van Khoa", email: "khoa.pham@gmail.com", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-11-20", lastActive: "5 mins ago", totalSessions: 57, avatarInitials: "PK", avatarColor: "bg-orange-500" },
+  { id: "U005", name: "Vo Thi Mai", email: "mai.vo@tech.io", role: "Student", status: "Suspended", plan: "Pro", joinDate: "2025-01-30", lastActive: "12 days ago", totalSessions: 15, avatarInitials: "VM", avatarColor: "bg-rose-500" },
+  { id: "U006", name: "Hoang Duc Nam", email: "nam.hoang@dev.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-05", lastActive: "30 mins ago", totalSessions: 31, avatarInitials: "HN", avatarColor: "bg-cyan-500" },
+  { id: "U007", name: "Bui Thi Thu", email: "thu.bui@student.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-03-01", lastActive: "2 hours ago", totalSessions: 6, avatarInitials: "BT", avatarColor: "bg-indigo-500" },
+  { id: "U008", name: "Dang Van Long", email: "long.dang@corp.com", role: "Job Seeker", status: "Suspended", plan: "Free", joinDate: "2025-02-14", lastActive: "20 days ago", totalSessions: 4, avatarInitials: "DL", avatarColor: "bg-amber-500" },
+  { id: "U009", name: "Nguyen Bao Chau", email: "chau.nb@viecviet.vn", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-10-10", lastActive: "Just now", totalSessions: 89, avatarInitials: "NC", avatarColor: "bg-emerald-500" },
+  { id: "U010", name: "Tran Quoc Huy", email: "huy.tq@uet.edu.vn", role: "Student", status: "Pending", plan: "Free", joinDate: "2025-03-18", lastActive: "1 day ago", totalSessions: 1, avatarInitials: "TH", avatarColor: "bg-violet-500" },
+];
+
+// --- Admin Interview Sessions ---
+export type SessionStatus = "Completed" | "In Progress" | "Scheduled" | "Cancelled";
+export type SessionType = "Technical" | "Behavioral" | "Mixed" | "Coding";
+
+export interface AdminSession {
+  id: string;
+  userId: string;
+  userName: string;
+  position: string;
+  company: string;
+  date: string;
+  duration: string;
+  score: number | null;
+  status: SessionStatus;
+  type: SessionType;
+  avatarInitials: string;
+  avatarColor: string;
+}
+
+export const adminSessions: AdminSession[] = [
+  { id: "S001", userId: "U001", userName: "Nguyen Thi Lan", position: "Frontend Developer Intern", company: "FPT Software", date: "2026-03-19 09:30", duration: "42 min", score: 85, status: "Completed", type: "Technical", avatarInitials: "NL", avatarColor: "bg-teal-500" },
+  { id: "S002", userId: "U004", userName: "Pham Van Khoa", position: "Full Stack Engineer", company: "VNG Corporation", date: "2026-03-19 10:15", duration: "—", score: null, status: "In Progress", type: "Mixed", avatarInitials: "PK", avatarColor: "bg-orange-500" },
+  { id: "S003", userId: "U002", userName: "Tran Minh Duc", position: "Backend Developer", company: "MoMo", date: "2026-03-19 14:00", duration: "—", score: null, status: "Scheduled", type: "Technical", avatarInitials: "TD", avatarColor: "bg-blue-500" },
+  { id: "S004", userId: "U009", userName: "Nguyen Bao Chau", position: "Product Manager", company: "Shopee Vietnam", date: "2026-03-18 15:45", duration: "55 min", score: 92, status: "Completed", type: "Behavioral", avatarInitials: "NC", avatarColor: "bg-emerald-500" },
+  { id: "S005", userId: "U006", userName: "Hoang Duc Nam", position: "DevOps Engineer", company: "Tiki", date: "2026-03-18 11:00", duration: "38 min", score: 74, status: "Completed", type: "Technical", avatarInitials: "HN", avatarColor: "bg-cyan-500" },
+  { id: "S006", userId: "U003", userName: "Le Thi Hoa", position: "UI/UX Designer", company: "Zalo", date: "2026-03-17 09:00", duration: "—", score: null, status: "Cancelled", type: "Behavioral", avatarInitials: "LH", avatarColor: "bg-purple-500" },
+  { id: "S007", userId: "U007", userName: "Bui Thi Thu", position: "Data Analyst Intern", company: "VinAI", date: "2026-03-17 16:30", duration: "47 min", score: 68, status: "Completed", type: "Mixed", avatarInitials: "BT", avatarColor: "bg-indigo-500" },
+  { id: "S008", userId: "U004", userName: "Pham Van Khoa", position: "Senior React Dev", company: "Grab Vietnam", date: "2026-03-16 10:00", duration: "60 min", score: 88, status: "Completed", type: "Coding", avatarInitials: "PK", avatarColor: "bg-orange-500" },
+  { id: "S009", userId: "U001", userName: "Nguyen Thi Lan", position: "Frontend Developer Intern", company: "FPT Software", date: "2026-03-15 14:30", duration: "35 min", score: 79, status: "Completed", type: "Behavioral", avatarInitials: "NL", avatarColor: "bg-teal-500" },
+  { id: "S010", userId: "U010", userName: "Tran Quoc Huy", position: "ML Engineer Intern", company: "VinAI", date: "2026-03-19 16:00", duration: "—", score: null, status: "Scheduled", type: "Technical", avatarInitials: "TH", avatarColor: "bg-violet-500" },
+];
+
+// --- Admin Activity Logs ---
+export type LogType = "Auth" | "Session" | "Payment" | "Account" | "System";
+
+export interface ActivityLog {
+  id: string;
+  userId: string;
+  userName: string;
+  action: string;
+  detail: string;
+  timestamp: string;
+  ip: string;
+  type: LogType;
+  avatarInitials: string;
+  avatarColor: string;
+}
+
+export const adminActivityLogs: ActivityLog[] = [
+  { id: "L001", userId: "U004", userName: "Pham Van Khoa", action: "Session Started", detail: "Started Mixed Interview — Full Stack Engineer @ VNG", timestamp: "2026-03-19 10:15:02", ip: "113.161.44.12", type: "Session", avatarInitials: "PK", avatarColor: "bg-orange-500" },
+  { id: "L002", userId: "U001", userName: "Nguyen Thi Lan", action: "Session Completed", detail: "Completed Technical Interview — Score: 85/100", timestamp: "2026-03-19 10:12:55", ip: "27.72.98.211", type: "Session", avatarInitials: "NL", avatarColor: "bg-teal-500" },
+  { id: "L003", userId: "U009", userName: "Nguyen Bao Chau", action: "User Login", detail: "Logged in via Google OAuth", timestamp: "2026-03-19 09:58:33", ip: "42.117.185.9", type: "Auth", avatarInitials: "NC", avatarColor: "bg-emerald-500" },
+  { id: "L004", userId: "U006", userName: "Hoang Duc Nam", action: "Plan Upgraded", detail: "Upgraded from Free to Pro — 299,000 ₫ charged", timestamp: "2026-03-19 09:45:10", ip: "14.160.27.88", type: "Payment", avatarInitials: "HN", avatarColor: "bg-cyan-500" },
+  { id: "L005", userId: "U005", userName: "Vo Thi Mai", action: "Account Suspended", detail: "Suspended by admin — Violation of ToS §3.2", timestamp: "2026-03-19 09:30:00", ip: "—", type: "Account", avatarInitials: "VM", avatarColor: "bg-rose-500" },
+  { id: "L006", userId: "U002", userName: "Tran Minh Duc", action: "Session Scheduled", detail: "Booked Technical Interview — Backend Dev @ MoMo for 14:00", timestamp: "2026-03-19 09:22:47", ip: "115.78.5.44", type: "Session", avatarInitials: "TD", avatarColor: "bg-blue-500" },
+  { id: "L007", userId: "U008", userName: "Dang Van Long", action: "User Logout", detail: "Session ended — duration: 12 min", timestamp: "2026-03-19 09:01:15", ip: "118.70.211.33", type: "Auth", avatarInitials: "DL", avatarColor: "bg-amber-500" },
+  { id: "L008", userId: "SYSTEM", userName: "System", action: "Backup Completed", detail: "Scheduled daily backup — 847 MB archived", timestamp: "2026-03-19 03:00:00", ip: "Internal", type: "System", avatarInitials: "SY", avatarColor: "bg-slate-500" },
+  { id: "L009", userId: "U007", userName: "Bui Thi Thu", action: "Profile Updated", detail: "Updated target position and tech stack", timestamp: "2026-03-18 22:14:30", ip: "1.52.211.99", type: "Account", avatarInitials: "BT", avatarColor: "bg-indigo-500" },
+  { id: "L010", userId: "U009", userName: "Nguyen Bao Chau", action: "Payment Processed", detail: "Enterprise Plan renewal — 799,000 ₫ charged", timestamp: "2026-03-18 20:05:55", ip: "42.117.185.9", type: "Payment", avatarInitials: "NC", avatarColor: "bg-emerald-500" },
+  { id: "L011", userId: "U003", userName: "Le Thi Hoa", action: "Session Cancelled", detail: "Cancelled UI/UX Designer Interview — Zalo", timestamp: "2026-03-18 18:30:12", ip: "103.82.22.5", type: "Session", avatarInitials: "LH", avatarColor: "bg-purple-500" },
+  { id: "L012", userId: "U004", userName: "Pham Van Khoa", action: "Session Completed", detail: "Completed Coding Interview — Score: 88/100", timestamp: "2026-03-16 11:00:44", ip: "113.161.44.12", type: "Session", avatarInitials: "PK", avatarColor: "bg-orange-500" },
+];
