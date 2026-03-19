@@ -2,8 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { ArrowRight, PlayCircle, Target, BarChart3, Bot, Sparkles } from "lucide-react";
-import { TopNavbar } from "@/components/top-navbar"; 
+import { ArrowRight, PlayCircle, Target, BarChart3, Bot } from "lucide-react";
 
 export default function LandingPage() {
   return (
@@ -23,12 +22,6 @@ export default function LandingPage() {
           </button>
         </div>
       </div>
-
-      {/* TopNavbar */}
-      <TopNavbar />
-      
-      {/* --- Background Effects --- */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-teal-100/50 blur-[120px] rounded-full pointer-events-none opacity-60" />
 
       <main className="relative z-10 px-6 max-w-7xl mx-auto md:px-12 pt-20 pb-24">
         {/* --- Hero Section --- */}

@@ -13,7 +13,7 @@ import {
   analyticsDimensionScores,
   skillRecommendations,
   interviewQuestions,
-  finalJdiScore,
+  finaljriScore,
 } from "@/lib/mock-data";
 import {
   Share2,
@@ -79,7 +79,7 @@ export default function AnalyticsPage() {
               Job Delivery Index
             </h2>
             <CircularScore
-              score={finalJdiScore}
+              score={finaljriScore}
               maxScore={100}
               sublabel="/ 100"
               size={180}
@@ -294,7 +294,7 @@ export default function AnalyticsPage() {
             Ready to take the next step?
           </h2>
           <p className="text-slate-400 mb-8 max-w-md mx-auto">
-            Based on your {finalJdiScore}/100 JDI Score, you are in the top 5% of
+            Based on your {finaljriScore}/100 JDI Score, you are in the top 5% of
             candidates for this internship. Secure your spot today.
           </p>
           <div className="flex items-center justify-center gap-4">

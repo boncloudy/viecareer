@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { 
   LayoutDashboard, 
   Users, 
@@ -23,6 +23,7 @@ const adminNavItems = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
 
   return (
     <div className="min-h-screen bg-slate-50 flex">
@@ -81,7 +82,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <p className="text-sm font-semibold mb-1 text-slate-200">
               All services online
             </p>
-            <button className="mt-3 w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-rose-500 hover:text-white text-slate-300 text-xs font-semibold py-2 px-4 rounded-lg transition-colors">
+            <button
+              onClick={() => router.push("/landing")}
+              className="mt-3 w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-rose-500 hover:text-white text-slate-300 text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
+            >
               <LogOut className="w-3 h-3" />
               SIGN OUT
             </button>

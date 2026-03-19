@@ -13,6 +13,7 @@ import {
   LineChart,
   User,
   Sparkles,
+  LogOut,
 } from "lucide-react";
 
 const navItems = [
@@ -341,13 +342,22 @@ export function Sidebar() {
         <p className="text-sm font-semibold mb-1">
           Upgrade for AI Mock Interviews
         </p>
-        <button 
+        <button
           onClick={() => router.push("/pricing")}
           className="mt-3 w-full bg-teal-500 hover:bg-teal-600 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
         >
           UPGRADE NOW
         </button>
       </div>
+
+      {/* Log Out */}
+      <button
+        onClick={() => router.push("/landing")}
+        className="mt-4 w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-red-400 transition-all duration-200"
+      >
+        <LogOut className="w-5 h-5" />
+        Log Out
+      </button>
     </div>
     </aside>
   );
