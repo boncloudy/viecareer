@@ -85,7 +85,7 @@ export const jobRequirements: JobRequirements = {
 // ---------- ATS Match Score ----------
 export const atsMatchScore = 72;
 
-// ---------- JDI Score Data ----------
+// ---------- JRI Score Data ----------
 export const jdiScore = 75;
 export const finalJdiScore = 82;
 

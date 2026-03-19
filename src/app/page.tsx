@@ -92,7 +92,7 @@ const PROCESS_STEPS = [
   {
     num: "04",
     title: "Performance Scoring",
-    desc: "Every answer is evaluated in real-time. Our proprietary Job Readiness Index (JDI) scores your communication, technical depth, problem-solving, and overall confidence.",
+    desc: "Every answer is evaluated in real-time. Our proprietary Job Readiness Index (JRI) scores your communication, technical depth, problem-solving, and overall confidence.",
   },
   {
     num: "05",
@@ -360,7 +360,7 @@ export default function VieCareer() {
       {/* ============ 3. BRAND LOGOS BAR ============ */}
       <section className="border-y border-[#191A23]/10 py-8 mb-16">
         <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50">
-          {["amazon", "Dribbble", "HubSpot", "Notion", "Netflix", "zoom"].map((name) => (
+          {["FPT", "Viettel", "Momo", "Grab", "Shopee", "Google"].map((name) => (
             <span key={name} className="text-lg md:text-xl font-bold tracking-tight text-[#191A23]">
               {name}
             </span>
@@ -471,8 +471,8 @@ export default function VieCareer() {
                   className="w-full flex items-center justify-between p-6 md:p-8 text-left"
                 >
                   <div className="flex items-center gap-4 md:gap-6">
-                    <span className="text-3xl md:text-5xl font-bold text-[#191A23]">{step.num}</span>
-                    <span className="text-lg md:text-xl font-semibold text-[#191A23]">{step.title}</span>
+                    <span className={`text-3xl md:text-5xl font-bold ${isOpen ? "text-white" : "text-[#191A23]"}`}>{step.num}</span>
+                    <span className={`text-lg md:text-xl font-semibold ${isOpen ? "text-white" : "text-[#191A23]"}`}>{step.title}</span>
                   </div>
                   <div className={`w-10 h-10 rounded-full border-2 border-[#191A23] flex items-center justify-center shrink-0 transition-colors ${isOpen ? "bg-[#191A23]" : "bg-white"}`}>
                     {isOpen ? <Minus className="w-5 h-5 text-white" /> : <Plus className="w-5 h-5 text-[#191A23]" />}
@@ -480,8 +480,8 @@ export default function VieCareer() {
                 </button>
                 {isOpen && (
                   <div className="px-6 md:px-8 pb-6 md:pb-8 pt-0">
-                    <div className="border-t border-[#191A23]/30 pt-4">
-                      <p className="text-sm text-[#191A23]/80 leading-relaxed max-w-3xl">{step.desc}</p>
+                    <div className="border-t border-white/30 pt-4">
+                      <p className="text-sm text-white/90 leading-relaxed max-w-3xl">{step.desc}</p>
                     </div>
                   </div>
                 )}
@@ -497,7 +497,7 @@ export default function VieCareer() {
           <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
             <SectionTag>Team</SectionTag>
             <p className="text-sm text-[#191A23]/70 max-w-xl leading-relaxed">
-              Meet the skilled AI researchers, career coaches, and developers building the ultimate interview platform.
+              Meet the skilled AI researchers, project coaches, and developers building the ultimate interview platform.
             </p>
           </div>
           <button className="border-2 border-[#191A23] px-6 py-3 rounded-full text-sm font-medium hover:bg-[#191A23] hover:text-white transition-colors shrink-0">

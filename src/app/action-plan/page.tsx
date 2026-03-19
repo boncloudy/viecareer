@@ -100,7 +100,7 @@ export default function ActionPlanPage() {
             <div className="space-y-6">
               <Card className="p-6 bg-[#0F172A] text-white border-none shadow-xl rounded-2xl">
                 <TrendingUp className="w-8 h-8 text-teal-400 mb-4" />
-                <h4 className="font-bold text-lg mb-2">Estimated JDI Boost</h4>
+                <h4 className="font-bold text-lg mb-2">Estimated JRI Boost</h4>
                 <p className="text-slate-400 text-sm mb-6 italic">Completing Phase 1 will potentially increase your Readiness Score by:</p>
                 <div className="text-4xl font-black text-teal-400">+12.5%</div>
               </Card>

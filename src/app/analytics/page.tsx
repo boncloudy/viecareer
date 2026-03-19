@@ -73,7 +73,7 @@ export default function AnalyticsPage() {
 
         {/* Score + Radar Chart */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          {/* JDI Score */}
+          {/* JRI Score */}
           <Card className="p-8 text-center">
             <h2 className="text-lg font-bold text-gray-900 mb-6">
               Job Delivery Index
@@ -143,7 +143,7 @@ export default function AnalyticsPage() {
               Recommended Action
             </span>
             <span className="text-xs font-bold text-gray-500 uppercase tracking-wider">
-              Predicted JDI Boost
+              Predicted JRI Boost
             </span>
           </div>
 
@@ -294,7 +294,7 @@ export default function AnalyticsPage() {
             Ready to take the next step?
           </h2>
           <p className="text-slate-400 mb-8 max-w-md mx-auto">
-            Based on your {finaljriScore}/100 JDI Score, you are in the top 5% of
+            Based on your {finaljriScore}/100 JRI Score, you are in the top 5% of
             candidates for this internship. Secure your spot today.
           </p>
           <div className="flex items-center justify-center gap-4">
