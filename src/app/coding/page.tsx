@@ -38,29 +38,14 @@ import {
   PanelLeft,
   PanelRight,
 } from "lucide-react";
-import dynamic from "next/dynamic";
 
-const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-[#1E1E2E] flex items-center justify-center">
-      <div className="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full" />
-    </div>
-  ),
-});
+// Shared components
+import CodeEditor from "@/components/coding/code-editor";
+import TestCasePanel from "@/components/coding/test-case-panel";
+import AnalysisSteps from "@/components/coding/analysis-steps";
 
 type ProblemTab = "description" | "testcases" | "hint";
 type EditorTab = "code" | "diagram";
-
-/* ── Step icons for analysis ── */
-const stepIcons: Record<string, React.ReactNode> = {
-  code: <Code className="w-4 h-4" />,
-  search: <Search className="w-4 h-4" />,
-  zap: <Zap className="w-4 h-4" />,
-  shield: <Shield className="w-4 h-4" />,
-  lightbulb: <Lightbulb className="w-4 h-4" />,
-  check: <CheckCircle2 className="w-4 h-4" />,
-};
 
 export default function CodingPage() {
   const router = useRouter();
@@ -82,9 +67,6 @@ export default function CodingPage() {
 
   /* ── Analysis state (inline in right panel) ── */
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [analysisStep, setAnalysisStep] = useState(0);
-  const [analysisProgress, setAnalysisProgress] = useState(0);
-  const [analysisComplete, setAnalysisComplete] = useState(false);
 
   // Timer
   const [elapsedSeconds, setElapsedSeconds] = useState(0);
@@ -112,61 +94,20 @@ export default function CodingPage() {
   /* ── Submit: starts inline analysis in right panel ── */
   const handleSubmit = useCallback(() => {
     setIsAnalyzing(true);
-    setAnalysisStep(0);
-    setAnalysisProgress(0);
-    setAnalysisComplete(false);
     app.setCodeSubmitted(true);
   }, [app]);
-
-  /* ── Analysis step progression ── */
-  useEffect(() => {
-    if (!isAnalyzing || analysisComplete) return;
-    const totalSteps = feedbackSteps.length;
-    const stepDuration = 1200;
-
-    const interval = setInterval(() => {
-      setAnalysisStep((prev) => {
-        const next = prev + 1;
-        if (next >= totalSteps) {
-          clearInterval(interval);
-          setAnalysisComplete(true);
-          // Navigate to results after a brief pause
-          setTimeout(() => {
-            app.setCurrentFlow("analytics");
-            router.push("/coding-results");
-          }, 1200);
-          return prev;
-        }
-        return next;
-      });
-    }, stepDuration);
-
-    return () => clearInterval(interval);
-  }, [isAnalyzing, analysisComplete, app, router]);
-
-  /* ── Analysis progress bar ── */
-  useEffect(() => {
-    if (!isAnalyzing) return;
-    const totalSteps = feedbackSteps.length;
-    const targetProgress = Math.min(
-      ((analysisStep + 1) / totalSteps) * 100,
-      100
-    );
-    const progressInterval = setInterval(() => {
-      setAnalysisProgress((prev) => {
-        if (prev >= targetProgress) {
-          clearInterval(progressInterval);
-          return targetProgress;
-        }
-        return prev + 0.8;
-      });
-    }, 20);
-    return () => clearInterval(progressInterval);
-  }, [analysisStep, isAnalyzing]);
 
   const handleReset = useCallback(() => {
     setCode(codingProblem.defaultCode);
   }, []);
+
+  /* ── Analysis complete → navigate ── */
+  const handleAnalysisComplete = useCallback(() => {
+    setTimeout(() => {
+      app.setCurrentFlow("analytics");
+      router.push("/coding-results");
+    }, 1200);
+  }, [app, router]);
 
   const problemTabs: {
     key: ProblemTab;
@@ -583,97 +524,25 @@ export default function CodingPage() {
 
           {editorTab === "code" ? (
             <>
-              {/* Monaco Editor */}
+              {/* Monaco Editor — shared component */}
               <div className="flex-1 min-h-0">
-                <MonacoEditor
-                  height="100%"
-                  language={language}
-                  theme="vs-dark"
+                <CodeEditor
                   value={code}
-                  onChange={(value) => setCode(value || "")}
-                  options={{
-                    fontSize: 13,
-                    fontFamily: "'Fira Code', 'Cascadia Code', monospace",
-                    minimap: { enabled: false },
-                    padding: { top: 16 },
-                    scrollBeyondLastLine: false,
-                    lineNumbers: "on",
-                    renderLineHighlight: "all",
-                    automaticLayout: true,
-                    wordWrap: "on",
-                    cursorBlinking: "smooth",
-                  }}
+                  language={language}
+                  onChange={setCode}
                 />
               </div>
 
-              {/* Test Results Panel */}
+              {/* Test Results Panel — shared component */}
               {showTestResults && (
-                <div className="border-t border-white/10 bg-[#111827] shrink-0">
-                  <div className="flex items-center justify-between px-3 xl:px-4 py-1.5 border-b border-white/5">
-                    <div className="flex items-center gap-1 overflow-x-auto scrollbar-none">
-                      {codingTestCases.slice(0, 5).map((tc, i) => (
-                        <button
-                          key={tc.id}
-                          onClick={() => setActiveTestCase(i)}
-                          className={`flex items-center gap-1 px-2 xl:px-2.5 py-1 rounded text-[11px] transition-colors whitespace-nowrap ${
-                            i === activeTestCase
-                              ? "bg-white/10 text-white"
-                              : "text-slate-500 hover:text-slate-300"
-                          }`}
-                        >
-                          {tc.passed ? (
-                            <Check className="w-3 h-3 text-green-400" />
-                          ) : (
-                            <X className="w-3 h-3 text-red-400" />
-                          )}
-                          {tc.label}
-                        </button>
-                      ))}
-                    </div>
-                    <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[10px] text-green-400 font-medium">
-                        ✓ Accepted
-                      </span>
-                      <span className="text-[10px] text-slate-500 hidden sm:inline">
-                        Runtime:{" "}
-                        {codingTestCases[activeTestCase]?.runtime}
-                      </span>
-                      <button
-                        onClick={() => setShowTestResults(false)}
-                        className="text-slate-500 hover:text-slate-300 ml-2"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="px-3 xl:px-4 py-3 grid grid-cols-3 gap-3 xl:gap-4 text-xs">
-                    <div>
-                      <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block mb-1">
-                        Input
-                      </span>
-                      <code className="text-slate-300 font-mono text-[11px]">
-                        {codingTestCases[activeTestCase]?.input}
-                      </code>
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block mb-1">
-                        Expected
-                      </span>
-                      <code className="text-teal-300 font-mono text-[11px]">
-                        {codingTestCases[activeTestCase]?.expected}
-                      </code>
-                    </div>
-                    <div>
-                      <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block mb-1">
-                        Output
-                      </span>
-                      <code className="text-green-400 font-mono text-[11px]">
-                        {codingTestCases[activeTestCase]?.output}
-                      </code>
-                    </div>
-                  </div>
-                </div>
+                <TestCasePanel
+                  testCases={codingTestCases}
+                  activeIndex={activeTestCase}
+                  onSelect={setActiveTestCase}
+                  onClose={() => setShowTestResults(false)}
+                  summaryLabel="✓ Accepted"
+                  showRuntime
+                />
               )}
 
               {/* Status bar */}
@@ -718,110 +587,26 @@ export default function CodingPage() {
           </button>
 
           {isAnalyzing ? (
-            /* ─── INLINE ANALYSIS VIEW ─── */
-            <div className="flex-1 overflow-y-auto p-4 scrollbar-thin">
-              {/* Header */}
-              <div className="flex justify-center mb-4">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border border-teal-500/30 flex items-center justify-center animate-pulse">
-                  <Sparkles className="w-5 h-5 text-teal-400" />
-                </div>
-              </div>
-              <div className="text-center mb-6">
-                <h2 className="text-base font-bold text-white mb-1">
-                  Analyzing Solution…
-                </h2>
-                <p className="text-[11px] text-slate-400">
-                  Examining your solution&apos;s logic and approach
-                </p>
-              </div>
-
-              {/* Steps */}
-              <div className="space-y-2 mb-6">
-                {feedbackSteps.map((step, index) => {
-                  const isActive = index === analysisStep;
-                  const isComplete = index < analysisStep;
-                  const isPending = index > analysisStep;
-
-                  return (
-                    <div
-                      key={index}
-                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 border transition-all duration-300 ${
-                        isActive
-                          ? "bg-teal-500/10 border-teal-500/30"
-                          : isComplete
-                            ? "bg-white/[0.03] border-white/5"
-                            : "bg-transparent border-transparent opacity-40"
-                      }`}
-                    >
-                      <div
-                        className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${
-                          isComplete
-                            ? "bg-teal-500/20 text-teal-400"
-                            : isActive
-                              ? "bg-teal-500/20 text-teal-400"
-                              : "bg-white/5 text-slate-600"
-                        }`}
-                      >
-                        {isComplete ? (
-                          <CheckCircle2 className="w-4 h-4" />
-                        ) : isActive ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          stepIcons[step.icon] || (
-                            <Code className="w-4 h-4" />
-                          )
-                        )}
-                      </div>
-                      <span
-                        className={`text-xs font-medium flex-1 ${
-                          isPending ? "text-slate-600" : "text-slate-200"
-                        }`}
-                      >
-                        {step.label}
-                      </span>
-                      {isComplete && (
-                        <span className="text-[9px] font-bold text-teal-400 uppercase tracking-wider">
-                          Done
-                        </span>
-                      )}
-                      {isActive && (
-                        <span className="text-[9px] font-bold text-teal-400 uppercase tracking-wider">
-                          Processing
-                        </span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Progress bar */}
-              <div className="mb-4">
-                <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-[9px] uppercase tracking-[0.15em] text-slate-500 font-semibold">
-                    Overall Progress
-                  </span>
-                  <span className="text-[11px] font-bold text-teal-400 tabular-nums">
-                    {Math.round(analysisProgress)}%
-                  </span>
-                </div>
-                <div className="w-full h-1.5 bg-white/5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 rounded-full transition-all duration-300"
-                    style={{ width: `${analysisProgress}%` }}
-                  />
-                </div>
-              </div>
+            /* ─── INLINE ANALYSIS VIEW — shared component ─── */
+            <>
+              <AnalysisSteps
+                steps={feedbackSteps}
+                variant="inline"
+                onComplete={handleAnalysisComplete}
+              />
 
               {/* Feedback requested badge */}
-              <div className="bg-white/[0.04] border border-white/10 rounded-xl p-3 flex items-center gap-2">
-                <div className="w-7 h-7 rounded-full bg-teal-500/15 flex items-center justify-center shrink-0">
-                  <MessageSquare className="w-3.5 h-3.5 text-teal-400" />
+              <div className="px-4 pb-4">
+                <div className="bg-white/[0.04] border border-white/10 rounded-xl p-3 flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-full bg-teal-500/15 flex items-center justify-center shrink-0">
+                    <MessageSquare className="w-3.5 h-3.5 text-teal-400" />
+                  </div>
+                  <span className="text-[11px] text-slate-300 font-medium">
+                    Feedback Requested
+                  </span>
                 </div>
-                <span className="text-[11px] text-slate-300 font-medium">
-                  Feedback Requested
-                </span>
               </div>
-            </div>
+            </>
           ) : (
             /* ─── NORMAL VIEW: PARTICIPANTS ─── */
             <div className="flex-1 flex flex-col items-center justify-center gap-6 p-4">

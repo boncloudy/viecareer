@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   codingProblem,
@@ -21,25 +21,19 @@ import {
   TrendingUp,
   Code,
   BookOpen,
-  Check,
-  X,
-  ChevronDown,
-  Trophy,
   Target,
   Zap,
   BarChart3,
   LogOut,
+  Trophy,
 } from "lucide-react";
-import dynamic from "next/dynamic";
 
-const MonacoEditor = dynamic(() => import("@monaco-editor/react"), {
-  ssr: false,
-  loading: () => (
-    <div className="w-full h-full bg-[#1E1E2E] flex items-center justify-center">
-      <div className="animate-spin w-8 h-8 border-4 border-teal-500 border-t-transparent rounded-full" />
-    </div>
-  ),
-});
+// Shared components
+import CodeEditor from "@/components/coding/code-editor";
+import TestCasePanel from "@/components/coding/test-case-panel";
+import ScoreRing from "@/components/coding/score-ring";
+import SubScoreBars from "@/components/coding/sub-score-bars";
+import EndInterviewModal from "@/components/coding/end-interview-modal";
 
 type AnalysisTab = "correctness" | "optimization" | "learning" | "solution";
 
@@ -49,41 +43,6 @@ export default function CodingResultsPage() {
   const [activeTestCase, setActiveTestCase] = useState(0);
   const [showTestPanel, setShowTestPanel] = useState(true);
   const [showEndConfirm, setShowEndConfirm] = useState(false);
-  const [animatedScore, setAnimatedScore] = useState(0);
-  const [animatedSubs, setAnimatedSubs] = useState(
-    codingSubScores.map(() => 0)
-  );
-
-  // Animate overall score
-  useEffect(() => {
-    const target = codingOverallScore;
-    const duration = 1400;
-    const startTime = Date.now();
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setAnimatedScore(Math.round(eased * target));
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }, []);
-
-  // Animate sub-scores
-  useEffect(() => {
-    const duration = 1600;
-    const startTime = Date.now();
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setAnimatedSubs(
-        codingSubScores.map((s) => Math.round(eased * s.value))
-      );
-      if (progress < 1) requestAnimationFrame(animate);
-    };
-    requestAnimationFrame(animate);
-  }, []);
 
   const analysisTabs: { key: AnalysisTab; label: string; icon: React.ReactNode }[] = [
     { key: "correctness", label: "Correctness", icon: <Target className="w-3.5 h-3.5" /> },
@@ -91,12 +50,6 @@ export default function CodingResultsPage() {
     { key: "learning", label: "Learning", icon: <BookOpen className="w-3.5 h-3.5" /> },
     { key: "solution", label: "Solution", icon: <Code className="w-3.5 h-3.5" /> },
   ];
-
-  // Score ring SVG config
-  const radius = 52;
-  const circumference = 2 * Math.PI * radius;
-  const strokeDashoffset =
-    circumference - (animatedScore / 100) * circumference;
 
   return (
     <div className="h-screen bg-[#0F172A] text-white flex flex-col overflow-hidden">
@@ -147,88 +100,21 @@ export default function CodingResultsPage() {
             <span className="ml-2">Submitted solution</span>
           </div>
           <div className="flex-1 min-h-0">
-            <MonacoEditor
-              height="100%"
-              language="python"
-              theme="vs-dark"
+            <CodeEditor
               value={codingProblem.defaultCode}
-              options={{
-                readOnly: true,
-                fontSize: 13,
-                fontFamily: "'Fira Code', 'Cascadia Code', monospace",
-                minimap: { enabled: false },
-                padding: { top: 16 },
-                scrollBeyondLastLine: false,
-                lineNumbers: "on",
-                renderLineHighlight: "none",
-                automaticLayout: true,
-              }}
+              language="python"
+              readOnly
             />
           </div>
 
-          {/* Test Results Panel (bottom of left side) */}
+          {/* Test Results Panel */}
           {showTestPanel && (
-            <div className="border-t border-white/10 bg-[#131A2B] shrink-0">
-              <div className="flex items-center justify-between px-4 py-1.5 border-b border-white/5">
-                <div className="flex items-center gap-1">
-                  {codingTestCases.map((tc, i) => (
-                    <button
-                      key={tc.id}
-                      onClick={() => setActiveTestCase(i)}
-                      className={`flex items-center gap-1 px-2.5 py-1 rounded text-[11px] transition-colors ${
-                        i === activeTestCase
-                          ? "bg-white/10 text-white"
-                          : "text-slate-500 hover:text-slate-300"
-                      }`}
-                    >
-                      {tc.passed ? (
-                        <Check className="w-3 h-3 text-green-400" />
-                      ) : (
-                        <X className="w-3 h-3 text-red-400" />
-                      )}
-                      {tc.label}
-                    </button>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2 text-[10px]">
-                  <span className="text-green-400 font-medium">
-                    5/5 Passed
-                  </span>
-                  <button
-                    onClick={() => setShowTestPanel(false)}
-                    className="text-slate-500 hover:text-slate-300"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              </div>
-              <div className="px-4 py-2.5 grid grid-cols-3 gap-4 text-xs">
-                <div>
-                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block mb-1">
-                    Input
-                  </span>
-                  <code className="text-slate-300 font-mono text-[11px]">
-                    {codingTestCases[activeTestCase]?.input}
-                  </code>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block mb-1">
-                    Expected
-                  </span>
-                  <code className="text-teal-300 font-mono text-[11px]">
-                    {codingTestCases[activeTestCase]?.expected}
-                  </code>
-                </div>
-                <div>
-                  <span className="text-[10px] uppercase tracking-wider text-slate-500 font-semibold block mb-1">
-                    Output
-                  </span>
-                  <code className="text-green-400 font-mono text-[11px]">
-                    {codingTestCases[activeTestCase]?.output}
-                  </code>
-                </div>
-              </div>
-            </div>
+            <TestCasePanel
+              testCases={codingTestCases}
+              activeIndex={activeTestCase}
+              onSelect={setActiveTestCase}
+              onClose={() => setShowTestPanel(false)}
+            />
           )}
         </div>
 
@@ -257,71 +143,11 @@ export default function CodingResultsPage() {
             {/* Overall Score & Sub-scores */}
             <div className="bg-white/[0.03] border border-white/5 rounded-2xl p-6">
               <div className="flex items-center gap-8">
-                {/* Score Ring */}
-                <div className="relative shrink-0">
-                  <svg
-                    width="130"
-                    height="130"
-                    className="transform -rotate-90"
-                  >
-                    <circle
-                      cx="65"
-                      cy="65"
-                      r={radius}
-                      fill="none"
-                      stroke="rgba(255,255,255,0.05)"
-                      strokeWidth="8"
-                    />
-                    <circle
-                      cx="65"
-                      cy="65"
-                      r={radius}
-                      fill="none"
-                      stroke="#14B8A6"
-                      strokeWidth="8"
-                      strokeLinecap="round"
-                      strokeDasharray={circumference}
-                      strokeDashoffset={strokeDashoffset}
-                      className="transition-all duration-1000 ease-out"
-                    />
-                  </svg>
-                  <div className="absolute inset-0 flex flex-col items-center justify-center">
-                    <span className="text-3xl font-black text-white tabular-nums">
-                      {animatedScore}
-                    </span>
-                    <span className="text-[10px] text-teal-400 font-semibold uppercase tracking-wider">
-                      {codingOverallLabel}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Sub-scores */}
-                <div className="flex-1 space-y-3">
-                  {codingSubScores.map((score, i) => (
-                    <div key={score.label} className="space-y-1">
-                      <div className="flex items-center justify-between text-xs">
-                        <span className="text-slate-300 font-medium">
-                          {score.label}
-                        </span>
-                        <span
-                          className="font-bold tabular-nums"
-                          style={{ color: score.color }}
-                        >
-                          {animatedSubs[i]}/{score.max}
-                        </span>
-                      </div>
-                      <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                        <div
-                          className="h-full rounded-full transition-all duration-1000 ease-out"
-                          style={{
-                            width: `${animatedSubs[i]}%`,
-                            backgroundColor: score.color,
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <ScoreRing
+                  score={codingOverallScore}
+                  label={codingOverallLabel}
+                />
+                <SubScoreBars scores={codingSubScores} />
               </div>
             </div>
 
@@ -609,35 +435,11 @@ export default function CodingResultsPage() {
       </div>
 
       {/* End Interview Confirmation Modal */}
-      {showEndConfirm && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-[#1E293B] border border-white/10 rounded-2xl p-6 max-w-sm w-full mx-4 shadow-2xl animate-fade-in-up">
-            <div className="flex items-center justify-center w-12 h-12 bg-red-500/15 rounded-xl mx-auto mb-4">
-              <LogOut className="w-6 h-6 text-red-400" />
-            </div>
-            <h3 className="text-lg font-bold text-white text-center mb-2">
-              End Interview?
-            </h3>
-            <p className="text-sm text-slate-400 text-center mb-6 leading-relaxed">
-              This will finalize your session and generate a comprehensive performance report. You won&apos;t be able to make further changes.
-            </p>
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => setShowEndConfirm(false)}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-medium text-slate-300 bg-white/5 hover:bg-white/10 border border-white/10 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => router.push("/loading")}
-                className="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold text-white bg-red-500 hover:bg-red-600 transition-colors shadow-lg shadow-red-500/25"
-              >
-                End & View Report
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <EndInterviewModal
+        open={showEndConfirm}
+        onClose={() => setShowEndConfirm(false)}
+        onConfirm={() => router.push("/loading")}
+      />
     </div>
   );
 }
