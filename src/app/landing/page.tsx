@@ -3,12 +3,12 @@
 import React from "react";
 import Link from "next/link";
 import { ArrowRight, PlayCircle, Target, BarChart3, Bot, Sparkles } from "lucide-react";
-import { TopNavbar } from "@/components/top-navbar"; 
+import { TopNavbar } from "@/components/top-navbar";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 overflow-hidden font-sans relative">
-      
+
       {/* Announcement Bar*/}
       <div className="relative z-[60] bg-teal-50 border-b border-teal-100 backdrop-blur-md">
         <div className="max-w-7xl mx-auto py-2.5 px-6 md:px-12 flex items-center justify-between text-[13px]">
@@ -26,7 +26,7 @@ export default function LandingPage() {
 
       {/* TopNavbar */}
       <TopNavbar />
-      
+
       {/* --- Background Effects --- */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-teal-100/50 blur-[120px] rounded-full pointer-events-none opacity-60" />
 
@@ -40,18 +40,18 @@ export default function LandingPage() {
             </span>
             VieCareer 1.0 is Live
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-black text-slate-900 tracking-tight leading-[1.1]">
             Master the Interview. <br className="hidden md:block" />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-blue-600">
               Land Your Dream Role.
             </span>
           </h1>
-          
+
           <p className="text-lg md:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Elevate your career readiness with AI-powered mock interviews, real-time gap analysis, and personalized learning roadmaps.
           </p>
-          
+
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link href="/register" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-teal-500 hover:bg-teal-600 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-teal-500/20 transition-all active:scale-95">
               Start Free Trial <ArrowRight className="w-5 h-5" />

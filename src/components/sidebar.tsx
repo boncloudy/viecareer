@@ -294,7 +294,7 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 h-screen w-[220px] bg-[#0F172A] text-white flex flex-col z-50">
       {/* Logo */}
       <div className="p-5 pb-8">
-        <div className="flex items-center gap-2">
+        <Link href="/landing" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
@@ -304,7 +304,7 @@ export function Sidebar() {
               Job Readiness
             </p>
           </div>
-        </div>
+        </Link>
       </div>
 
       {/* Navigation */}
