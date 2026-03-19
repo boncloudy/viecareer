@@ -291,3 +291,20 @@ export const aiLibraryResources = [
   { title: "The STAR Method Handbook", type: "PDF Guide", detail: "12 Pages" },
   { title: "System Design Interview Vol. 1", type: "Interactive Course", detail: "6 Modules" },
 ];
+
+// --- Admin Dashboard Data ---
+export const adminKPIs = [
+  { title: "Total Users", value: "2,845", trend: "+12.5%", isPositive: true },
+  { title: "Active Sessions", value: "842", trend: "+5.2%", isPositive: true },
+  { title: "Monthly Revenue", value: "125,400,000 ₫", trend: "+15.3%", isPositive: true },
+  { title: "Suspended Accounts", value: "12", trend: "-2.1%", isPositive: false },
+];
+
+export const adminRevenueData = [
+  { month: "Jan", revenue: 45000000 },
+  { month: "Feb", revenue: 52000000 },
+  { month: "Mar", revenue: 48000000 },
+  { month: "Apr", revenue: 70000000 },
+  { month: "May", revenue: 95000000 },
+  { month: "Jun", revenue: 125400000 },
+];
