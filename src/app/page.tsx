@@ -7,6 +7,21 @@ import { ArrowRight, PlayCircle, Target, BarChart3, Bot, Sparkles } from "lucide
 export default function LandingPage() {
   return (
     <div className="min-h-screen bg-[#020617] text-slate-200 overflow-hidden font-sans relative">
+      {/* Announcement Bar */}
+      <div className="relative z-50 bg-gradient-to-r from-teal-500/20 via-teal-500/40 to-teal-500/20 border-b border-teal-500/30 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto py-2.5 px-6 md:px-12 flex items-center justify-between text-[13px]">
+          <div className="flex items-center gap-3">
+            <span className="bg-teal-500 text-[#020617] text-[10px] font-black px-2 py-0.5 rounded uppercase tracking-wider">New</span>
+            <p className="font-bold text-white tracking-tight">
+              VieCareer v1.0 is officially live! <span className="hidden sm:inline text-teal-300 ml-1">— Get started for free today.</span>
+            </p>
+          </div>
+          <button className="text-slate-400 hover:text-white transition-colors">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+          </button>
+        </div>
+      </div>
+      
       {/* --- Background Effects --- */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-teal-500/20 blur-[120px] rounded-full pointer-events-none" />
       <div className="absolute top-1/3 -left-40 w-[400px] h-[400px] bg-blue-600/10 blur-[100px] rounded-full pointer-events-none" />
