@@ -295,7 +295,7 @@ export function Sidebar() {
     <aside className="fixed left-0 top-0 h-screen w-[220px] bg-[#0F172A] text-white flex flex-col z-50">
       {/* Logo */}
       <div className="p-5 pb-8">
-        <Link href="/landing" className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
             <Sparkles className="w-4 h-4 text-white" />
           </div>
@@ -352,7 +352,7 @@ export function Sidebar() {
 
       {/* Log Out */}
       <button
-        onClick={() => router.push("/landing")}
+        onClick={() => router.push("/")}
         className="mt-4 w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-red-400 transition-all duration-200"
       >
         <LogOut className="w-5 h-5" />

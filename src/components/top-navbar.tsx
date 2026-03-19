@@ -22,7 +22,7 @@ export function TopNavbar({ extraLinks = [] }: TopNavbarProps) {
   const allLinks = [...navLinks, ...extraLinks];
 
   const handleLogout = () => {
-    router.push("/landing");
+    router.push("/");
   };
 
   return (

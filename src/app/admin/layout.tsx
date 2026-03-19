@@ -83,7 +83,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               All services online
             </p>
             <button
-              onClick={() => router.push("/landing")}
+              onClick={() => router.push("/")}
               className="mt-3 w-full flex items-center justify-center gap-2 bg-white/10 hover:bg-rose-500 hover:text-white text-slate-300 text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
             >
               <LogOut className="w-3 h-3" />
