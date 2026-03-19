@@ -11,15 +11,12 @@ export default function LoginPage() {
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // Cách lấy giá trị an toàn trong TypeScript
     const formData = new FormData(e.currentTarget);
     const email = formData.get("email") as string;
 
     if (email.includes("admin")) {
-      // Dẫn thẳng sang trang Admin
       router.push("/admin");
     } else {
-      // Dẫn sang Dashboard của User
       router.push("/dashboard");
     }
   };
