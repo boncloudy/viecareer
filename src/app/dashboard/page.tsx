@@ -7,7 +7,7 @@ import { CircularScore } from "@/components/circular-score";
 import { RadarChartComponent } from "@/components/radar-chart";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { jdiScore, dashboardRadarData, upcomingMilestones } from "@/lib/mock-data";
+import { jriScore, dashboardRadarData, upcomingMilestones } from "@/lib/mock-data";
 import { Bell, PlayCircle, ChevronRight, Target, BarChart3, Sparkles } from "lucide-react";
 
 export default function DashboardPage() {
@@ -37,13 +37,13 @@ export default function DashboardPage() {
 
         <main className="flex-1 p-8 max-w-7xl mx-auto w-full space-y-8">
           
-          {/* Section 1: JDI Score Card */}
+          {/* Section 1: JRI Score Card */}
           <Card className="p-8 border border-slate-200 shadow-sm rounded-3xl bg-white">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
               <div className="space-y-6 text-center lg:text-left">
                 <div className="space-y-2">
                   <h2 className="text-xs font-bold text-teal-600 uppercase tracking-widest">Job Readiness Index</h2>
-                  <p className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Your JDI: {jdiScore}%</p>
+                  <p className="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight">Your JRI: {jriScore}%</p>
                 </div>
                 <p className="text-slate-600 text-base leading-relaxed max-w-lg mx-auto lg:mx-0">
                   You are approaching the <span className="text-slate-900 font-semibold">Intern Frontend Developer</span> threshold. 
@@ -63,7 +63,7 @@ export default function DashboardPage() {
               </div>
               <div className="flex justify-center lg:justify-end">
                 <div className="bg-slate-50 p-6 rounded-full  border-slate-100 shadow-inner">
-                  <CircularScore score={jdiScore} size={180} strokeWidth={16} color="#0F172A" />
+                  <CircularScore score={jriScore} size={180} strokeWidth={16} color="#0F172A" />
                 </div>
               </div>
             </div>

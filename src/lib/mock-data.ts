@@ -65,8 +65,8 @@ export const jobRequirements: JobRequirements = {
 export const atsMatchScore = 72;
 
 // ---------- JDI Score Data ----------
-export const jdiScore = 75;
-export const finalJdiScore = 82;
+export const jriScore = 75;
+export const finaljriScore = 82;
 
 // ---------- Radar Chart Data (Dashboard) ----------
 export const dashboardRadarData: RadarDataPoint[] = [
