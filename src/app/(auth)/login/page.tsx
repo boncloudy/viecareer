@@ -3,8 +3,26 @@
 import React from "react";
 import Link from "next/link";
 import { Sparkles, Mail, Lock, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
+  const router = useRouter();
+
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    // Cách lấy giá trị an toàn trong TypeScript
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+
+    if (email.includes("admin")) {
+      // Dẫn thẳng sang trang Admin
+      router.push("/admin");
+    } else {
+      // Dẫn sang Dashboard của User
+      router.push("/dashboard");
+    }
+  };
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -27,7 +45,7 @@ export default function LoginPage() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow-sm border border-slate-200 sm:rounded-[2rem] sm:px-10">
-          <form className="space-y-6">
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
               <label className="block text-sm font-bold text-slate-700 mb-2">
                 Email address
@@ -37,7 +55,9 @@ export default function LoginPage() {
                   <Mail className="h-5 w-5 text-slate-400" />
                 </div>
                 <input
+                  name="email"
                   type="email"
+                  required
                   placeholder="name@company.com"
                   className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm transition-all"
                 />
@@ -53,6 +73,7 @@ export default function LoginPage() {
                   <Lock className="h-5 w-5 text-slate-400" />
                 </div>
                 <input
+                  name="password"
                   type="password"
                   placeholder="••••••••"
                   className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm transition-all"
