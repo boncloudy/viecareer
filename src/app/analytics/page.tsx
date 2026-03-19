@@ -42,7 +42,7 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F3F3F3]">
+    <div className="min-h-screen bg-white">
       <TopNavbar />
 
       <main className="max-w-5xl mx-auto px-6 py-10">

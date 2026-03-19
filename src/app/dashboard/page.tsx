@@ -14,7 +14,7 @@ export default function DashboardPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#F3F3F3] flex">
+    <div className="min-h-screen bg-white flex">
       <Sidebar />
 
       <div className="flex-1 ml-[220px] flex flex-col min-w-0">

@@ -19,7 +19,7 @@ import { roadmapSteps, aiLibraryResources } from "@/lib/mock-data";
 
 export default function ActionPlanPage() {
   return (
-    <div className="min-h-screen bg-[#F3F3F3] flex">
+    <div className="min-h-screen bg-white flex">
       <Sidebar />
 
       <div className="flex-1 ml-[220px]">

@@ -13,7 +13,7 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen bg-[#F3F3F3] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
                     <Link href="/" className="flex items-center gap-2">

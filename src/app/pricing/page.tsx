@@ -57,7 +57,7 @@ const plans = [
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-white text-[#191A23] py-16 px-6">
+    <div className="min-h-screen bg-white text-[#191A23] py-16 px-6 font-sans">
       <div className="max-w-4xl mx-auto text-center mb-14">
         <span className="inline-block bg-[#5378EF] text-[#191A23] font-semibold px-3 py-1 rounded-lg text-3xl md:text-4xl mb-4">
           Pricing
