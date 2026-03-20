@@ -5,7 +5,7 @@
 import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRouter  } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   LayoutDashboard,
@@ -296,9 +296,11 @@ export function Sidebar() {
       {/* Logo */}
       <div className="p-5 pb-8">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
+          <img
+            src="/logo.png"
+            alt="Logo"
+            className="w-10 h-10 object-contain"
+          />
           <div>
             <h1 className="text-lg font-bold tracking-tight">VieCareer</h1>
             <p className="text-[10px] text-slate-400 uppercase tracking-widest">
@@ -319,10 +321,9 @@ export function Sidebar() {
               className={`
                 flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium
                 transition-all duration-200
-                ${
-                  isActive
-                    ? "bg-white/10 text-white"
-                    : "text-slate-400 hover:bg-white/5 hover:text-white"
+                ${isActive
+                  ? "bg-white/10 text-white"
+                  : "text-slate-400 hover:bg-white/5 hover:text-white"
                 }
               `}
             >
@@ -335,30 +336,30 @@ export function Sidebar() {
 
       {/* Pro Plan Card */}
       <div className="p-4">
-      <div className="bg-white/5 rounded-xl p-4 border border-white/10">
-        <p className="text-[10px] text-teal-400 uppercase tracking-wider font-semibold mb-1">
-          Pro Plan
-        </p>
-        <p className="text-sm font-semibold mb-1">
-          Upgrade for AI Mock Interviews
-        </p>
+        <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+          <p className="text-[10px] text-[#5378EF] uppercase tracking-wider font-semibold mb-1">
+            Pro Plan
+          </p>
+          <p className="text-sm font-semibold mb-1">
+            Upgrade for AI Mock Interviews
+          </p>
+          <button
+            onClick={() => router.push("/pricing")}
+            className="mt-3 w-full bg-[#5378EF] hover:bg-white text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
+          >
+            UPGRADE NOW
+          </button>
+        </div>
+
+        {/* Log Out */}
         <button
-          onClick={() => router.push("/pricing")}
-          className="mt-3 w-full bg-teal-500 hover:bg-teal-600 text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
+          onClick={() => router.push("/")}
+          className="mt-4 w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-red-400 transition-all duration-200"
         >
-          UPGRADE NOW
+          <LogOut className="w-5 h-5" />
+          Log Out
         </button>
       </div>
-
-      {/* Log Out */}
-      <button
-        onClick={() => router.push("/")}
-        className="mt-4 w-full flex items-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:bg-white/5 hover:text-red-400 transition-all duration-200"
-      >
-        <LogOut className="w-5 h-5" />
-        Log Out
-      </button>
-    </div>
     </aside>
   );
 }

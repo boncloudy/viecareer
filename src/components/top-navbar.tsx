@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { Bell, Sparkles, LogOut } from "lucide-react";
+import Image from "next/image";
 
 const navLinks = [
   { label: "Dashboard", href: "/dashboard" },
@@ -30,9 +31,12 @@ export function TopNavbar({ extraLinks = [] }: TopNavbarProps) {
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-teal-500 rounded-lg flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
-          </div>
+          {/* Thay khối div xanh bằng thẻ img */}
+          <img
+            src="/logo.png"
+            alt="VieCareer Logo"
+            className="w-8 h-8 object-contain"
+          />
           <span className="text-lg font-bold text-gray-900">VieCareer</span>
         </Link>
 

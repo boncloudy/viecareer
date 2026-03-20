@@ -62,10 +62,10 @@ export function UploadDropzone({
         relative flex flex-col items-center justify-center w-full p-12
         border-2 border-dashed rounded-xl transition-all duration-300 cursor-pointer
         ${isUploaded
-          ? "border-teal-400 bg-teal-50/50"
+          ? "border-[#5378EF] bg-[#5378EF]/10"
           : isUploading
           ? "border-gray-300 bg-gray-50"
-          : "border-gray-300 hover:border-teal-400 hover:bg-slate-50"
+          : "border-gray-300 hover:border-[#5378EF] hover:bg-[#5378EF]/10"
         }
       `}
     >
@@ -79,15 +79,15 @@ export function UploadDropzone({
       />
 
       {isUploading ? (
-        <Loader2 className="w-12 h-12 text-teal-500 animate-spin mb-4" />
+        <Loader2 className="w-12 h-12 text-[#5378EF] animate-spin mb-4" />
       ) : (
         <div
           className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
-            isUploaded ? "bg-teal-100" : "bg-gray-100"
+            isUploaded ? "bg-[#5378EF]/10" : "bg-gray-100"
           }`}
         >
           {isUploaded ? (
-            <CheckCircle2 className="w-7 h-7 text-teal-600" />
+            <CheckCircle2 className="w-7 h-7 text-[#5378EF]" />
           ) : (
             <Icon className="w-7 h-7 text-gray-500" />
           )}

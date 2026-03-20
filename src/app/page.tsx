@@ -291,9 +291,11 @@ export default function VieCareer() {
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-5 flex items-center justify-between">
           <div className="p-5 pb-8">
             <Link href="/" className="flex items-center gap-2 cursor-pointer">
-              <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-[#0F172A]" />
-              </div>
+              <img
+                src="/logo.png"
+                alt="Logo"
+                className="w-10 h-10 object-contain"
+              />
               <div>
                 <h1 className="text-lg font-bold tracking-tight">VieCareer</h1>
                 <p className="text-[10px] text-teal-400 uppercase tracking-widest">
