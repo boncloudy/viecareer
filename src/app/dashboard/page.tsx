@@ -9,6 +9,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { jriScore, dashboardRadarData, upcomingMilestones } from "@/lib/mock-data";
 import { Bell, PlayCircle, ChevronRight, Target, BarChart3, Sparkles } from "lucide-react";
+import { ChatbotBubble } from "@/components/chatbot-bubble";
 
 export default function DashboardPage() {
   const router = useRouter();
@@ -121,7 +122,9 @@ export default function DashboardPage() {
                   </Card>
                 ))}
               </div>
-              <Button variant="ghost" className="w-full text-[#5378EF] font-semibold text-sm h-12 rounded-full hover:bg-[#5378EF]/10 hover:text-[#5378EF] transition-colors mt-2">
+              <Button variant="ghost" className="w-full text-[#5378EF] font-semibold text-sm h-12 rounded-full hover:bg-[#5378EF]/10 hover:text-[#5378EF] transition-colors mt-2" onClick={() => router.push("/action-plan")}
+>
+              
                 View Full Roadmap
               </Button>
             </div>
@@ -129,6 +132,8 @@ export default function DashboardPage() {
 
         </main>
       </div>
+
+      <ChatbotBubble />
     </div>
   );
 }

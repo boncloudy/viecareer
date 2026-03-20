@@ -307,7 +307,7 @@ export default function VieCareer() {
             {NAV_LINKS.map((link) => (
               <a
                 key={link}
-                href={`#${link.toLowerCase().replace(/\s/g, "-")}`}
+                href={link === "Pricing" ? "/pricing" : `#${link.toLowerCase().replace(/\s/g, "-")}`}
                 className="hover:underline underline-offset-4 transition-colors"
               >
                 {link}
@@ -650,15 +650,15 @@ export default function VieCareer() {
       <footer className="bg-[#191A23] rounded-t-3xl text-white">
         <div className="max-w-7xl mx-auto px-6 md:px-12 py-12">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 bg-white rounded-full flex items-center justify-center">
-                <span className="text-[#191A23] font-black text-xs">★</span>
+            <div className="p-5 pb-8">
+              <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
+                <Sparkles className="w-4 h-4 text-[#0F172A]" />
               </div>
               <span className="text-lg font-bold">VieCareer</span>
             </div>
             <nav className="flex flex-wrap gap-6 text-sm text-white/70 underline underline-offset-4">
               {NAV_LINKS.map((link) => (
-                <a key={link} href={`#${link.toLowerCase().replace(/\s/g, "-")}`} className="hover:text-white transition-colors">
+                <a key={link} href={link === "Pricing" ? "/pricing" : `#${link.toLowerCase().replace(/\s/g, "-")}`} className="hover:text-white transition-colors">
                   {link}
                 </a>
               ))}

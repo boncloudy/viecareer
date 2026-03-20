@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { AudioWave } from "@/components/audio-wave";
 import { useApp } from "@/lib/app-context";
@@ -17,7 +18,6 @@ import {
   Users,
   MessageSquare,
   Sparkles,
-  User,
   Code2,
   ChevronRight,
 } from "lucide-react";
@@ -131,9 +131,12 @@ export default function InterviewPage() {
           {/* Candidate Video (Main) */}
           <div className="relative w-full flex-1 max-h-[50vh] bg-gradient-to-br from-slate-700 via-slate-600 to-slate-800 rounded-2xl overflow-hidden shadow-2xl">
             <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-32 h-32 rounded-full bg-slate-500/30 flex items-center justify-center">
-                <User className="w-16 h-16 text-white/50" />
-              </div>
+              <Image
+                src="/candidate-avatar.png"
+                alt="Candidate"
+                fill
+                className="object-cover object-top"
+              />
             </div>
             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
             <div className="absolute top-4 right-4">
@@ -144,7 +147,7 @@ export default function InterviewPage() {
               </div>
             </div>
             <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1.5">
-              <User className="w-3.5 h-3.5 text-white/80" />
+              <Users className="w-3.5 h-3.5 text-white/80" />
               <span className="text-sm text-white/90 font-medium">You (Candidate)</span>
             </div>
           </div>
@@ -152,11 +155,12 @@ export default function InterviewPage() {
           {/* AI Interviewer Panel */}
           <div className="flex items-center gap-4">
             <div className="w-56 h-32 bg-slate-800 rounded-xl overflow-hidden border border-white/10 shadow-xl relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center">
-                <div className="w-14 h-14 rounded-full bg-[#5378EF]/20 flex items-center justify-center">
-                  <Sparkles className="w-7 h-7 text-[#5378EF]" />
-                </div>
-              </div>
+              <Image
+                src="/mentor-avatar.png"
+                alt="AI Interviewer"
+                fill
+                className="object-cover object-top"
+              />
               <div className="absolute bottom-2 left-2 right-2 flex items-center gap-2">
                 <AudioWave barCount={8} color="#5378EF" />
                 <span className="text-[10px] font-bold text-[#5378EF] uppercase tracking-wider">
