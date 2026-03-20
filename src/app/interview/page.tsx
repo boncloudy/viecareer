@@ -127,9 +127,9 @@ export default function InterviewPage() {
         </div>
 
         {/* Video Area */}
-        <div className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl gap-4 pt-16">
+        <div className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl gap-4 pt-12">
           {/* Candidate Video (Main) */}
-          <div className="relative w-full flex-1 max-h-[50vh] bg-gradient-to-br from-slate-700 via-slate-600 to-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+          <div className="relative w-full flex-1 max-w-[70vh] max-h-[60vh] bg-gradient-to-br from-slate-700 via-slate-600 to-slate-800 rounded-2xl overflow-hidden shadow-2xl">
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
                 src="/candidate-avatar.png"
