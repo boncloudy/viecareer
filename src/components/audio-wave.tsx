@@ -22,7 +22,7 @@ export function AudioWave({
           style={{
             backgroundColor: color,
             animationDelay: `${i * 0.1}s`,
-            height: `${Math.random() * 100}%`,
+            height: `${[40, 70, 55, 90, 60, 80, 45, 75][i % 8]}%`,
           }}
         />
       ))}

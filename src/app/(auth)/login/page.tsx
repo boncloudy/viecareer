@@ -20,60 +20,66 @@ export default function LoginPage() {
       router.push("/dashboard");
     }
   };
+
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        {/* Logo */}
         <div className="flex justify-center">
-          <div className="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
-            <Sparkles className="w-6 h-6 text-white" />
-          </div>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-teal-400 rounded-lg flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-[#0F172A]" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold tracking-tight text-[#191A23]">VieCareer</h1>
+              <p className="text-[10px] text-teal-500 uppercase tracking-widest">Your Career</p>
+            </div>
+          </Link>
         </div>
-        <h2 className="mt-6 text-center text-3xl font-black text-slate-900 tracking-tight">
+        <h2 className="mt-8 text-center text-3xl font-bold text-[#191A23] tracking-tight">
           Welcome back
         </h2>
-        <p className="mt-2 text-center text-sm text-slate-600">
+        <p className="mt-2 text-center text-sm text-[#191A23]/60">
           Or{" "}
-          <Link href="/register" className="font-bold text-teal-600 hover:text-teal-500 transition-colors">
+          <Link href="/register" className="font-semibold text-[#5378EF] hover:underline underline-offset-4 transition-colors">
             create a new account for free
           </Link>
         </p>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow-sm border border-slate-200 sm:rounded-[2rem] sm:px-10">
+        <div className="bg-white py-8 px-4 border-2 border-[#191A23] shadow-[4px_4px_0_#191A23] rounded-[2rem] sm:px-10">
           <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-[#191A23] mb-2">
                 Email address
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-slate-400" />
+                  <Mail className="h-5 w-5 text-[#191A23]/40" />
                 </div>
                 <input
                   name="email"
                   type="email"
                   required
                   placeholder="name@company.com"
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm transition-all"
+                  className="block w-full pl-10 pr-3 py-3 border-2 border-[#191A23] rounded-xl bg-[#F3F3F3] placeholder-[#191A23]/40 focus:outline-none focus:border-[#5378EF] sm:text-sm transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-slate-700 mb-2">
+              <label className="block text-sm font-semibold text-[#191A23] mb-2">
                 Password
               </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-slate-400" />
+                  <Lock className="h-5 w-5 text-[#191A23]/40" />
                 </div>
                 <input
                   name="password"
                   type="password"
                   placeholder="••••••••"
-                  className="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent sm:text-sm transition-all"
+                  className="block w-full pl-10 pr-3 py-3 border-2 border-[#191A23] rounded-xl bg-[#F3F3F3] placeholder-[#191A23]/40 focus:outline-none focus:border-[#5378EF] sm:text-sm transition-all"
                 />
               </div>
             </div>
@@ -82,15 +88,14 @@ export default function LoginPage() {
               <div className="flex items-center">
                 <input
                   type="checkbox"
-                  className="h-4 w-4 text-teal-600 focus:ring-teal-500 border-slate-300 rounded"
+                  className="h-4 w-4 accent-[#5378EF] border-[#191A23] rounded"
                 />
-                <label className="ml-2 block text-sm text-slate-600">
+                <label className="ml-2 block text-sm text-[#191A23]/70">
                   Remember me
                 </label>
               </div>
-
               <div className="text-sm">
-                <a href="#" className="font-bold text-teal-600 hover:text-teal-500">
+                <a href="#" className="font-semibold text-[#5378EF] hover:underline underline-offset-4">
                   Forgot password?
                 </a>
               </div>
@@ -99,7 +104,7 @@ export default function LoginPage() {
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center items-center gap-2 py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-teal-500 hover:bg-teal-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 transition-all active:scale-[0.98]"
+                className="w-full flex justify-center items-center gap-2 py-3 px-4 rounded-full font-semibold text-sm text-white bg-[#191A23] hover:bg-[#5378EF] transition-colors active:scale-[0.98]"
               >
                 Sign In <ArrowRight className="w-4 h-4" />
               </button>
@@ -109,15 +114,15 @@ export default function LoginPage() {
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-slate-200" />
+                <div className="w-full border-t border-[#191A23]/10" />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-slate-500 font-medium">Or continue with</span>
+                <span className="px-2 bg-white text-[#191A23]/50 font-medium">Or continue with</span>
               </div>
             </div>
 
             <div className="mt-6">
-              <button className="w-full flex justify-center items-center py-3 px-4 border border-slate-200 rounded-xl bg-white text-sm font-bold text-slate-700 hover:bg-slate-50 transition-all">
+              <button className="w-full flex justify-center items-center py-3 px-4 border-2 border-[#191A23] rounded-full bg-white text-sm font-semibold text-[#191A23] hover:bg-[#F3F3F3] transition-all">
                 <img className="h-5 w-5 mr-2" src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" />
                 Google Account
               </button>

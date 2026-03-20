@@ -104,12 +104,14 @@ export default function InterviewSessionsPage() {
       <Card className="p-5 border border-slate-200 shadow-sm rounded-2xl bg-gradient-to-r from-slate-900 to-slate-800 text-white flex items-center justify-between">
         <div>
           <p className="text-[11px] font-bold text-teal-400 uppercase tracking-wider">Avg. Completion Score</p>
-          <p className="text-4xl font-extrabold tracking-tight mt-1">{stats.avgScore}<span className="text-xl font-semibold text-slate-400">/100</span></p>
+          <div className="flex items-center gap-2 mt-1">
+            <Star className="w-6 h-6 text-teal-400 fill-teal-400 shrink-0" />
+            <p className="text-4xl font-extrabold tracking-tight leading-none">
+              {stats.avgScore}<span className="text-xl font-semibold text-slate-400">/100</span>
+            </p>
+          </div>
         </div>
-        <div className="flex flex-col items-end gap-1">
-          <Star className="w-8 h-8 text-teal-400 fill-teal-400" />
-          <p className="text-xs text-slate-400">Based on {stats.completed} sessions</p>
-        </div>
+        <p className="text-xs text-slate-400">Based on {stats.completed} sessions</p>
       </Card>
 
       {/* Table Card */}
