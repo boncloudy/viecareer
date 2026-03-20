@@ -264,7 +264,7 @@ export default function InterviewPage() {
             </button>
             <button className="relative w-8 h-8 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/50 transition-colors">
               <MessageSquare className="w-4 h-4" />
-              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-teal-400 rounded-full border-2 border-[#191A23]" />
+              <span className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 bg-[#5378EF] rounded-full border-2 border-[#191A23]" />
             </button>
           </div>
         </div>
