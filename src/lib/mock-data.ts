@@ -470,3 +470,24 @@ export const adminActivityLogs: ActivityLog[] = [
   { id: "L011", userId: "U003", userName: "Le Thi Hoa", action: "Session Cancelled", detail: "Cancelled UI/UX Designer Interview — Zalo", timestamp: "2026-03-18 18:30:12", ip: "103.82.22.5", type: "Session", avatarInitials: "LH", avatarColor: "bg-purple-500" },
   { id: "L012", userId: "U004", userName: "Pham Van Khoa", action: "Session Completed", detail: "Completed Coding Interview — Score: 88/100", timestamp: "2026-03-16 11:00:44", ip: "113.161.44.12", type: "Session", avatarInitials: "PK", avatarColor: "bg-orange-500" },
 ];
+
+export const MOCK_USER = {
+  id: "u1",
+  fullName: "John Doe",
+  email: "john.doe@example.com",
+  role: "React Developer",
+  avatar: "/candidate-avatar.png",
+  bio: "Passionate Frontend Developer with 3 years of experience in building scalable web applications using React and Next.js.",
+  location: "Ho Chi Minh City, Vietnam",
+  joinedDate: "March 2026",
+  skills: ["React", "Next.js", "TypeScript", "Tailwind CSS", "Node.js"],
+  stats: {
+    interviewsDone: 12,
+    resumeScore: 85,
+    rank: "Silver",
+  },
+  socials: {
+    github: "github.com/johndoe",
+    linkedin: "linkedin.com/in/johndoe",
+  }
+};
