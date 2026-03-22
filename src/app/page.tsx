@@ -298,7 +298,7 @@ export default function VieCareer() {
               />
               <div>
                 <h1 className="text-lg font-bold tracking-tight">VieCareer</h1>
-                <p className="text-[10px] text-teal-400 uppercase tracking-widest">
+                <p className="text-[10px] text-[#5378EF] uppercase tracking-widest">
                   Your Career
                 </p>
               </div>

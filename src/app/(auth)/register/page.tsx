@@ -16,13 +16,17 @@ export default function RegisterPage() {
         <div className="min-h-screen bg-white flex flex-col justify-center py-12 sm:px-6 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
-                    <Link href="/" className="flex items-center gap-2">
-                        <div className="w-10 h-10 bg-teal-400 rounded-lg flex items-center justify-center">
-                            <Sparkles className="w-5 h-5 text-[#0F172A]" />
-                        </div>
+                    <Link href="/" className="flex items-center gap-2 cursor-pointer">
+                        <img
+                            src="/logo.png"
+                            alt="Logo"
+                            className="w-10 h-10 object-contain"
+                        />
                         <div>
-                            <h1 className="text-lg font-bold tracking-tight text-[#191A23]">VieCareer</h1>
-                            <p className="text-[10px] text-teal-500 uppercase tracking-widest">Your Career</p>
+                            <h1 className="text-lg font-bold tracking-tight">VieCareer</h1>
+                            <p className="text-[10px] text-[#5378EF] uppercase tracking-widest">
+                                Your Career
+                            </p>
                         </div>
                     </Link>
                 </div>

@@ -88,8 +88,12 @@ export default function InterviewPage() {
       {/* Header */}
       <header className="flex items-center justify-between px-6 py-3 border-b border-white/10 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-[#5378EF] rounded-lg flex items-center justify-center">
-            <Sparkles className="w-4 h-4 text-white" />
+          <div className="w-8 h-8  rounded-lg flex items-center justify-center">
+            <img
+            src="/logo.png"
+            alt="VieCareer Logo"
+            className="w-8 h-8 object-contain"
+          />
           </div>
           <span className="text-lg font-bold">VieCareer</span>
           <span className="text-[#5378EF] text-sm font-semibold ml-1">
