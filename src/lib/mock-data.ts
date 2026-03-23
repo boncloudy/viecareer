@@ -471,6 +471,64 @@ export const adminActivityLogs: ActivityLog[] = [
   { id: "L012", userId: "U004", userName: "Pham Van Khoa", action: "Session Completed", detail: "Completed Coding Interview — Score: 88/100", timestamp: "2026-03-16 11:00:44", ip: "113.161.44.12", type: "Session", avatarInitials: "PK", avatarColor: "bg-orange-500" },
 ];
 
+// --- Profile Sidebar Data ---
+export interface SkillProgress {
+  name: string;
+  progress: number;
+  stage: "Beginner" | "Intermediate" | "Advanced";
+  trend: "up" | "stable";
+}
+
+export interface RoadmapStep {
+  title: string;
+  status: "completed" | "in-progress" | "planned";
+}
+
+export interface LearningGoal {
+  targetRole: string;
+  matchPercent: number;
+  roadmap: RoadmapStep[];
+}
+
+export interface ProfileActivityItem {
+  action: string;
+  detail: string;
+  time: string;
+  type: "session" | "resource" | "milestone";
+}
+
+export const profileSkillProgress: SkillProgress[] = [
+  { name: "TypeScript", progress: 72, stage: "Intermediate", trend: "up" },
+  { name: "System Design", progress: 40, stage: "Beginner", trend: "up" },
+  { name: "React Advanced", progress: 85, stage: "Advanced", trend: "stable" },
+  { name: "Node.js", progress: 58, stage: "Intermediate", trend: "up" },
+];
+
+export const profileLearningGoal: LearningGoal = {
+  targetRole: "Senior Frontend Engineer",
+  matchPercent: 68,
+  roadmap: [
+    { title: "React Fundamentals", status: "completed" },
+    { title: "TypeScript Mastery", status: "in-progress" },
+    { title: "System Design Basics", status: "in-progress" },
+    { title: "Performance Optimization", status: "planned" },
+    { title: "Team Leadership Skills", status: "planned" },
+  ],
+};
+
+export const profileRecentActivity: ProfileActivityItem[] = [
+  { action: "Completed Interview", detail: "Technical Round — Score 85/100", time: "2 hours ago", type: "session" },
+  { action: "Read Article", detail: "Advanced React Patterns", time: "Yesterday", type: "resource" },
+  { action: "Milestone Reached", detail: "10 Interviews Completed", time: "3 days ago", type: "milestone" },
+  { action: "Started Module", detail: "TypeScript Generics & Utility Types", time: "4 days ago", type: "resource" },
+];
+
+export const profileNextSteps = [
+  "Complete the TypeScript Advanced module",
+  "Schedule your next mock interview",
+  "Review System Design fundamentals",
+];
+
 export const MOCK_USER = {
   id: "u1",
   fullName: "John Doe",
