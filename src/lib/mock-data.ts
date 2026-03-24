@@ -381,6 +381,11 @@ export const adminRevenueData = [
 export type UserStatus = "Active" | "Suspended" | "Pending";
 export type UserPlan = "Free" | "Pro" | "Enterprise";
 
+export interface AppliedJob {
+  title: string;
+  company: string;
+  status: "Applied" | "Interviewing" | "Rejected" | "Offered";
+}
 export interface AdminUser {
   id: string;
   name: string;
@@ -393,19 +398,68 @@ export interface AdminUser {
   totalSessions: number;
   avatarInitials: string;
   avatarColor: string;
+  birthYear: number;
+  university: string;
+  skills: string[];
+  targetProfile: string; 
+  quotaUsed: number;
+  quotaTotal: number;
+  rateLimit: string;
+  notifications: string[]; 
+  appliedJobs: AppliedJob[];
 }
 
 export const adminUsers: AdminUser[] = [
-  { id: "U001", name: "Nguyen Thi Lan", email: "lan.nguyen@email.com", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-01-15", lastActive: "2 mins ago", totalSessions: 24, avatarInitials: "NL", avatarColor: "bg-teal-500" },
-  { id: "U002", name: "Tran Minh Duc", email: "duc.tran@fpt.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-02-03", lastActive: "1 hour ago", totalSessions: 8, avatarInitials: "TD", avatarColor: "bg-blue-500" },
-  { id: "U003", name: "Le Thi Hoa", email: "hoa.le@company.vn", role: "Job Seeker", status: "Pending", plan: "Free", joinDate: "2025-03-10", lastActive: "3 days ago", totalSessions: 2, avatarInitials: "LH", avatarColor: "bg-purple-500" },
-  { id: "U004", name: "Pham Van Khoa", email: "khoa.pham@gmail.com", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-11-20", lastActive: "5 mins ago", totalSessions: 57, avatarInitials: "PK", avatarColor: "bg-orange-500" },
-  { id: "U005", name: "Vo Thi Mai", email: "mai.vo@tech.io", role: "Student", status: "Suspended", plan: "Pro", joinDate: "2025-01-30", lastActive: "12 days ago", totalSessions: 15, avatarInitials: "VM", avatarColor: "bg-rose-500" },
-  { id: "U006", name: "Hoang Duc Nam", email: "nam.hoang@dev.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-05", lastActive: "30 mins ago", totalSessions: 31, avatarInitials: "HN", avatarColor: "bg-cyan-500" },
-  { id: "U007", name: "Bui Thi Thu", email: "thu.bui@student.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-03-01", lastActive: "2 hours ago", totalSessions: 6, avatarInitials: "BT", avatarColor: "bg-indigo-500" },
-  { id: "U008", name: "Dang Van Long", email: "long.dang@corp.com", role: "Job Seeker", status: "Suspended", plan: "Free", joinDate: "2025-02-14", lastActive: "20 days ago", totalSessions: 4, avatarInitials: "DL", avatarColor: "bg-amber-500" },
-  { id: "U009", name: "Nguyen Bao Chau", email: "chau.nb@viecviet.vn", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-10-10", lastActive: "Just now", totalSessions: 89, avatarInitials: "NC", avatarColor: "bg-emerald-500" },
-  { id: "U010", name: "Tran Quoc Huy", email: "huy.tq@uet.edu.vn", role: "Student", status: "Pending", plan: "Free", joinDate: "2025-03-18", lastActive: "1 day ago", totalSessions: 1, avatarInitials: "TH", avatarColor: "bg-violet-500" },
+  { 
+    id: "U001", name: "Nguyen Thi Lan", email: "lan.nguyen@email.com", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-01-15", lastActive: "2 mins ago", totalSessions: 24, avatarInitials: "NL", avatarColor: "bg-[#5378EF]",
+    birthYear: 2002, university: "National Economics University (NEU)", skills: ["React", "UI/UX Design", "Figma"], targetProfile: "Frontend Developer", quotaUsed: 15, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Junior Frontend", company: "FPT Software", status: "Interviewing" }, { title: "Web Designer", company: "VNG", status: "Applied" }]
+  },
+  { 
+    id: "U002", name: "Tran Minh Duc", email: "duc.tran@fpt.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-02-03", lastActive: "1 hour ago", totalSessions: 8, avatarInitials: "TD", avatarColor: "bg-blue-500",
+    birthYear: 2004, university: "FPT University", skills: ["Java", "C++", "HTML/CSS"], targetProfile: "Backend Intern", quotaUsed: 8, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: [{ title: "Java Intern", company: "CMC Global", status: "Rejected" }]
+  },
+  { 
+    id: "U003", name: "Le Thi Hoa", email: "hoa.le@company.vn", role: "Job Seeker", status: "Pending", plan: "Free", joinDate: "2025-03-10", lastActive: "3 days ago", totalSessions: 2, avatarInitials: "LH", avatarColor: "bg-purple-500",
+    birthYear: 2001, university: "Hanoi University (HANU)", skills: ["Marketing", "Content Writing"], targetProfile: "Digital Marketer", quotaUsed: 2, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: []
+  },
+  { 
+    id: "U004", name: "Pham Van Khoa", email: "khoa.pham@gmail.com", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-11-20", lastActive: "5 mins ago", totalSessions: 57, avatarInitials: "PK", avatarColor: "bg-orange-500",
+    birthYear: 1998, university: "Bach Khoa University (HUST)", skills: ["Python", "AWS", "Docker", "Kubernetes"], targetProfile: "DevOps Engineer", quotaUsed: 120, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
+    appliedJobs: [{ title: "DevOps Engineer", company: "Viettel Group", status: "Offered" }, { title: "SRE", company: "Grab", status: "Interviewing" }]
+  },
+  { 
+    id: "U005", name: "Vo Thi Mai", email: "mai.vo@tech.io", role: "Student", status: "Suspended", plan: "Pro", joinDate: "2025-01-30", lastActive: "12 days ago", totalSessions: 15, avatarInitials: "VM", avatarColor: "bg-rose-500",
+    birthYear: 2003, university: "University of Science (HCMUS)", skills: ["Data Analysis", "SQL", "R"], targetProfile: "Data Analyst", quotaUsed: 40, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Push"],
+    appliedJobs: [{ title: "DA Intern", company: "Shopee", status: "Rejected" }]
+  },
+  { 
+    id: "U006", name: "Hoang Duc Nam", email: "nam.hoang@dev.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-05", lastActive: "30 mins ago", totalSessions: 31, avatarInitials: "HN", avatarColor: "bg-cyan-500",
+    birthYear: 2000, university: "University of Engineering and Technology (UET)", skills: ["Golang", "Microservices", "Redis"], targetProfile: "Backend Developer", quotaUsed: 22, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Backend Dev", company: "ZaloPay", status: "Interviewing" }]
+  },
+  { 
+    id: "U007", name: "Bui Thi Thu", email: "thu.bui@student.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-03-01", lastActive: "2 hours ago", totalSessions: 6, avatarInitials: "BT", avatarColor: "bg-indigo-500",
+    birthYear: 2005, university: "Foreign Trade University (FTU)", skills: ["English", "Public Speaking", "Sales"], targetProfile: "Business Development Intern", quotaUsed: 9, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: [{ title: "BD Intern", company: "Lazada", status: "Applied" }]
+  },
+  { 
+    id: "U008", name: "Dang Van Long", email: "long.dang@corp.com", role: "Job Seeker", status: "Suspended", plan: "Free", joinDate: "2025-02-14", lastActive: "20 days ago", totalSessions: 4, avatarInitials: "DL", avatarColor: "bg-amber-500",
+    birthYear: 1996, university: "Hanoi University of Industry (HaUI)", skills: ["Manual Testing", "Jira"], targetProfile: "QC Engineer", quotaUsed: 10, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: []
+  },
+  { 
+    id: "U009", name: "Nguyen Bao Chau", email: "chau.nb@viecviet.vn", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-10-10", lastActive: "Just now", totalSessions: 89, avatarInitials: "NC", avatarColor: "bg-emerald-500",
+    birthYear: 1997, university: "RMIT University", skills: ["Project Management", "Agile", "Scrum"], targetProfile: "Product Manager", quotaUsed: 310, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Product Manager", company: "Momo", status: "Offered" }]
+  },
+  { 
+    id: "U010", name: "Tran Quoc Huy", email: "huy.tq@uet.edu.vn", role: "Student", status: "Pending", plan: "Free", joinDate: "2025-03-18", lastActive: "1 day ago", totalSessions: 1, avatarInitials: "TH", avatarColor: "bg-violet-500",
+    birthYear: 2004, university: "University of Engineering and Technology (UET)", skills: ["Machine Learning", "Pytorch"], targetProfile: "AI Engineer Intern", quotaUsed: 1, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Push"],
+    appliedJobs: []
+  },
 ];
 
 // --- Admin Interview Sessions ---
@@ -491,3 +545,4 @@ export const MOCK_USER = {
     linkedin: "linkedin.com/in/johndoe",
   }
 };
+
