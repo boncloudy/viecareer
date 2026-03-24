@@ -76,7 +76,7 @@ export default function AnalyticsPage() {
           {/* JRI Score */}
           <Card className="p-8 text-center border-2 border-[#191A23] shadow-[4px_4px_0_#191A23] rounded-2xl bg-white">
             <h2 className="text-lg font-bold text-[#191A23] mb-6">
-              Job Delivery Index
+              Job Readiness Index
             </h2>
             <CircularScore
               score={finaljriScore}
