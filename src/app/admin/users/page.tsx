@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
-import { adminUsers, AdminUser, UserStatus, UserPlan } from "@/lib/mock-data";
+import { adminUsers, adminUserStats, AdminUser, UserStatus, UserPlan } from "@/lib/mock-data";
 import {
   Search, Filter, Users, UserCheck, UserX, Clock,
   MoreVertical, ShieldOff, Eye, Trash2, ChevronDown,
@@ -181,29 +181,49 @@ function UserDetailsDrawer({ user, onClose }: { user: AdminUser; onClose: () => 
   );
 }
 
+const PAGE_SIZE = 10;
+
+function parseLastActive(value: string): number {
+  if (value === "Just now") return 0;
+  const match = value.match(/^(\d+)\s+(min|hour|day|week|month)s?\s+ago$/);
+  if (!match) return Infinity;
+  const n = parseInt(match[1], 10);
+  const unit = match[2];
+  if (unit === "min") return n;
+  if (unit === "hour") return n * 60;
+  if (unit === "day") return n * 1440;
+  if (unit === "week") return n * 10080;
+  if (unit === "month") return n * 43200;
+  return Infinity;
+}
+
 export default function UsersManagementPage() {
   const [selectedUser, setSelectedUser] = useState<AdminUser | null>(null);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<UserStatus | "All">("All");
   const [planFilter, setPlanFilter] = useState<UserPlan | "All">("All");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const stats = useMemo(() => ({
-    total: adminUsers.length,
-    active: adminUsers.filter((u) => u.status === "Active").length,
-    suspended: adminUsers.filter((u) => u.status === "Suspended").length,
-    pending: adminUsers.filter((u) => u.status === "Pending").length,
-  }), []);
+  const stats = adminUserStats;
 
   const filtered = useMemo(() =>
-    adminUsers.filter((u) => {
-      const q = search.toLowerCase();
-      const matchSearch = !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.id.toLowerCase().includes(q);
-      const matchStatus = statusFilter === "All" || u.status === statusFilter;
-      const matchPlan = planFilter === "All" || u.plan === planFilter;
-      return matchSearch && matchStatus && matchPlan;
-    }),
+    adminUsers
+      .filter((u) => {
+        const q = search.toLowerCase();
+        const matchSearch = !q || u.name.toLowerCase().includes(q) || u.email.toLowerCase().includes(q) || u.id.toLowerCase().includes(q);
+        const matchStatus = statusFilter === "All" || u.status === statusFilter;
+        const matchPlan = planFilter === "All" || u.plan === planFilter;
+        return matchSearch && matchStatus && matchPlan;
+      })
+      .sort((a, b) => parseLastActive(a.lastActive) - parseLastActive(b.lastActive)),
     [search, statusFilter, planFilter]
   );
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
+  // Reset to page 1 when filters change
+  useMemo(() => { setCurrentPage(1); }, [search, statusFilter, planFilter]);
 
   return (
     <div className="space-y-7 relative">
@@ -288,14 +308,14 @@ export default function UsersManagementPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filtered.length === 0 ? (
+              {paged.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-5 py-12 text-center text-slate-400 text-sm">
                     No users match your filters.
                   </td>
                 </tr>
               ) : (
-                filtered.map((user) => (
+                paged.map((user) => (
                   <tr key={user.id} className="hover:bg-slate-50/60 transition-colors group">
                     <td className="px-5 py-3.5">
                       <div className="flex items-center gap-3">
@@ -338,16 +358,34 @@ export default function UsersManagementPage() {
         {/* Footer */}
         <div className="px-5 py-3 border-t border-slate-100 flex items-center justify-between">
           <p className="text-xs text-slate-400">
-            Showing <span className="font-semibold text-slate-600">{filtered.length}</span> of <span className="font-semibold text-slate-600">{adminUsers.length}</span> users
+            Showing <span className="font-semibold text-slate-600">{(currentPage - 1) * PAGE_SIZE + 1}–{Math.min(currentPage * PAGE_SIZE, filtered.length)}</span> of <span className="font-semibold text-slate-600">{filtered.length}</span> users
           </p>
           <div className="flex items-center gap-1">
-            <button className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-40" disabled>
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-40"
+            >
               Previous
             </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-white bg-slate-800 rounded-lg hover:bg-slate-700 transition-colors">
-              1
-            </button>
-            <button className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors">
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  page === currentPage
+                    ? "text-white bg-slate-800 hover:bg-slate-700"
+                    : "text-slate-500 bg-slate-100 hover:bg-slate-200"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-40"
+            >
               Next
             </button>
           </div>
