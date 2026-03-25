@@ -18,7 +18,7 @@ const statusConfig: Record<UserStatus, { label: string; className: string }> = {
 const planConfig: Record<UserPlan, { label: string; className: string }> = {
   Free: { label: "Free", className: "bg-slate-100 text-slate-600" },
   Pro: { label: "Pro", className: "bg-blue-50 text-blue-700" },
-  Enterprise: { label: "Enterprise", className: "bg-purple-50 text-purple-700" },
+  Team: { label: "Team", className: "bg-purple-50 text-purple-700" },
 };
 
 function StatCard({ icon: Icon, label, value, sub, color }: { icon: React.ElementType; label: string; value: string | number; sub?: string; color: string }) {
@@ -266,7 +266,7 @@ export default function UsersManagementPage() {
                 <option value="All">All Plans</option>
                 <option value="Free">Free</option>
                 <option value="Pro">Pro</option>
-                <option value="Enterprise">Enterprise</option>
+                <option value="Team">Team</option>
               </select>
               <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-400 pointer-events-none" />
             </div>

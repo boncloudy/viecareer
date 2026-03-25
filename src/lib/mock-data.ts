@@ -379,7 +379,7 @@ export const adminRevenueData = [
 
 // --- Admin Users Management ---
 export type UserStatus = "Active" | "Suspended" | "Pending";
-export type UserPlan = "Free" | "Pro" | "Enterprise";
+export type UserPlan = "Free" | "Pro" | "Team";
 
 export interface AppliedJob {
   title: string;
@@ -416,7 +416,7 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: [{ title: "Junior Frontend", company: "FPT Software", status: "Interviewing" }, { title: "Web Designer", company: "VNG", status: "Applied" }]
   },
   { 
-    id: "U002", name: "Tran Minh Duc", email: "duc.tran@fpt.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-02-03", lastActive: "1 hour ago", totalSessions: 8, avatarInitials: "TD", avatarColor: "bg-blue-500",
+    id: "U002", name: "Tran Minh Duc", email: "duc.tran@fpt.edu.vn", role: "Student", status: "Active", plan: "Pro", joinDate: "2025-02-03", lastActive: "1 hour ago", totalSessions: 8, avatarInitials: "TD", avatarColor: "bg-blue-500",
     birthYear: 2004, university: "FPT University", skills: ["Java", "C++", "HTML/CSS"], targetProfile: "Backend Intern", quotaUsed: 8, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
     appliedJobs: [{ title: "Java Intern", company: "CMC Global", status: "Rejected" }]
   },
@@ -426,7 +426,7 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: []
   },
   { 
-    id: "U004", name: "Pham Van Khoa", email: "khoa.pham@gmail.com", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-11-20", lastActive: "5 mins ago", totalSessions: 57, avatarInitials: "PK", avatarColor: "bg-orange-500",
+    id: "U004", name: "Pham Van Khoa", email: "khoa.pham@gmail.com", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-11-20", lastActive: "5 mins ago", totalSessions: 57, avatarInitials: "PK", avatarColor: "bg-orange-500",
     birthYear: 1998, university: "Bach Khoa University (HUST)", skills: ["Python", "AWS", "Docker", "Kubernetes"], targetProfile: "DevOps Engineer", quotaUsed: 120, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
     appliedJobs: [{ title: "DevOps Engineer", company: "Viettel Group", status: "Offered" }, { title: "SRE", company: "Grab", status: "Interviewing" }]
   },
@@ -451,7 +451,7 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: []
   },
   { 
-    id: "U009", name: "Nguyen Bao Chau", email: "chau.nb@viecviet.vn", role: "Job Seeker", status: "Active", plan: "Enterprise", joinDate: "2024-10-10", lastActive: "Just now", totalSessions: 89, avatarInitials: "NC", avatarColor: "bg-emerald-500",
+    id: "U009", name: "Nguyen Bao Chau", email: "chau.nb@viecviet.vn", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-10-10", lastActive: "Just now", totalSessions: 89, avatarInitials: "NC", avatarColor: "bg-emerald-500",
     birthYear: 1997, university: "RMIT University", skills: ["Project Management", "Agile", "Scrum"], targetProfile: "Product Manager", quotaUsed: 310, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Product Manager", company: "Momo", status: "Offered" }]
   },
@@ -520,7 +520,7 @@ export const adminActivityLogs: ActivityLog[] = [
   { id: "L007", userId: "U008", userName: "Dang Van Long", action: "User Logout", detail: "Session ended — duration: 12 min", timestamp: "2026-03-19 09:01:15", ip: "118.70.211.33", type: "Auth", avatarInitials: "DL", avatarColor: "bg-amber-500" },
   { id: "L008", userId: "SYSTEM", userName: "System", action: "Backup Completed", detail: "Scheduled daily backup — 847 MB archived", timestamp: "2026-03-19 03:00:00", ip: "Internal", type: "System", avatarInitials: "SY", avatarColor: "bg-slate-500" },
   { id: "L009", userId: "U007", userName: "Bui Thi Thu", action: "Profile Updated", detail: "Updated target position and tech stack", timestamp: "2026-03-18 22:14:30", ip: "1.52.211.99", type: "Account", avatarInitials: "BT", avatarColor: "bg-indigo-500" },
-  { id: "L010", userId: "U009", userName: "Nguyen Bao Chau", action: "Payment Processed", detail: "Enterprise Plan renewal — 799,000 ₫ charged", timestamp: "2026-03-18 20:05:55", ip: "42.117.185.9", type: "Payment", avatarInitials: "NC", avatarColor: "bg-emerald-500" },
+  { id: "L010", userId: "U009", userName: "Nguyen Bao Chau", action: "Payment Processed", detail: "Team Plan renewal — 799,000 ₫ charged", timestamp: "2026-03-18 20:05:55", ip: "42.117.185.9", type: "Payment", avatarInitials: "NC", avatarColor: "bg-emerald-500" },
   { id: "L011", userId: "U003", userName: "Le Thi Hoa", action: "Session Cancelled", detail: "Cancelled UI/UX Designer Interview — Zalo", timestamp: "2026-03-18 18:30:12", ip: "103.82.22.5", type: "Session", avatarInitials: "LH", avatarColor: "bg-purple-500" },
   { id: "L012", userId: "U004", userName: "Pham Van Khoa", action: "Session Completed", detail: "Completed Coding Interview — Score: 88/100", timestamp: "2026-03-16 11:00:44", ip: "113.161.44.12", type: "Session", avatarInitials: "PK", avatarColor: "bg-orange-500" },
 ];
