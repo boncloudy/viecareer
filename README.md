@@ -130,7 +130,7 @@ The entire product follows a single linear flow. Navigation between stages is ha
           │
           └──► /setup       ← Upload CV + JD → AI extraction & ATS match score
                   │
-                  └──► /interview   ← Mock behavioral Q&A (3 questions)
+                  └──► /interview   ← Mock behavioral Q&A (auto scale)
                           │
                           └──► /coding   ← Live coding challenge (Two Sum)
                                   │
