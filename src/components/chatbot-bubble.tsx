@@ -18,7 +18,7 @@ const NUDGES = [
 // ---------------------------------------------------------------------------
 // API config
 // ---------------------------------------------------------------------------
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://backend-s5l3.onrender.com";
+import { API_BASE } from "@/lib/api-config";
 
 // ---------------------------------------------------------------------------
 // Markdown renderer

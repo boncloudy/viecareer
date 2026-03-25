@@ -24,8 +24,7 @@ import {
   Loader2,
 } from "lucide-react";
 
-const API_BASE =
-  process.env.NEXT_PUBLIC_API_URL || "https://backend-s5l3.onrender.com";
+import { API_BASE } from "@/lib/api-config";
 
 const INTERVIEWER_INSTRUCTIONS = `You are a professional AI technical interviewer for VieCareer, conducting a structured interview session.
 
@@ -83,7 +82,7 @@ export default function InterviewPage() {
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [interviewEnded, setInterviewEnded] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const timerValRef = useRef(0); // mirror of timer for use in callbacks
+  const timerValRef = useRef(0);
 
   // Camera & recording state
   const videoElRef = useRef<HTMLVideoElement | null>(null);
@@ -110,6 +109,13 @@ export default function InterviewPage() {
   const startedRef = useRef(false);
   const micStreamRef = useRef<MediaStream | null>(null);
 
+  // Transcript capture refs
+  const currentAgentTextRef = useRef("");
+  const qaStartTimeRef = useRef(0);
+  // Ref to access addCapturedQA without stale closures
+  const addCapturedQARef = useRef(app.addCapturedQA);
+  addCapturedQARef.current = app.addCapturedQA;
+
   // Keep timerValRef in sync
   useEffect(() => { timerValRef.current = timer; }, [timer]);
 
@@ -121,7 +127,7 @@ export default function InterviewPage() {
     };
   }, []);
 
-  // Camera + Recording init
+  // ── Camera init: VIDEO ONLY — no audio to avoid double-mic conflict ──
   useEffect(() => {
     let cancelled = false;
     let stream: MediaStream | null = null;
@@ -130,18 +136,18 @@ export default function InterviewPage() {
       try {
         stream = await navigator.mediaDevices.getUserMedia({
           video: { width: 640, height: 480, facingMode: "user" },
-          audio: true, // include audio so the recording captures voice
+          audio: false, // NO audio — RealtimeSession owns the mic exclusively
         });
         if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
 
         cameraStreamRef.current = stream;
-        // Attach to video element if it's already mounted
         if (videoElRef.current) {
           videoElRef.current.srcObject = stream;
         }
         setCameraReady(true);
 
-        // Start recording
+        // Start recording with video-only for now.
+        // Audio track will be added once RealtimeSession connects and we have the mic.
         const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
           ? "video/webm;codecs=vp9,opus"
           : MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")
@@ -179,31 +185,30 @@ export default function InterviewPage() {
   }, [isVideoOff]);
 
   // ── Core: stop recorder → wait for blob → save → kill camera ──
-  const stopRecordingAndSave = useCallback((): Promise<void> => {
+  const stopRecordingAndSave = useCallback((): Promise<{ url: string; duration: number }> => {
     return new Promise((resolve) => {
-      // Already saved or no recorder
-      if (recordingSavedRef.current) { resolve(); return; }
+      const duration = timerValRef.current;
+      if (recordingSavedRef.current) { resolve({ url: "", duration }); return; }
       recordingSavedRef.current = true;
 
       const recorder = recorderRef.current;
       if (!recorder || recorder.state === "inactive") {
-        // No active recorder — still save duration and kill camera
-        app.setInterviewDuration(timerValRef.current);
+        app.setInterviewDuration(duration);
         killCamera();
-        resolve();
+        resolve({ url: "", duration });
         return;
       }
 
-      // Request any remaining data then stop
       recorder.onstop = () => {
+        let url = "";
         if (chunksRef.current.length > 0) {
           const blob = new Blob(chunksRef.current, { type: recorder.mimeType || "video/webm" });
-          const url = URL.createObjectURL(blob);
+          url = URL.createObjectURL(blob);
           app.setInterviewRecordingUrl(url);
         }
-        app.setInterviewDuration(timerValRef.current);
+        app.setInterviewDuration(duration);
         killCamera();
-        resolve();
+        resolve({ url, duration });
       };
       recorder.stop();
     });
@@ -220,20 +225,16 @@ export default function InterviewPage() {
   };
 
   const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60)
-      .toString()
-      .padStart(2, "0");
+    const m = Math.floor(secs / 60).toString().padStart(2, "0");
     const s = (secs % 60).toString().padStart(2, "0");
     return `${m}:${s}`;
   };
 
-  // --- Realtime Speech Connection (same method as backend/main.html) ---
+  // --- Realtime Speech Connection ---
   const startRealtime = useCallback(async () => {
-    // Prevent duplicate sessions (React Strict Mode double-mounts)
     if (startedRef.current) return;
     startedRef.current = true;
 
-    // Close any leftover session first
     if (sessionRef.current) {
       sessionRef.current.close();
       sessionRef.current = null;
@@ -243,20 +244,17 @@ export default function InterviewPage() {
       setStatus("fetching-token");
       setErrorMsg("");
 
-      // 1. Dynamic import from esm.sh — same as main.html
       const { RealtimeAgent, RealtimeSession } = await import(
         /* webpackIgnore: true */
         // @ts-expect-error — external ESM CDN module, no types available
         "https://esm.sh/@openai/agents/realtime"
       );
 
-      // 2. Create agent with interviewer instructions
       const agent = new RealtimeAgent({
         name: "VieCareer Interviewer",
         instructions: INTERVIEWER_INSTRUCTIONS,
       });
 
-      // 3. Fetch ephemeral token from backend (GET, same as main.html)
       const res = await fetch(`${API_BASE}/realtime-token`);
       const data = await res.json();
       const ephemeralKey = data.value;
@@ -268,24 +266,59 @@ export default function InterviewPage() {
 
       setStatus("connecting");
 
-      // 4. Intercept getUserMedia to capture the mic stream for mute control
+      // Intercept getUserMedia so we can capture the mic stream RealtimeSession creates
       const originalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(
         navigator.mediaDevices
       );
       navigator.mediaDevices.getUserMedia = async (constraints) => {
         const stream = await originalGetUserMedia(constraints);
-        // Store the mic stream so we can mute/unmute its tracks later
         if (
           constraints &&
           typeof constraints === "object" &&
           (constraints as MediaStreamConstraints).audio
         ) {
           micStreamRef.current = stream;
+
+          // ── Merge mic audio into existing recording ──
+          // If we have an active recorder, stop it and restart with audio+video
+          if (
+            cameraStreamRef.current &&
+            recorderRef.current &&
+            recorderRef.current.state !== "inactive"
+          ) {
+            try {
+              // Create a combined stream: video from camera + audio from mic
+              const combinedStream = new MediaStream();
+              for (const vTrack of cameraStreamRef.current.getVideoTracks()) {
+                combinedStream.addTrack(vTrack);
+              }
+              for (const aTrack of stream.getAudioTracks()) {
+                combinedStream.addTrack(aTrack);
+              }
+
+              // Stop current recorder, start new one with combined stream
+              recorderRef.current.stop();
+
+              const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
+                ? "video/webm;codecs=vp9,opus"
+                : MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")
+                ? "video/webm;codecs=vp8,opus"
+                : "video/webm";
+
+              const newRecorder = new MediaRecorder(combinedStream, { mimeType });
+              newRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) chunksRef.current.push(e.data);
+              };
+              newRecorder.start(1000);
+              recorderRef.current = newRecorder;
+            } catch (mergeErr) {
+              console.warn("Could not merge audio into recording:", mergeErr);
+            }
+          }
         }
         return stream;
       };
 
-      // 5. Create session and connect (same as main.html)
       const session = new RealtimeSession(agent);
       sessionRef.current = session;
 
@@ -295,6 +328,62 @@ export default function InterviewPage() {
 
       // Restore original getUserMedia
       navigator.mediaDevices.getUserMedia = originalGetUserMedia;
+
+      // ── Transcript capture: always active ──
+      try {
+        // Agent (interviewer) speech completed — this is the question
+        session.on?.("agent_message", (ev: { text?: string; content?: string }) => {
+          const text = ev.text || ev.content || "";
+          if (text.trim()) {
+            currentAgentTextRef.current = text.trim();
+            qaStartTimeRef.current = timerValRef.current;
+          }
+        });
+
+        // User speech completed — this is the answer
+        session.on?.("user_message", (ev: { text?: string; content?: string }) => {
+          const text = ev.text || ev.content || "";
+          if (text.trim() && currentAgentTextRef.current) {
+            const mins = Math.floor(qaStartTimeRef.current / 60).toString().padStart(2, "0");
+            const secs = (qaStartTimeRef.current % 60).toString().padStart(2, "0");
+            addCapturedQARef.current({
+              question: currentAgentTextRef.current,
+              answer: text.trim(),
+              timestamp: `${mins}:${secs}`,
+            });
+            currentAgentTextRef.current = "";
+          }
+        });
+
+        // Fallback: listen to raw response events
+        session.on?.("response.done", (ev: { output?: Array<{ role?: string; content?: Array<{ text?: string; transcript?: string }> }> }) => {
+          if (ev.output) {
+            for (const item of ev.output) {
+              const text = item.content?.[0]?.text || item.content?.[0]?.transcript || "";
+              if (item.role === "assistant" && text.trim()) {
+                currentAgentTextRef.current = text.trim();
+                qaStartTimeRef.current = timerValRef.current;
+              }
+            }
+          }
+        });
+
+        session.on?.("conversation.item.input_audio_transcription.completed", (ev: { transcript?: string }) => {
+          const text = ev.transcript || "";
+          if (text.trim() && currentAgentTextRef.current) {
+            const mins = Math.floor(qaStartTimeRef.current / 60).toString().padStart(2, "0");
+            const secs = (qaStartTimeRef.current % 60).toString().padStart(2, "0");
+            addCapturedQARef.current({
+              question: currentAgentTextRef.current,
+              answer: text.trim(),
+              timestamp: `${mins}:${secs}`,
+            });
+            currentAgentTextRef.current = "";
+          }
+        });
+      } catch (evErr) {
+        console.warn("Could not attach transcript listeners:", evErr);
+      }
 
       setStatus("connected");
     } catch (err: unknown) {
@@ -310,7 +399,6 @@ export default function InterviewPage() {
       sessionRef.current.close();
       sessionRef.current = null;
     }
-    // Stop all mic tracks to release the microphone
     if (micStreamRef.current) {
       for (const track of micStreamRef.current.getTracks()) {
         track.stop();
@@ -324,8 +412,6 @@ export default function InterviewPage() {
   useEffect(() => {
     startRealtime();
     return () => {
-      // Cleanup on unmount — close session but keep startedRef true
-      // so no second session is created during Strict Mode remount
       if (sessionRef.current) {
         sessionRef.current.close();
         sessionRef.current = null;
@@ -334,30 +420,28 @@ export default function InterviewPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Mute toggle: disable/enable the actual microphone audio tracks
+  // Mute toggle
   const handleToggleMute = useCallback(() => {
     const newMuted = !isMuted;
-
-    // Mute/unmute the captured mic stream tracks directly
     if (micStreamRef.current) {
       for (const track of micStreamRef.current.getAudioTracks()) {
         track.enabled = !newMuted;
       }
     }
-
     setIsMuted(newMuted);
   }, [isMuted]);
+
+  // ── End handlers: never add mock data, loading page handles real scoring ──
 
   const handleEndInterview = useCallback(async () => {
     if (timerRef.current) clearInterval(timerRef.current);
     stopRealtime();
     startedRef.current = false;
 
-    // Save recording, then update state
     await stopRecordingAndSave();
     setCameraReady(false);
     setInterviewEnded(true);
-    app.setQuestionsAnswered(5);
+    app.setQuestionsAnswered(Math.max(app.capturedQA.length, 1));
     app.setInterviewCompleted(true);
   }, [app, stopRealtime, stopRecordingAndSave]);
 
@@ -366,10 +450,9 @@ export default function InterviewPage() {
     stopRealtime();
     startedRef.current = false;
 
-    // Save recording before navigating
     await stopRecordingAndSave();
     setCameraReady(false);
-    app.setQuestionsAnswered(5);
+    app.setQuestionsAnswered(Math.max(app.capturedQA.length, 1));
     app.setInterviewCompleted(true);
     app.setCurrentFlow("coding");
     router.push("/coding");
@@ -383,7 +466,7 @@ export default function InterviewPage() {
     await stopRecordingAndSave();
     setCameraReady(false);
     router.push("/loading");
-  }, [router, stopRealtime, stopRecordingAndSave]);
+  }, [router, app, stopRealtime, stopRecordingAndSave]);
 
   const statusLabel = {
     idle: "Initializing...",
@@ -426,14 +509,13 @@ export default function InterviewPage() {
         </div>
       </header>
 
-      {/* Main Content — full-width video, no chat panel */}
+      {/* Main Content */}
       <main className="flex-1 flex flex-col items-center justify-center px-6 py-4 relative min-h-0">
         <div className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl gap-6">
-          {/* Video area — side by side */}
+          {/* Video area */}
           <div className="flex gap-6 w-full flex-1 max-h-[60vh]">
-            {/* Candidate Video — Live Camera */}
+            {/* Candidate Video */}
             <div className="relative flex-1 bg-gradient-to-br from-slate-700 via-slate-600 to-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-              {/* Live video feed */}
               {cameraReady && !isVideoOff ? (
                 <video
                   ref={setVideoRef}
@@ -511,7 +593,7 @@ export default function InterviewPage() {
                   {statusLabel}
                 </span>
                 <button
-                  onClick={startRealtime}
+                  onClick={() => { startedRef.current = false; startRealtime(); }}
                   className="ml-2 text-xs bg-white/10 hover:bg-white/20 px-3 py-1 rounded-full transition-colors"
                 >
                   Retry
@@ -541,7 +623,7 @@ export default function InterviewPage() {
                 hour12: true,
               })}
             </p>
-            <p className="text-xs text-white/50">React Developer Interview</p>
+            <p className="text-xs text-white/50">AI Interview Session</p>
           </div>
 
           {/* Center: Controls */}
@@ -629,7 +711,7 @@ export default function InterviewPage() {
         <div className="max-w-4xl mx-auto mt-2">
           <div className="flex items-center gap-2 text-xs text-slate-500">
             <span>
-              {status === "connected" ? "🎤 Live" : "⏳ Connecting..."}
+              {status === "connected" ? "Live" : "Connecting..."}
             </span>
             <div className="flex-1 h-1 bg-white/10 rounded-full overflow-hidden">
               <div
@@ -641,7 +723,7 @@ export default function InterviewPage() {
             </div>
             <span>
               {interviewEnded
-                ? "✓ Interview completed"
+                ? "Interview completed"
                 : `${formatTime(timer)} elapsed`}
             </span>
           </div>

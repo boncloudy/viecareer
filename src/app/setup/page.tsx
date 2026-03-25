@@ -16,7 +16,28 @@ import {
   gapAnalysis,
 } from "@/lib/mock-data";
 import type { GapSkill } from "@/lib/mock-data";
+import { extractCVJDWithAI } from "@/lib/jri-calculator";
+import { API_BASE } from "@/lib/api-config";
 import { Lock, ShieldCheck, ArrowRight, BrainCircuit, CheckCircle2, Loader2, AlertTriangle, XCircle, ChevronDown, ChevronUp } from "lucide-react";
+
+// Helper: upload file to backend for proper text extraction (PDF, DOCX, TXT)
+async function parseFileViaBackend(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${API_BASE}/parse-file`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: "File parsing failed" }));
+    throw new Error(err.detail || `Server error ${res.status}`);
+  }
+
+  const data = await res.json();
+  return data.text;
+}
 
 export default function SetupPage() {
   const router = useRouter();
@@ -38,56 +59,76 @@ export default function SetupPage() {
   const jdUploadedRef = useRef(false);
   const cvUploadedRef = useRef(false);
 
-  const startExtraction = useCallback(() => {
-    if (cvUploadedRef.current && jdUploadedRef.current && !showExtraction) {
-      setIsExtracting(true);
-      setTimeout(() => {
-        setIsExtracting(false);
-        setShowExtraction(true);
-        app.setExtractionVisible(true);
-      }, 2000);
-    }
-  }, [showExtraction, app]);
+  // Data to display: real extraction if available, otherwise mock fallback
+  const ext = app.extraction;
 
-  const handleCvFile = useCallback((file: File) => {
+  const displayProfile = ext
+    ? { fullName: ext.fullName, targetPosition: ext.targetPosition, techStack: ext.techStack }
+    : userProfile;
+  const displayJobReqs = ext
+    ? { mustHaveSkills: ext.mustHaveSkills, educationLevel: ext.educationLevel, keyResponsibilities: ext.keyResponsibilities }
+    : jobRequirements;
+  const displayAtsScore = ext ? ext.atsScore : atsMatchScore;
+  const displayGapAnalysis = ext ? ext.gapAnalysis : gapAnalysis;
+
+  const triggerExtraction = useCallback(async () => {
+    setIsExtracting(true);
+
+    try {
+      const result = await extractCVJDWithAI(app.cvTextContent, app.jdTextContent);
+      app.setExtraction(result);
+    } catch (err) {
+      console.error("AI extraction failed:", err);
+    }
+
+    setIsExtracting(false);
+    setShowExtraction(true);
+    app.setExtractionVisible(true);
+  }, [app]);
+
+  const handleCvFile = useCallback(async (file: File) => {
     setCvUploading(true);
     setCvFileName(file.name);
-    setTimeout(() => {
-      setCvUploading(false);
-      setCvUploaded(true);
-      cvUploadedRef.current = true;
-      app.setCvUploaded(true);
-      app.setCvFileName(file.name);
-      if (jdUploadedRef.current) {
-        setIsExtracting(true);
-        setTimeout(() => {
-          setIsExtracting(false);
-          setShowExtraction(true);
-          app.setExtractionVisible(true);
-        }, 2000);
-      }
-    }, 1500);
-  }, [app]);
 
-  const handleJdFile = useCallback((file: File) => {
+    try {
+      const text = await parseFileViaBackend(file);
+      app.setCvTextContent(text);
+    } catch (err) {
+      console.error("CV parsing failed:", err);
+      app.setCvTextContent(`[Failed to parse ${file.name}]`);
+    }
+
+    setCvUploading(false);
+    setCvUploaded(true);
+    cvUploadedRef.current = true;
+    app.setCvUploaded(true);
+    app.setCvFileName(file.name);
+    if (jdUploadedRef.current) {
+      triggerExtraction();
+    }
+  }, [app, triggerExtraction]);
+
+  const handleJdFile = useCallback(async (file: File) => {
     setJdUploading(true);
     setJdFileName(file.name);
-    setTimeout(() => {
-      setJdUploading(false);
-      setJdUploaded(true);
-      jdUploadedRef.current = true;
-      app.setJdUploaded(true);
-      app.setJdFileName(file.name);
-      if (cvUploadedRef.current) {
-        setIsExtracting(true);
-        setTimeout(() => {
-          setIsExtracting(false);
-          setShowExtraction(true);
-          app.setExtractionVisible(true);
-        }, 2000);
-      }
-    }, 1500);
-  }, [app]);
+
+    try {
+      const text = await parseFileViaBackend(file);
+      app.setJdTextContent(text);
+    } catch (err) {
+      console.error("JD parsing failed:", err);
+      app.setJdTextContent(`[Failed to parse ${file.name}]`);
+    }
+
+    setJdUploading(false);
+    setJdUploaded(true);
+    jdUploadedRef.current = true;
+    app.setJdUploaded(true);
+    app.setJdFileName(file.name);
+    if (cvUploadedRef.current) {
+      triggerExtraction();
+    }
+  }, [app, triggerExtraction]);
 
   const handleRescan = useCallback(() => {
     setCvUploaded(false);
@@ -108,6 +149,9 @@ export default function SetupPage() {
     app.setCvFileName("");
     app.setJdFileName("");
     app.setExtractionVisible(false);
+    app.setExtraction(null);
+    app.setCvTextContent("");
+    app.setJdTextContent("");
   }, [app]);
 
   return (
@@ -124,6 +168,10 @@ export default function SetupPage() {
             Upload your profile and the job description to begin the AI-powered
             interview simulation.
           </p>
+          <div className="mt-2 inline-flex items-center gap-2 bg-[#5378EF]/10 border border-[#5378EF]/30 rounded-full px-4 py-1.5">
+            <span className="w-2 h-2 bg-[#5378EF] rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-[#5378EF]">AI-Powered — Real extraction & scoring</span>
+          </div>
         </div>
 
         {/* Upload Zones */}
@@ -153,10 +201,10 @@ export default function SetupPage() {
           <Card className="p-12 text-center border-2 border-[#191A23] shadow-[4px_4px_0_#191A23] mb-8 animate-fade-in-up bg-white rounded-2xl">
             <Loader2 className="w-10 h-10 text-[#5378EF] animate-spin mx-auto mb-4" />
             <h3 className="text-lg font-semibold text-[#191A23] mb-1">
-              AI is analyzing your documents...
+              AI is extracting & scoring your documents...
             </h3>
             <p className="text-sm text-[#191A23]/60">
-              Extracting profile data and matching against job requirements
+              Calculating ATS score, gap analysis, and JRI baseline using real AI
             </p>
           </Card>
         )}
@@ -175,7 +223,7 @@ export default function SetupPage() {
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-[#5378EF]" />
                 <span className="text-xs font-semibold text-[#5378EF] uppercase tracking-wider">
-                  Valid Condition: Structured CV & JD Detected
+                  AI Extracted — Real Analysis
                 </span>
               </div>
             </div>
@@ -206,7 +254,7 @@ export default function SetupPage() {
                     Full Name
                   </label>
                   <p className="mt-1 text-base text-[#191A23] bg-[#F3F3F3] px-4 py-2.5 rounded-lg border-2 border-[#191A23]/20">
-                    {userProfile.fullName}
+                    {displayProfile.fullName}
                   </p>
                 </div>
                 <div>
@@ -214,7 +262,7 @@ export default function SetupPage() {
                     Target Position
                   </label>
                   <p className="mt-1 text-base text-[#191A23] bg-[#F3F3F3] px-4 py-2.5 rounded-lg border-2 border-[#191A23]/20">
-                    {userProfile.targetPosition}
+                    {displayProfile.targetPosition}
                   </p>
                 </div>
                 <div>
@@ -222,7 +270,7 @@ export default function SetupPage() {
                     Technical Stack
                   </label>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {userProfile.techStack.slice(0, 3).map((tech) => (
+                    {displayProfile.techStack.slice(0, 3).map((tech) => (
                       <Badge
                         key={tech}
                         variant="outline"
@@ -231,26 +279,33 @@ export default function SetupPage() {
                         {tech}
                       </Badge>
                     ))}
-                    <Badge
-                      variant="outline"
-                      className="text-sm px-3 py-1 border-2 border-[#191A23]/30 text-[#191A23]/50"
-                    >
-                      +
-                    </Badge>
+                    {displayProfile.techStack.length > 3 && (
+                      <Badge
+                        variant="outline"
+                        className="text-sm px-3 py-1 border-2 border-[#191A23]/30 text-[#191A23]/50"
+                      >
+                        +{displayProfile.techStack.length - 3}
+                      </Badge>
+                    )}
                   </div>
                 </div>
               </div>
 
               {/* Center: Score */}
-              <div className="flex items-center justify-center">
+              <div className="flex flex-col items-center justify-center">
                 <CircularScore
-                  score={atsMatchScore}
-                  label="INITIAL MATCH"
+                  score={displayAtsScore}
+                  label="JRI BASELINE"
                   sublabel=""
                   size={140}
                   strokeWidth={8}
                   color="#191A23"
                 />
+                {ext && (
+                  <p className="mt-3 text-xs text-[#191A23]/50 text-center max-w-[180px]">
+                    ATS: S_skill={ext.atsComponents.S_skill} S_exp={ext.atsComponents.S_exp} S_edu={ext.atsComponents.S_edu} S_sem={ext.atsComponents.S_sem}
+                  </p>
+                )}
               </div>
 
               {/* Right: Job Requirements */}
@@ -263,7 +318,7 @@ export default function SetupPage() {
                     Must-Have Skills
                   </label>
                   <div className="mt-2 flex flex-wrap gap-2">
-                    {jobRequirements.mustHaveSkills.map((skill) => (
+                    {displayJobReqs.mustHaveSkills.map((skill) => (
                       <Badge
                         key={skill}
                         className="bg-[#5378EF]/10 text-[#5378EF] border border-[#5378EF]/30 px-3 py-1 text-sm"
@@ -278,7 +333,7 @@ export default function SetupPage() {
                     Education Level
                   </label>
                   <p className="mt-1 text-base text-[#191A23] font-medium">
-                    {jobRequirements.educationLevel}
+                    {displayJobReqs.educationLevel}
                   </p>
                 </div>
                 <div>
@@ -286,7 +341,7 @@ export default function SetupPage() {
                     Key Responsibilities
                   </label>
                   <ul className="mt-2 space-y-2">
-                    {jobRequirements.keyResponsibilities.map((resp, i) => (
+                    {displayJobReqs.keyResponsibilities.map((resp, i) => (
                       <li key={i} className="text-sm text-[#191A23]/70 leading-relaxed">
                         {resp}
                       </li>
@@ -326,7 +381,7 @@ export default function SetupPage() {
               {/* Summary Stats */}
               <div className="grid grid-cols-3 gap-4 mb-6">
                 {(() => {
-                  const all = gapAnalysis.flatMap((c) => c.skills);
+                  const all = displayGapAnalysis.flatMap((c) => c.skills);
                   const matched = all.filter((s) => s.status === "matched").length;
                   const partial = all.filter((s) => s.status === "partial").length;
                   const missing = all.filter((s) => s.status === "missing").length;
@@ -351,7 +406,7 @@ export default function SetupPage() {
 
               {/* Category Breakdown */}
               <div className="space-y-3">
-                {gapAnalysis.map((category) => {
+                {displayGapAnalysis.map((category) => {
                   const isExpanded = expandedCategory === category.category;
                   const matchedCount = category.skills.filter((s) => s.status === "matched").length;
                   const totalCount = category.skills.length;

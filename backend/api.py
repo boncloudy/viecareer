@@ -1,6 +1,7 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, UploadFile, File
 from pydantic import BaseModel
 import os
+import io
 import requests
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -171,6 +172,14 @@ class ChatRequest(BaseModel):
     message: str
     history: Optional[List[ChatMessage]] = None
 
+class ExtractCVJDRequest(BaseModel):
+    cv_text: str
+    jd_text: str
+
+class ScoreInterviewRequest(BaseModel):
+    qa_pairs: List[dict]  # [{question, answer, timestamp}]
+    position: str
+
 # ---------------------------------------------------------------------------
 # Endpoints
 # ---------------------------------------------------------------------------
@@ -178,6 +187,71 @@ class ChatRequest(BaseModel):
 @app.get("/")
 def home():
     return {"status": "healthy"}
+
+
+# ---------------------------------------------------------------------------
+# File Parsing – extract text from PDF, DOCX, TXT uploads
+# ---------------------------------------------------------------------------
+
+def extract_text_from_pdf(file_bytes: bytes) -> str:
+    """Extract text from PDF using PyPDF2."""
+    try:
+        import PyPDF2
+        reader = PyPDF2.PdfReader(io.BytesIO(file_bytes))
+        pages = []
+        for page in reader.pages:
+            text = page.extract_text()
+            if text:
+                pages.append(text)
+        return "\n\n".join(pages)
+    except ImportError:
+        raise HTTPException(
+            status_code=500,
+            detail="PyPDF2 is not installed. Run: pip install PyPDF2"
+        )
+
+
+def extract_text_from_docx(file_bytes: bytes) -> str:
+    """Extract text from DOCX using python-docx."""
+    try:
+        import docx
+        doc = docx.Document(io.BytesIO(file_bytes))
+        return "\n".join(para.text for para in doc.paragraphs if para.text.strip())
+    except ImportError:
+        raise HTTPException(
+            status_code=500,
+            detail="python-docx is not installed. Run: pip install python-docx"
+        )
+
+
+@app.post("/parse-file")
+async def parse_file(file: UploadFile = File(...)):
+    """Upload a PDF, DOCX, or TXT file and return its extracted text."""
+    if not file.filename:
+        raise HTTPException(status_code=400, detail="No file provided")
+
+    file_bytes = await file.read()
+    name = file.filename.lower()
+
+    if name.endswith(".pdf"):
+        text = extract_text_from_pdf(file_bytes)
+    elif name.endswith(".docx"):
+        text = extract_text_from_docx(file_bytes)
+    elif name.endswith(".txt"):
+        text = file_bytes.decode("utf-8", errors="replace")
+    else:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Unsupported file type: {file.filename}. Use PDF, DOCX, or TXT."
+        )
+
+    if not text or not text.strip():
+        raise HTTPException(
+            status_code=422,
+            detail="Could not extract any text from the uploaded file."
+        )
+
+    return {"text": text.strip()}
 
 
 @app.post("/chat")
@@ -236,6 +310,151 @@ async def chat_interview(req: ChatRequest):
             model=MODEL,
             messages=messages,
             max_tokens=500,
+        )
+        return {"reply": response.choices[0].message.content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ---------------------------------------------------------------------------
+# CV/JD Extraction Endpoint
+# ---------------------------------------------------------------------------
+
+CV_EXTRACTOR_SYSTEM_PROMPT = """You are a professional CV/JD analyzer for VieCareer. Your ONLY job is to analyze CV and Job Description documents and return structured JSON data.
+
+STRICT RULES:
+
+- Return ONLY a valid JSON object. No markdown, no explanation, no code fences.
+- Follow the exact field names and structure requested.
+- Score each ATS component honestly based on the actual content match.
+- If information is missing from the CV or JD, note it honestly in the gap analysis.
+- Be thorough — extract ALL relevant skills, not just the first few.
+- For responsibilities: return short, concise key bullet points (phrases), NOT full sentences or paragraphs. Avoid verbosity."""
+
+
+@app.post("/extract-cvjd")
+async def extract_cvjd(req: ExtractCVJDRequest):
+    """Analyze CV and JD to extract structured profile, ATS score, and gap analysis."""
+    try:
+        prompt = f"""Analyze the following CV and Job Description, then return a JSON object with these exact fields:
+
+{{
+  "fullName": "candidate's full name from CV",
+  "targetPosition": "position title from JD",
+  "techStack": ["list of technical skills from CV"],
+  "mustHaveSkills": ["required skills from JD"],
+  "educationLevel": "education requirement from JD",
+  "keyResponsibilities": ["3 key responsibilities from JD"],
+  "atsComponents": {{
+    "S_skill": <0-100 score based on how well CV skills match JD requirements>,
+    "S_exp": <0-100 score based on experience level match>,
+    "S_edu": <0-100 score based on education match>,
+    "S_sem": <0-100 semantic similarity between CV and JD>
+  }},
+  "gapAnalysis": [
+    {{
+      "category": "Technical Skills",
+      "score": <0-100>,
+      "skills": [
+        {{"skill": "skill name", "status": "matched|partial|missing", "cvEvidence": "evidence from CV", "jdRequirement": "requirement from JD"}}
+      ]
+    }},
+    {{
+      "category": "Soft Skills",
+      "score": <0-100>,
+      "skills": [...]
+    }},
+    {{
+      "category": "Experience & Education",
+      "score": <0-100>,
+      "skills": [...]
+    }}
+  ]
+}}
+
+CV Content:
+{req.cv_text}
+
+JD Content:
+{req.jd_text}
+
+Return ONLY the JSON object."""
+
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": CV_EXTRACTOR_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            max_tokens=2000,
+            temperature=0.3,
+        )
+        return {"reply": response.choices[0].message.content}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ---------------------------------------------------------------------------
+# Interview Scoring Endpoint
+# ---------------------------------------------------------------------------
+
+INTERVIEW_SCORER_SYSTEM_PROMPT = """You are a professional interview evaluator for VieCareer. Your ONLY job is to analyze interview Q&A transcripts and return structured JSON scoring.
+
+STRICT RULES:
+- Return ONLY a valid JSON object. No markdown, no explanation, no code fences.
+- Score each dimension honestly (0-100) based on the actual answers given.
+- For each question, provide specific strengths, weaknesses, and an optimal answer.
+- Be fair but honest — do not inflate scores if answers are weak."""
+
+
+@app.post("/score-interview")
+async def score_interview(req: ScoreInterviewRequest):
+    """Score interview Q&A pairs across 5 dimensions and return detailed analysis."""
+    try:
+        qa_text = "\n\n".join(
+            f"Q{i+1} [{qa.get('timestamp', '00:00')}]: {qa['question']}\nA{i+1}: {qa['answer']}"
+            for i, qa in enumerate(req.qa_pairs)
+        )
+
+        prompt = f"""Analyze these interview Q&A pairs for a "{req.position}" position and return a JSON object.
+
+Interview Transcript:
+{qa_text}
+
+Return this exact JSON structure:
+{{
+  "dimensions": {{
+    "D1_technical": <0-100 technical knowledge score>,
+    "D2_communication": <0-100 communication clarity score>,
+    "D3_problem_solving": <0-100 problem solving ability score>,
+    "D4_attitude": <0-100 attitude and professionalism score>,
+    "D5_cultural_fit": <0-100 cultural fit score>
+  }},
+  "scoredQA": [
+    {{"question": "...", "answer": "...", "timestamp": "...", "score": <0-100>}}
+  ],
+  "interviewQuestions": [
+    {{
+      "id": <number>,
+      "question": "the question",
+      "userAnswer": "the answer",
+      "strengths": ["strength1", "strength2", "strength3"],
+      "weaknesses": ["weakness1", "weakness2"],
+      "optimalAnswer": "what an ideal answer would include"
+    }}
+  ]
+}}
+
+Return ONLY the JSON object."""
+
+        response = client.chat.completions.create(
+            model=MODEL,
+            messages=[
+                {"role": "system", "content": INTERVIEW_SCORER_SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            max_tokens=3000,
+            temperature=0.3,
         )
         return {"reply": response.choices[0].message.content}
     except Exception as e:

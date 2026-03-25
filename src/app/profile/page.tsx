@@ -285,14 +285,7 @@ function parseTimestamp(ts: string): number {
   return m * 60 + s;
 }
 
-// Mock Q&A captured during the latest live interview
-const LATEST_SESSION_QA: { question: string; answer: string; score: number; timestamp: string }[] = [
-  { question: "Can you explain the difference between var, let, and const in JavaScript?", answer: "var is function-scoped and hoisted, let and const are block-scoped. const cannot be reassigned after declaration, while let can. I always default to const and only use let when reassignment is needed.", score: 88, timestamp: "00:45" },
-  { question: "How does React's useEffect hook work and when would you use it?", answer: "useEffect runs side effects after render. It takes a callback and a dependency array. An empty array means it runs once on mount. I use it for API calls, subscriptions, and DOM manipulation.", score: 82, timestamp: "04:20" },
-  { question: "What is the purpose of keys in React lists?", answer: "Keys help React identify which items changed, were added, or removed during reconciliation. They should be stable, unique identifiers — not array indices — so React can efficiently update the DOM.", score: 90, timestamp: "08:55" },
-  { question: "Describe how you would debug a performance issue in a React app.", answer: "I'd start with React DevTools Profiler to find slow renders, check for unnecessary re-renders with why-did-you-render, then use React.memo, useMemo, or useCallback as needed. I'd also check bundle size.", score: 78, timestamp: "13:10" },
-  { question: "How do you handle asynchronous operations in JavaScript?", answer: "I primarily use async/await with try-catch for error handling. For parallel operations I use Promise.all. I understand the event loop, microtask queue, and how callbacks, promises, and async/await relate.", score: 85, timestamp: "18:35" },
-];
+// (Q&A data is now managed in app-context.tsx via completedInterviews)
 
 // ── Shared Q&A row component ──
 function QARow({
@@ -362,13 +355,25 @@ function QARow({
 
 // ── Main History Content ──
 
+// Unified history item — normalises both live-recorded and mock entries
+interface HistoryItem {
+  id: string;
+  date: string;
+  position: string;
+  type: "Technical" | "Behavioral" | "Mixed";
+  duration: string;
+  overallScore: number;
+  questionsCount: number;
+  qaPairs: { question: string; answer: string; score: number; timestamp: string }[];
+  recordingUrl: string; // blob URL for live, "" for mock
+  hasRecording: boolean;
+}
+
 function HistoryContent() {
   const app = useApp();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [activeQIdx, setActiveQIdx] = useState<number>(-1);
   const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
-
-  const latestRecordingUrl = app.interviewRecordingUrl;
 
   const seekTo = (entryId: string, timestamp: string, qIdx: number) => {
     const video = videoRefs.current[entryId];
@@ -379,107 +384,72 @@ function HistoryContent() {
     setActiveQIdx(qIdx);
   };
 
-  // Compute average score for latest session
-  const latestAvg = Math.round(LATEST_SESSION_QA.reduce((s, q) => s + q.score, 0) / LATEST_SESSION_QA.length);
+  const formatDuration = (secs: number) =>
+    `${Math.floor(secs / 60)}:${(secs % 60).toString().padStart(2, "0")}`;
+
+  // Build unified list: live recordings first (newest→oldest), then mock history
+  const allEntries: HistoryItem[] = [
+    // Live-recorded interviews (already newest-first from context)
+    ...app.completedInterviews.map((ci) => ({
+      id: ci.id,
+      date: ci.date,
+      position: ci.position,
+      type: ci.type,
+      duration: formatDuration(ci.durationSecs),
+      overallScore: ci.overallScore,
+      questionsCount: ci.qaPairs.length,
+      qaPairs: ci.qaPairs,
+      recordingUrl: ci.recordingUrl,
+      hasRecording: !!ci.recordingUrl,
+    })),
+    // Mock history entries
+    ...interviewHistory.map((e) => ({
+      id: e.id,
+      date: e.date,
+      position: e.position,
+      type: e.type,
+      duration: e.duration,
+      overallScore: e.overallScore,
+      questionsCount: e.questionsAnswered,
+      qaPairs: e.qaPairs,
+      recordingUrl: "",
+      hasRecording: e.hasRecording,
+    })),
+  ];
+
+  // Sort: entries with a playable recording blob first, then by date descending
+  allEntries.sort((a, b) => {
+    const aHasBlob = a.recordingUrl ? 1 : 0;
+    const bHasBlob = b.recordingUrl ? 1 : 0;
+    if (aHasBlob !== bHasBlob) return bHasBlob - aHasBlob;
+    return b.date.localeCompare(a.date);
+  });
 
   return (
     <div className="space-y-5">
-
-      {/* ═══ Latest Recording ═══ */}
-      {latestRecordingUrl && (() => {
-        const isLatestExpanded = expandedId === "latest";
-        return (
-          <Card className="overflow-hidden">
-            {/* Header bar — same style as past interviews */}
-            <button
-              onClick={() => { setExpandedId(isLatestExpanded ? null : "latest"); setActiveQIdx(-1); }}
-              className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-slate-50/50 transition-colors"
-            >
-              {/* Score circle */}
-              <div className={cn("w-11 h-11 rounded-full flex items-center justify-center text-[15px] font-black border-2 shrink-0", scoreBadge(latestAvg))}>
-                {latestAvg}
-              </div>
-
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-slate-900 truncate">Today&apos;s Interview</span>
-                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0", typeBadge.Technical)}>
-                    Technical
-                  </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 bg-[#5378EF]/10 text-[#5378EF]">
-                    Latest
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400">
-                  <Calendar className="w-3 h-3" />
-                  <span>Today</span>
-                  <span className="text-slate-300">·</span>
-                  <span>{Math.floor(app.interviewDuration / 60)}:{(app.interviewDuration % 60).toString().padStart(2, "0")}</span>
-                  <span className="text-slate-300">·</span>
-                  <span>{LATEST_SESSION_QA.length}Q</span>
-                  <span className="text-slate-300">·</span>
-                  <span className="flex items-center gap-0.5 text-[#5378EF]"><Video className="w-3 h-3" /></span>
-                </div>
-              </div>
-
-              <ChevronDown className={cn("w-4 h-4 text-slate-400 shrink-0 transition-transform", isLatestExpanded && "rotate-180")} />
-            </button>
-
-            {/* Expanded content */}
-            {isLatestExpanded && (
-              <div className="border-t border-slate-100">
-                {/* Video */}
-                <div className="bg-black">
-                  <video
-                    ref={(el) => { videoRefs.current["latest"] = el; }}
-                    src={latestRecordingUrl}
-                    controls
-                    className="w-full aspect-video object-contain"
-                  />
-                </div>
-
-                {/* Q&A rows */}
-                <div className="divide-y divide-slate-100/80">
-                  {LATEST_SESSION_QA.map((qa, idx) => (
-                    <QARow
-                      key={idx}
-                      qa={qa}
-                      idx={idx}
-                      isActive={activeQIdx === idx && expandedId === "latest"}
-                      onSeek={() => seekTo("latest", qa.timestamp, idx)}
-                      showTimestamp
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </Card>
-        );
-      })()}
-
-      {/* ═══ Past Interviews ═══ */}
-      {interviewHistory.map((entry) => {
+      {allEntries.map((entry, idx) => {
         const isExpanded = expandedId === entry.id;
+        const isLatest = idx === 0 && entry.recordingUrl;
         return (
           <Card key={entry.id} className="overflow-hidden">
-            {/* Header */}
             <button
               onClick={() => { setExpandedId(isExpanded ? null : entry.id); setActiveQIdx(-1); }}
               className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-slate-50/50 transition-colors"
             >
-              {/* Score circle */}
               <div className={cn("w-11 h-11 rounded-full flex items-center justify-center text-[15px] font-black border-2 shrink-0", scoreBadge(entry.overallScore))}>
                 {entry.overallScore}
               </div>
-
-              {/* Info */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-slate-900 truncate">{entry.position}</span>
                   <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0", typeBadge[entry.type])}>
                     {entry.type}
                   </span>
+                  {isLatest && (
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 bg-[#5378EF]/10 text-[#5378EF]">
+                      Latest
+                    </span>
+                  )}
                 </div>
                 <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400">
                   <Calendar className="w-3 h-3" />
@@ -487,8 +457,8 @@ function HistoryContent() {
                   <span className="text-slate-300">·</span>
                   <span>{entry.duration}</span>
                   <span className="text-slate-300">·</span>
-                  <span>{entry.questionsAnswered}Q</span>
-                  {entry.hasRecording && (
+                  <span>{entry.questionsCount}Q</span>
+                  {(entry.recordingUrl || entry.hasRecording) && (
                     <>
                       <span className="text-slate-300">·</span>
                       <span className="flex items-center gap-0.5 text-[#5378EF]"><Video className="w-3 h-3" /></span>
@@ -496,15 +466,24 @@ function HistoryContent() {
                   )}
                 </div>
               </div>
-
               <ChevronDown className={cn("w-4 h-4 text-slate-400 shrink-0 transition-transform", isExpanded && "rotate-180")} />
             </button>
 
-            {/* Expanded */}
             {isExpanded && (
               <div className="border-t border-slate-100">
-                {/* Recording placeholder */}
-                {entry.hasRecording && (
+                {/* Playable video for live recordings */}
+                {entry.recordingUrl && (
+                  <div className="bg-black">
+                    <video
+                      ref={(el) => { videoRefs.current[entry.id] = el; }}
+                      src={entry.recordingUrl}
+                      controls
+                      className="w-full aspect-video object-contain"
+                    />
+                  </div>
+                )}
+                {/* Server-stored placeholder for mock entries */}
+                {!entry.recordingUrl && entry.hasRecording && (
                   <div className="px-5 py-3 bg-slate-50/60 border-b border-slate-100 flex items-center gap-3">
                     <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
                       <Video className="w-4 h-4 text-slate-400" />
@@ -515,16 +494,15 @@ function HistoryContent() {
                     </div>
                   </div>
                 )}
-
-                {/* Q&A rows */}
                 <div className="divide-y divide-slate-100/80">
-                  {entry.qaPairs.map((qa, idx) => (
+                  {entry.qaPairs.map((qa, qIdx) => (
                     <QARow
-                      key={idx}
+                      key={qIdx}
                       qa={qa}
-                      idx={idx}
-                      isActive={activeQIdx === idx && expandedId === entry.id}
-                      showTimestamp={false}
+                      idx={qIdx}
+                      isActive={activeQIdx === qIdx && expandedId === entry.id}
+                      onSeek={entry.recordingUrl ? () => seekTo(entry.id, qa.timestamp, qIdx) : undefined}
+                      showTimestamp={!!entry.recordingUrl}
                     />
                   ))}
                 </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { adminUsers, adminUserStats, AdminUser, UserStatus, UserPlan } from "@/lib/mock-data";
 import {
@@ -38,18 +38,43 @@ function StatCard({ icon: Icon, label, value, sub, color }: { icon: React.Elemen
 
 function ActionMenu({ user, onViewProfile }: { user: AdminUser; onViewProfile: () => void }) {
   const [open, setOpen] = useState(false);
+  const [dropUp, setDropUp] = useState(false);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  const handleToggle = () => {
+    if (!open && btnRef.current) {
+      const rect = btnRef.current.getBoundingClientRect();
+      const spaceBelow = window.innerHeight - rect.bottom;
+      setDropUp(spaceBelow < 160);
+    }
+    setOpen((o) => !o);
+  };
+
   return (
     <div className="relative">
       <button
-        onClick={() => setOpen((o) => !o)}
+        ref={btnRef}
+        onClick={handleToggle}
         className="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
       >
         <MoreVertical className="w-4 h-4" />
       </button>
       {open && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
-          <div className="absolute right-0 top-8 z-20 w-44 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden">
+          <div className="fixed inset-0 z-[40]" onClick={() => setOpen(false)} />
+          <div
+            className={`fixed z-[50] w-44 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden`}
+            style={{
+              ...(btnRef.current
+                ? (() => {
+                    const rect = btnRef.current.getBoundingClientRect();
+                    return dropUp
+                      ? { bottom: window.innerHeight - rect.top + 4, right: window.innerWidth - rect.right }
+                      : { top: rect.bottom + 4, right: window.innerWidth - rect.right };
+                  })()
+                : {}),
+            }}
+          >
             <button
               onClick={() => {
                 onViewProfile();

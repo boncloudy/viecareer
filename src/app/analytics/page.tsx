@@ -8,6 +8,7 @@ import { RadarChartComponent } from "@/components/radar-chart";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useApp } from "@/lib/app-context";
 import {
   analyticsRadarData,
   analyticsDimensionScores,
@@ -15,6 +16,7 @@ import {
   interviewQuestions,
   finaljriScore,
 } from "@/lib/mock-data";
+import type { RadarDataPoint, SkillRecommendation, InterviewQuestion } from "@/lib/mock-data";
 import {
   Share2,
   Download,
@@ -26,7 +28,53 @@ import {
 
 export default function AnalyticsPage() {
   const router = useRouter();
+  const app = useApp();
   const [expandedQ, setExpandedQ] = useState<number | null>(null);
+
+  // ── Data source: real dimensions if available, otherwise mock fallback ──
+  const hasRealData = app.dimensions !== null;
+
+  // Build real radar data from dimensions
+  const realRadar: RadarDataPoint[] = hasRealData && app.dimensions
+    ? [
+        { dimension: "Technical", current: app.dimensions.D1_technical, target: 95, fullMark: 100 },
+        { dimension: "Communication", current: app.dimensions.D2_communication, target: 90, fullMark: 100 },
+        { dimension: "Problem Solving", current: app.dimensions.D3_problem_solving, target: 95, fullMark: 100 },
+        { dimension: "Attitude", current: app.dimensions.D4_attitude, target: 92, fullMark: 100 },
+        { dimension: "Cultural Fit", current: app.dimensions.D5_cultural_fit, target: 88, fullMark: 100 },
+      ]
+    : [];
+
+  const displayJriScore = hasRealData ? app.jriFinal : finaljriScore;
+  const displayRadarData = hasRealData ? realRadar : analyticsRadarData;
+  const displayDimensionScores = hasRealData && app.dimensions
+    ? [
+        { label: "TECHNICAL", value: `${app.dimensions.D1_technical}%` },
+        { label: "COMM.", value: `${app.dimensions.D2_communication}%` },
+        { label: "PROBLEM SOLV.", value: `${app.dimensions.D3_problem_solving}%` },
+        { label: "ATTITUDE", value: `${app.dimensions.D4_attitude}%` },
+        { label: "CULTURAL FIT", value: `${app.dimensions.D5_cultural_fit}%` },
+      ]
+    : analyticsDimensionScores;
+
+  // Build real skill recommendations from dimension gaps
+  const displaySkillRecs: SkillRecommendation[] = hasRealData && app.dimensions
+    ? buildRealRecommendations(app.dimensions)
+    : skillRecommendations;
+
+  // Interview questions: real or mock
+  const displayQuestions: InterviewQuestion[] = hasRealData && app.scoredInterviewQuestions.length > 0
+    ? app.scoredInterviewQuestions
+    : interviewQuestions;
+
+  const displayPosition = app.extraction
+    ? `${app.extraction.targetPosition}`
+    : "Frontend Developer Intern - TechFlow Systems";
+
+  const jriLabel = displayJriScore >= 80 ? "Excellent Readiness"
+    : displayJriScore >= 60 ? "Good Readiness"
+    : displayJriScore >= 40 ? "Developing"
+    : "Needs Improvement";
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -53,8 +101,14 @@ export default function AnalyticsPage() {
               Post-Interview Analytics
             </h1>
             <p className="text-[#191A23]/60">
-              Frontend Developer Intern - TechFlow Systems
+              {displayPosition}
             </p>
+            {hasRealData && (
+              <div className="mt-2 inline-flex items-center gap-2 bg-[#5378EF]/10 border border-[#5378EF]/30 rounded-full px-4 py-1.5">
+                <span className="w-2 h-2 bg-[#5378EF] rounded-full animate-pulse" />
+                <span className="text-sm font-medium text-[#5378EF]">AI-Scored — Real Performance Data</span>
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-3">
             <Button
@@ -79,7 +133,7 @@ export default function AnalyticsPage() {
               Job Readiness Index
             </h2>
             <CircularScore
-              score={finaljriScore}
+              score={displayJriScore}
               maxScore={100}
               sublabel="/ 100"
               size={180}
@@ -88,12 +142,18 @@ export default function AnalyticsPage() {
             />
             <div className="mt-4">
               <Badge className="bg-[#5378EF]/10 text-[#5378EF] border border-[#5378EF]/30 px-4 py-1 text-sm">
-                Excellent Readiness
+                {jriLabel}
               </Badge>
             </div>
+            {app.extraction && (
+              <p className="mt-3 text-xs text-[#191A23]/50">
+                Baseline: {app.extraction.jriBaseline}/100 | Session: {app.sessionScore}/100 | Delta: {displayJriScore - app.extraction.jriBaseline > 0 ? "+" : ""}{displayJriScore - app.extraction.jriBaseline}
+              </p>
+            )}
             <p className="mt-4 text-sm text-[#191A23]/60 leading-relaxed max-w-xs mx-auto">
-              &quot;Your technical depth impressed the panel, with slight gaps
-              identified in specific state management patterns.&quot;
+              {hasRealData
+                ? `Your JRI of ${displayJriScore}/100 reflects your combined CV fit and interview performance.`
+                : `"Your technical depth impressed the panel, with slight gaps identified in specific state management patterns."`}
             </p>
           </Card>
 
@@ -103,7 +163,7 @@ export default function AnalyticsPage() {
               Readiness Gap Analysis
             </h2>
             <RadarChartComponent
-              data={analyticsRadarData}
+              data={displayRadarData}
               showLegend={false}
               height={280}
               currentColor="#5378EF"
@@ -111,7 +171,7 @@ export default function AnalyticsPage() {
             />
             {/* Dimension Scores */}
             <div className="flex justify-between mt-4 px-2">
-              {analyticsDimensionScores.map((dim) => (
+              {displayDimensionScores.map((dim) => (
                 <div key={dim.label} className="text-center">
                   <p className="text-[10px] font-semibold text-[#191A23]/40 uppercase tracking-wider">
                     {dim.label}
@@ -148,7 +208,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Table Rows */}
-          {skillRecommendations.map((rec, i) => (
+          {displaySkillRecs.map((rec, i) => (
             <div
               key={i}
               className="grid grid-cols-4 gap-4 py-4 border-b border-[#191A23]/10 items-center last:border-0"
@@ -165,7 +225,7 @@ export default function AnalyticsPage() {
                 <Badge
                   className={`${getPriorityColor(rec.priority)} text-xs px-3 py-0.5 border`}
                 >
-                  ● {rec.priority}
+                  {rec.priority}
                 </Badge>
               </div>
               <div>
@@ -196,7 +256,7 @@ export default function AnalyticsPage() {
             Interview Question Breakdown
           </h2>
           <div className="space-y-3">
-            {interviewQuestions.map((q) => (
+            {displayQuestions.map((q) => (
               <div
                 key={q.id}
                 className="border-2 border-[#191A23] rounded-xl overflow-hidden"
@@ -238,7 +298,7 @@ export default function AnalyticsPage() {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="bg-[#5378EF]/5 border border-[#5378EF]/20 rounded-lg p-4">
                         <h4 className="text-xs font-bold text-[#5378EF] uppercase tracking-wider mb-2">
-                          ✓ Strengths
+                          Strengths
                         </h4>
                         <ul className="space-y-1.5">
                           {q.strengths.map((s, i) => (
@@ -254,7 +314,7 @@ export default function AnalyticsPage() {
                       </div>
                       <div className="bg-red-50 rounded-lg p-4">
                         <h4 className="text-xs font-bold text-red-700 uppercase tracking-wider mb-2">
-                          ✗ Areas to Improve
+                          Areas to Improve
                         </h4>
                         <ul className="space-y-1.5">
                           {q.weaknesses.map((w, i) => (
@@ -273,7 +333,7 @@ export default function AnalyticsPage() {
                     {/* Optimal Answer */}
                     <div className="bg-[#191A23]/5 rounded-lg p-4">
                       <h4 className="text-xs font-bold text-[#191A23] uppercase tracking-wider mb-2">
-                        💡 Optimal Answer Suggestion
+                        Optimal Answer Suggestion
                       </h4>
                       <p className="text-sm text-[#191A23]/80 leading-relaxed">
                         {q.optimalAnswer}
@@ -294,8 +354,9 @@ export default function AnalyticsPage() {
             Ready to take the next step?
           </h2>
           <p className="text-white/60 mb-8 max-w-md mx-auto">
-            Based on your {finaljriScore}/100 JRI Score, you are in the top 5% of
-            candidates for this internship. Secure your spot today.
+            Based on your {displayJriScore}/100 JRI Score, {displayJriScore >= 70
+              ? "you are showing strong readiness for this position."
+              : "keep practicing to improve your score."}
           </p>
           <div className="flex items-center justify-center gap-4">
             <Button className="bg-white text-[#191A23] hover:bg-[#5378EF] hover:text-white font-bold px-8 py-3 h-auto text-sm uppercase tracking-wider rounded-full transition-colors">
@@ -332,4 +393,32 @@ export default function AnalyticsPage() {
       </main>
     </div>
   );
+}
+
+// ── Helper: build skill recommendations from real dimension scores ──
+function buildRealRecommendations(
+  dims: { D1_technical: number; D2_communication: number; D3_problem_solving: number; D4_attitude: number; D5_cultural_fit: number }
+): SkillRecommendation[] {
+  const gaps: { name: string; score: number; target: number; dim: string }[] = [
+    { name: "Technical Skills", score: dims.D1_technical, target: 85, dim: "D1" },
+    { name: "Communication", score: dims.D2_communication, target: 80, dim: "D2" },
+    { name: "Problem Solving", score: dims.D3_problem_solving, target: 85, dim: "D3" },
+    { name: "Attitude", score: dims.D4_attitude, target: 80, dim: "D4" },
+    { name: "Cultural Fit", score: dims.D5_cultural_fit, target: 75, dim: "D5" },
+  ];
+
+  // Sort by gap size (largest gap first)
+  const sorted = gaps
+    .map((g) => ({ ...g, gap: g.target - g.score }))
+    .filter((g) => g.gap > 0)
+    .sort((a, b) => b.gap - a.gap);
+
+  return sorted.slice(0, 3).map((g, i) => ({
+    skillGap: g.name,
+    description: `Improve ${g.dim} score from ${g.score} to ${g.target}+`,
+    priority: (i === 0 ? "Critical" : i === 1 ? "Moderate" : "Ongoing") as "Critical" | "Moderate" | "Ongoing",
+    recommendedAction: `Practice ${g.name}`,
+    actionLabel: `IMPROVE ${g.name.toUpperCase()}`,
+    jdiBoost: `+${Math.round(g.gap * 0.6)}%`,
+  }));
 }
