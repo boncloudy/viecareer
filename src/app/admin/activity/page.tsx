@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
-import { adminActivityLogs, ActivityLog, LogType } from "@/lib/mock-data";
+import { adminActivityLogs, adminActivityStats, ActivityLog, LogType } from "@/lib/mock-data";
 import {
   Search,
   Activity,
@@ -76,9 +76,12 @@ function TimelineRow({ log, isLast }: { log: ActivityLog; isLast: boolean }) {
   );
 }
 
+const LOG_PAGE_SIZE = 10;
+
 export default function ActivityLogsPage() {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState<LogType | "All">("All");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const typeCounts = useMemo(() => {
     const counts: Record<string, number> = {};
@@ -95,6 +98,11 @@ export default function ActivityLogsPage() {
     }),
     [search, typeFilter]
   );
+
+  const totalPages = Math.ceil(filtered.length / LOG_PAGE_SIZE);
+  const paged = filtered.slice((currentPage - 1) * LOG_PAGE_SIZE, currentPage * LOG_PAGE_SIZE);
+
+  useMemo(() => { setCurrentPage(1); }, [search, typeFilter]);
 
   return (
     <div className="space-y-7">
@@ -143,7 +151,7 @@ export default function ActivityLogsPage() {
           <div className="flex items-center gap-2">
             <Activity className="w-4 h-4 text-teal-600" />
             <span className="text-sm font-semibold text-slate-700">Event Stream</span>
-            <span className="ml-1 px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-semibold rounded-full">{filtered.length} events</span>
+            <span className="ml-1 px-2 py-0.5 bg-slate-100 text-slate-500 text-xs font-semibold rounded-full">{adminActivityStats.today} today</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="relative">
@@ -177,12 +185,12 @@ export default function ActivityLogsPage() {
 
         {/* Timeline */}
         <div className="p-6">
-          {filtered.length === 0 ? (
+          {paged.length === 0 ? (
             <div className="py-12 text-center text-slate-400 text-sm">No log entries match your search.</div>
           ) : (
             <div>
-              {filtered.map((log, idx) => (
-                <TimelineRow key={log.id} log={log} isLast={idx === filtered.length - 1} />
+              {paged.map((log, idx) => (
+                <TimelineRow key={log.id} log={log} isLast={idx === paged.length - 1} />
               ))}
             </div>
           )}
@@ -190,9 +198,40 @@ export default function ActivityLogsPage() {
 
         <div className="px-6 py-3 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between rounded-b-3xl">
           <p className="text-xs text-slate-400">
-            <span className="font-semibold text-slate-600">{filtered.length}</span> events displayed · Ordered by most recent
+            Showing <span className="font-semibold text-slate-600">{(currentPage - 1) * LOG_PAGE_SIZE + 1}–{Math.min(currentPage * LOG_PAGE_SIZE, filtered.length)}</span> of <span className="font-semibold text-slate-600">{filtered.length}</span> events · {adminActivityStats.total.toLocaleString()} total system events
           </p>
-          <button className="text-xs text-teal-600 font-semibold hover:underline">Export CSV</button>
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-40"
+              >
+                Previous
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                    page === currentPage
+                      ? "text-white bg-slate-800 hover:bg-slate-700"
+                      : "text-slate-500 bg-white border border-slate-200 hover:bg-slate-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+              <button
+                onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+                disabled={currentPage === totalPages}
+                className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-white border border-slate-200 rounded-lg hover:bg-slate-100 transition-colors disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+            <button className="text-xs text-teal-600 font-semibold hover:underline ml-2">Export CSV</button>
+          </div>
         </div>
       </Card>
     </div>

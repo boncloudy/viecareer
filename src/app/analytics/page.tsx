@@ -315,7 +315,7 @@ export default function AnalyticsPage() {
         <footer className="flex items-center justify-between py-6 border-t-2 border-[#191A23]/10 text-sm text-[#191A23]/40">
           <div className="flex items-center gap-2">
             <BrainCircuit className="w-4 h-4 text-[#5378EF]" />
-            <span>VieCareer Powered Performance Analytics © 2024</span>
+            <span>VieCareer Powered Performance Analytics © 2026</span>
           </div>
           <div className="flex items-center gap-6">
             <button className="hover:text-[#191A23] font-medium uppercase text-xs tracking-wider">
