@@ -15,7 +15,7 @@ import {
   ArrowLeft,
   Download,
   Share2,
-  Sparkles,
+  BrainCircuit,
   CheckCircle2,
   Clock,
   TrendingUp,
@@ -125,7 +125,7 @@ export default function CodingResultsPage() {
             <div>
               <div className="flex items-center gap-2 mb-3">
                 <div className="flex items-center gap-1.5 bg-teal-500/15 text-teal-400 px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">
-                  <Sparkles className="w-3 h-3" />
+                  <BrainCircuit className="w-3 h-3" />
                   AI Feedback
                 </div>
                 <span className="text-[10px] text-slate-500">

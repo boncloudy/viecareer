@@ -8,7 +8,7 @@ import {
   Users,
   Video,
   Activity,
-  Sparkles,
+  BrainCircuit,
   ShieldAlert,
   Bell,
   LogOut

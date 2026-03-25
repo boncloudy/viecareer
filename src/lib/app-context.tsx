@@ -34,6 +34,12 @@ interface AppContextType {
   codeSubmitted: boolean;
   setCodeSubmitted: (v: boolean) => void;
 
+  // Recording state
+  interviewRecordingUrl: string;
+  setInterviewRecordingUrl: (url: string) => void;
+  interviewDuration: number;
+  setInterviewDuration: (secs: number) => void;
+
   // Helpers
   resetAll: () => void;
 }
@@ -52,6 +58,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [interviewCompleted, setInterviewCompleted] = useState(false);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [codeSubmitted, setCodeSubmitted] = useState(false);
+  const [interviewRecordingUrl, setInterviewRecordingUrl] = useState("");
+  const [interviewDuration, setInterviewDuration] = useState(0);
 
   const resetAll = useCallback(() => {
     setCurrentFlow("dashboard");
@@ -65,7 +73,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setInterviewCompleted(false);
     setQuestionsAnswered(0);
     setCodeSubmitted(false);
-  }, []);
+    if (interviewRecordingUrl) URL.revokeObjectURL(interviewRecordingUrl);
+    setInterviewRecordingUrl("");
+    setInterviewDuration(0);
+  }, [interviewRecordingUrl]);
 
   return (
     <AppContext.Provider
@@ -92,6 +103,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         setQuestionsAnswered,
         codeSubmitted,
         setCodeSubmitted,
+        interviewRecordingUrl,
+        setInterviewRecordingUrl,
+        interviewDuration,
+        setInterviewDuration,
         resetAll,
       }}
     >

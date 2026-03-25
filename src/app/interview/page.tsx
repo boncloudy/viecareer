@@ -18,7 +18,7 @@ import {
   Info,
   Users,
   MessageSquare,
-  Sparkles,
+  BrainCircuit,
   Code2,
   ChevronRight,
   Loader2,
@@ -83,6 +83,23 @@ export default function InterviewPage() {
   const [isVideoOff, setIsVideoOff] = useState(false);
   const [interviewEnded, setInterviewEnded] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerValRef = useRef(0); // mirror of timer for use in callbacks
+
+  // Camera & recording state
+  const videoElRef = useRef<HTMLVideoElement | null>(null);
+  const cameraStreamRef = useRef<MediaStream | null>(null);
+  const recorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+  const [cameraReady, setCameraReady] = useState(false);
+  const recordingSavedRef = useRef(false);
+
+  // Callback ref — attaches stream to <video> whenever it mounts
+  const setVideoRef = useCallback((el: HTMLVideoElement | null) => {
+    videoElRef.current = el;
+    if (el && cameraStreamRef.current) {
+      el.srcObject = cameraStreamRef.current;
+    }
+  }, []);
 
   // Realtime speech state
   const [status, setStatus] = useState<ConnectionStatus>("idle");
@@ -93,6 +110,9 @@ export default function InterviewPage() {
   const startedRef = useRef(false);
   const micStreamRef = useRef<MediaStream | null>(null);
 
+  // Keep timerValRef in sync
+  useEffect(() => { timerValRef.current = timer; }, [timer]);
+
   // Timer
   useEffect(() => {
     timerRef.current = setInterval(() => setTimer((t) => t + 1), 1000);
@@ -100,6 +120,104 @@ export default function InterviewPage() {
       if (timerRef.current) clearInterval(timerRef.current);
     };
   }, []);
+
+  // Camera + Recording init
+  useEffect(() => {
+    let cancelled = false;
+    let stream: MediaStream | null = null;
+
+    (async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { width: 640, height: 480, facingMode: "user" },
+          audio: true, // include audio so the recording captures voice
+        });
+        if (cancelled) { stream.getTracks().forEach((t) => t.stop()); return; }
+
+        cameraStreamRef.current = stream;
+        // Attach to video element if it's already mounted
+        if (videoElRef.current) {
+          videoElRef.current.srcObject = stream;
+        }
+        setCameraReady(true);
+
+        // Start recording
+        const mimeType = MediaRecorder.isTypeSupported("video/webm;codecs=vp9,opus")
+          ? "video/webm;codecs=vp9,opus"
+          : MediaRecorder.isTypeSupported("video/webm;codecs=vp8,opus")
+          ? "video/webm;codecs=vp8,opus"
+          : "video/webm";
+
+        const recorder = new MediaRecorder(stream, { mimeType });
+        chunksRef.current = [];
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunksRef.current.push(e.data);
+        };
+        recorder.start(1000);
+        recorderRef.current = recorder;
+      } catch {
+        if (!cancelled) setCameraReady(false);
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      if (recorderRef.current && recorderRef.current.state !== "inactive") {
+        recorderRef.current.stop();
+      }
+      if (stream) stream.getTracks().forEach((t) => t.stop());
+    };
+  }, []);
+
+  // Sync video track enabled state with isVideoOff
+  useEffect(() => {
+    if (cameraStreamRef.current) {
+      for (const track of cameraStreamRef.current.getVideoTracks()) {
+        track.enabled = !isVideoOff;
+      }
+    }
+  }, [isVideoOff]);
+
+  // ── Core: stop recorder → wait for blob → save → kill camera ──
+  const stopRecordingAndSave = useCallback((): Promise<void> => {
+    return new Promise((resolve) => {
+      // Already saved or no recorder
+      if (recordingSavedRef.current) { resolve(); return; }
+      recordingSavedRef.current = true;
+
+      const recorder = recorderRef.current;
+      if (!recorder || recorder.state === "inactive") {
+        // No active recorder — still save duration and kill camera
+        app.setInterviewDuration(timerValRef.current);
+        killCamera();
+        resolve();
+        return;
+      }
+
+      // Request any remaining data then stop
+      recorder.onstop = () => {
+        if (chunksRef.current.length > 0) {
+          const blob = new Blob(chunksRef.current, { type: recorder.mimeType || "video/webm" });
+          const url = URL.createObjectURL(blob);
+          app.setInterviewRecordingUrl(url);
+        }
+        app.setInterviewDuration(timerValRef.current);
+        killCamera();
+        resolve();
+      };
+      recorder.stop();
+    });
+  }, [app]);
+
+  const killCamera = () => {
+    if (cameraStreamRef.current) {
+      cameraStreamRef.current.getTracks().forEach((t) => t.stop());
+      cameraStreamRef.current = null;
+    }
+    if (videoElRef.current) {
+      videoElRef.current.srcObject = null;
+    }
+  };
 
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60)
@@ -230,26 +348,42 @@ export default function InterviewPage() {
     setIsMuted(newMuted);
   }, [isMuted]);
 
-  const handleEndInterview = useCallback(() => {
+  const handleEndInterview = useCallback(async () => {
     if (timerRef.current) clearInterval(timerRef.current);
     stopRealtime();
     startedRef.current = false;
+
+    // Save recording, then update state
+    await stopRecordingAndSave();
+    setCameraReady(false);
     setInterviewEnded(true);
     app.setQuestionsAnswered(5);
     app.setInterviewCompleted(true);
-  }, [app, stopRealtime]);
+  }, [app, stopRealtime, stopRecordingAndSave]);
 
-  const handleNextCodingInterview = useCallback(() => {
+  const handleNextCodingInterview = useCallback(async () => {
     if (timerRef.current) clearInterval(timerRef.current);
     stopRealtime();
+    startedRef.current = false;
+
+    // Save recording before navigating
+    await stopRecordingAndSave();
+    setCameraReady(false);
+    app.setQuestionsAnswered(5);
+    app.setInterviewCompleted(true);
     app.setCurrentFlow("coding");
     router.push("/coding");
-  }, [router, app, stopRealtime]);
+  }, [router, app, stopRealtime, stopRecordingAndSave]);
 
-  const handleGoToResults = useCallback(() => {
+  const handleGoToResults = useCallback(async () => {
+    if (timerRef.current) clearInterval(timerRef.current);
     stopRealtime();
+    startedRef.current = false;
+
+    await stopRecordingAndSave();
+    setCameraReady(false);
     router.push("/loading");
-  }, [router, stopRealtime]);
+  }, [router, stopRealtime, stopRecordingAndSave]);
 
   const statusLabel = {
     idle: "Initializing...",
@@ -297,16 +431,28 @@ export default function InterviewPage() {
         <div className="flex-1 flex flex-col items-center justify-center w-full max-w-4xl gap-6">
           {/* Video area — side by side */}
           <div className="flex gap-6 w-full flex-1 max-h-[60vh]">
-            {/* Candidate Video */}
+            {/* Candidate Video — Live Camera */}
             <div className="relative flex-1 bg-gradient-to-br from-slate-700 via-slate-600 to-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <Image
-                  src="/candidate-avatar.png"
-                  alt="Candidate"
-                  fill
-                  className="object-cover object-top"
+              {/* Live video feed */}
+              {cameraReady && !isVideoOff ? (
+                <video
+                  ref={setVideoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  className="absolute inset-0 w-full h-full object-cover"
+                  style={{ transform: "scaleX(-1)" }}
                 />
-              </div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Image
+                    src="/candidate-avatar.png"
+                    alt="Candidate"
+                    fill
+                    className="object-cover object-top"
+                  />
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
               {status === "connected" && !isMuted && (
                 <div className="absolute top-4 right-4">
@@ -341,7 +487,7 @@ export default function InterviewPage() {
                 </div>
               )}
               <div className="absolute bottom-4 left-4 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-lg px-3 py-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-[#5378EF]" />
+                <BrainCircuit className="w-3.5 h-3.5 text-[#5378EF]" />
                 <span className="text-sm text-white/90 font-medium">
                   AI Interviewer
                 </span>

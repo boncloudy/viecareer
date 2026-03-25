@@ -8,7 +8,7 @@ import {
   Plus,
   Minus,
   Linkedin,
-  Sparkles,
+  BrainCircuit,
   Facebook,
   Twitter,
 } from "lucide-react";
@@ -654,7 +654,7 @@ export default function VieCareer() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10">
             <div className="p-5 pb-8">
               <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-[#0F172A]" />
+                <BrainCircuit className="w-4 h-4 text-[#0F172A]" />
               </div>
               <span className="text-lg font-bold">VieCareer</span>
             </div>

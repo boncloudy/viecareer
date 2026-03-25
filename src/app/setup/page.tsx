@@ -13,8 +13,10 @@ import {
   userProfile,
   jobRequirements,
   atsMatchScore,
+  gapAnalysis,
 } from "@/lib/mock-data";
-import { Lock, ShieldCheck, ArrowRight, Sparkles, CheckCircle2, Loader2 } from "lucide-react";
+import type { GapSkill } from "@/lib/mock-data";
+import { Lock, ShieldCheck, ArrowRight, BrainCircuit, CheckCircle2, Loader2, AlertTriangle, XCircle, ChevronDown, ChevronUp } from "lucide-react";
 
 export default function SetupPage() {
   const router = useRouter();
@@ -30,6 +32,8 @@ export default function SetupPage() {
 
   const [isExtracting, setIsExtracting] = useState(false);
   const [showExtraction, setShowExtraction] = useState(false);
+
+  const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
 
   const jdUploadedRef = useRef(false);
   const cvUploadedRef = useRef(false);
@@ -163,7 +167,7 @@ export default function SetupPage() {
             {/* Header */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-[#5378EF]" />
+                <BrainCircuit className="w-5 h-5 text-[#5378EF]" />
                 <h2 className="text-xl font-bold text-[#191A23]">
                   AI Preview & Extraction
                 </h2>
@@ -289,6 +293,174 @@ export default function SetupPage() {
                     ))}
                   </ul>
                 </div>
+              </div>
+            </div>
+
+            {/* Gap Analysis Detail */}
+            <div className="mt-10 pt-8 border-t border-[#191A23]/10">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h3 className="text-lg font-bold text-[#191A23]">
+                    Gap Analysis Detail
+                  </h3>
+                  <p className="text-sm text-[#191A23]/50 mt-1">
+                    Breakdown of skill matches between your CV and the job description
+                  </p>
+                </div>
+                <div className="flex items-center gap-4 text-xs">
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+                    Matched
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+                    Partial
+                  </span>
+                  <span className="flex items-center gap-1.5">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    Missing
+                  </span>
+                </div>
+              </div>
+
+              {/* Summary Stats */}
+              <div className="grid grid-cols-3 gap-4 mb-6">
+                {(() => {
+                  const all = gapAnalysis.flatMap((c) => c.skills);
+                  const matched = all.filter((s) => s.status === "matched").length;
+                  const partial = all.filter((s) => s.status === "partial").length;
+                  const missing = all.filter((s) => s.status === "missing").length;
+                  return (
+                    <>
+                      <div className="bg-emerald-50 border-2 border-emerald-200 rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-emerald-600">{matched}</p>
+                        <p className="text-xs font-semibold text-emerald-600/70 uppercase tracking-wider mt-1">Skills Matched</p>
+                      </div>
+                      <div className="bg-amber-50 border-2 border-amber-200 rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-amber-600">{partial}</p>
+                        <p className="text-xs font-semibold text-amber-600/70 uppercase tracking-wider mt-1">Partial Match</p>
+                      </div>
+                      <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 text-center">
+                        <p className="text-2xl font-bold text-red-600">{missing}</p>
+                        <p className="text-xs font-semibold text-red-600/70 uppercase tracking-wider mt-1">Skills Missing</p>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* Category Breakdown */}
+              <div className="space-y-3">
+                {gapAnalysis.map((category) => {
+                  const isExpanded = expandedCategory === category.category;
+                  const matchedCount = category.skills.filter((s) => s.status === "matched").length;
+                  const totalCount = category.skills.length;
+
+                  return (
+                    <div
+                      key={category.category}
+                      className="border-2 border-[#191A23]/10 rounded-xl overflow-hidden"
+                    >
+                      {/* Category Header */}
+                      <button
+                        onClick={() => setExpandedCategory(isExpanded ? null : category.category)}
+                        className="w-full flex items-center justify-between p-4 hover:bg-[#F3F3F3] transition-colors text-left"
+                      >
+                        <div className="flex items-center gap-3">
+                          <span className="text-sm font-bold text-[#191A23]">
+                            {category.category}
+                          </span>
+                          <span className="text-xs text-[#191A23]/50">
+                            {matchedCount}/{totalCount} matched
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {/* Mini progress bar */}
+                          <div className="w-24 h-2 bg-[#191A23]/10 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${category.score}%`,
+                                backgroundColor: category.score >= 75 ? "#22C55E" : category.score >= 50 ? "#F59E0B" : "#EF4444",
+                              }}
+                            />
+                          </div>
+                          <span className="text-sm font-bold text-[#191A23] w-8 text-right">
+                            {category.score}%
+                          </span>
+                          {isExpanded ? (
+                            <ChevronUp className="w-4 h-4 text-[#191A23]/40" />
+                          ) : (
+                            <ChevronDown className="w-4 h-4 text-[#191A23]/40" />
+                          )}
+                        </div>
+                      </button>
+
+                      {/* Expanded Skills */}
+                      {isExpanded && (
+                        <div className="border-t border-[#191A23]/10 bg-[#FAFAFA]">
+                          {category.skills.map((skill: GapSkill) => (
+                            <div
+                              key={skill.skill}
+                              className="flex items-start gap-3 p-4 border-b border-[#191A23]/5 last:border-b-0"
+                            >
+                              {/* Status Icon */}
+                              <div className="mt-0.5">
+                                {skill.status === "matched" && (
+                                  <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+                                )}
+                                {skill.status === "partial" && (
+                                  <AlertTriangle className="w-5 h-5 text-amber-500" />
+                                )}
+                                {skill.status === "missing" && (
+                                  <XCircle className="w-5 h-5 text-red-500" />
+                                )}
+                              </div>
+
+                              {/* Skill Info */}
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="text-sm font-semibold text-[#191A23]">
+                                    {skill.skill}
+                                  </span>
+                                  <Badge
+                                    className={`text-[10px] px-2 py-0 ${
+                                      skill.status === "matched"
+                                        ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                                        : skill.status === "partial"
+                                        ? "bg-amber-100 text-amber-700 border-amber-200"
+                                        : "bg-red-100 text-red-700 border-red-200"
+                                    }`}
+                                  >
+                                    {skill.status === "matched" ? "Matched" : skill.status === "partial" ? "Partial" : "Missing"}
+                                  </Badge>
+                                </div>
+                                <div className="grid grid-cols-2 gap-4 mt-2">
+                                  <div>
+                                    <p className="text-[10px] font-semibold text-[#191A23]/40 uppercase tracking-wider mb-1">
+                                      Your CV
+                                    </p>
+                                    <p className="text-xs text-[#191A23]/70 leading-relaxed">
+                                      {skill.cvEvidence}
+                                    </p>
+                                  </div>
+                                  <div>
+                                    <p className="text-[10px] font-semibold text-[#191A23]/40 uppercase tracking-wider mb-1">
+                                      JD Requirement
+                                    </p>
+                                    <p className="text-xs text-[#191A23]/70 leading-relaxed">
+                                      {skill.jdRequirement}
+                                    </p>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

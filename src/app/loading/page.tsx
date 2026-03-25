@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, BrainCircuit, BarChart3, Search } from "lucide-react";
+import { BrainCircuit, BarChart3, Search } from "lucide-react";
 
 export default function LoadingResultPage() {
   const router = useRouter();
@@ -12,7 +12,7 @@ export default function LoadingResultPage() {
     { icon: <Search className="w-6 h-6" />, text: "Analyzing your responses..." },
     { icon: <BrainCircuit className="w-6 h-6" />, text: "Evaluating technical depth..." },
     { icon: <BarChart3 className="w-6 h-6" />, text: "Generating ATS matching report..." },
-    { icon: <Sparkles className="w-6 h-6" />, text: "Finalizing your performance score..." },
+    { icon: <BrainCircuit className="w-6 h-6" />, text: "Finalizing your performance score..." },
   ];
 
   useEffect(() => {
