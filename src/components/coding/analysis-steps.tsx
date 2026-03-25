@@ -9,7 +9,7 @@ import {
   Lightbulb,
   CheckCircle2,
   Loader2,
-  Sparkles,
+  BrainCircuit,
 } from "lucide-react";
 import type { FeedbackStep } from "@/lib/mock-data";
 
@@ -110,7 +110,7 @@ export default function AnalysisSteps({
           {/* Header Icon */}
           <div className="flex justify-center mb-6">
             <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border border-teal-500/30 flex items-center justify-center animate-pulse">
-              <Sparkles className="w-7 h-7 text-teal-400" />
+              <BrainCircuit className="w-7 h-7 text-teal-400" />
             </div>
           </div>
 
@@ -208,7 +208,7 @@ export default function AnalysisSteps({
           {/* Toast notification */}
           <div className="mt-8 bg-white/5 border border-white/10 rounded-xl p-4 flex items-start gap-3 animate-fade-in-up">
             <div className="w-8 h-8 bg-teal-500/15 rounded-lg flex items-center justify-center shrink-0">
-              <Sparkles className="w-4 h-4 text-teal-400" />
+              <BrainCircuit className="w-4 h-4 text-teal-400" />
             </div>
             <div>
               <p className="text-xs font-semibold text-white">
@@ -230,7 +230,7 @@ export default function AnalysisSteps({
       {/* Header */}
       <div className="flex justify-center mb-4">
         <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-teal-500/20 to-cyan-500/20 border border-teal-500/30 flex items-center justify-center animate-pulse">
-          <Sparkles className="w-5 h-5 text-teal-400" />
+          <BrainCircuit className="w-5 h-5 text-teal-400" />
         </div>
       </div>
       <div className="text-center mb-6">

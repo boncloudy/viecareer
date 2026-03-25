@@ -12,7 +12,7 @@ import {
   MessageSquare,
   LineChart,
   User,
-  Sparkles,
+  BrainCircuit,
   LogOut,
 } from "lucide-react";
 

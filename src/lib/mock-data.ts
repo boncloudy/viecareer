@@ -61,6 +61,52 @@ export const jobRequirements: JobRequirements = {
   ],
 };
 
+// ---------- Gap Analysis ----------
+export interface GapSkill {
+  skill: string;
+  status: "matched" | "partial" | "missing";
+  cvEvidence: string;
+  jdRequirement: string;
+}
+
+export interface GapCategory {
+  category: string;
+  score: number;
+  skills: GapSkill[];
+}
+
+export const gapAnalysis: GapCategory[] = [
+  {
+    category: "Technical Skills",
+    score: 75,
+    skills: [
+      { skill: "React", status: "matched", cvEvidence: "3 years experience with React, Redux, Hooks", jdRequirement: "Proficiency in React.js" },
+      { skill: "TypeScript", status: "partial", cvEvidence: "Listed as skill, no project examples", jdRequirement: "Strong TypeScript skills required" },
+      { skill: "RESTful API", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Experience with RESTful API design & integration" },
+      { skill: "Next.js", status: "matched", cvEvidence: "Built 2 projects with Next.js App Router", jdRequirement: "Experience with Next.js preferred" },
+      { skill: "Testing (Jest/Cypress)", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Unit & E2E testing experience" },
+    ],
+  },
+  {
+    category: "Soft Skills",
+    score: 80,
+    skills: [
+      { skill: "Team Collaboration", status: "matched", cvEvidence: "Led 4-person team in capstone project", jdRequirement: "Collaborate with cross-functional teams" },
+      { skill: "Communication", status: "partial", cvEvidence: "Presentation experience mentioned", jdRequirement: "Strong verbal & written communication" },
+      { skill: "Agile/Scrum", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Experience working in Agile environment" },
+    ],
+  },
+  {
+    category: "Experience & Education",
+    score: 60,
+    skills: [
+      { skill: "Bachelor's in CS", status: "matched", cvEvidence: "B.S. Computer Science, GPA 3.5", jdRequirement: "Bachelor's Degree in CS or related field" },
+      { skill: "2+ Years Experience", status: "missing", cvEvidence: "Internship + personal projects only", jdRequirement: "Minimum 2 years professional experience" },
+      { skill: "CI/CD Pipeline", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Familiarity with CI/CD workflows" },
+    ],
+  },
+];
+
 // ---------- ATS Match Score ----------
 export const atsMatchScore = 72;
 
@@ -581,6 +627,149 @@ export const profileNextSteps = [
   "Complete the TypeScript Advanced module",
   "Schedule your next mock interview",
   "Review System Design fundamentals",
+];
+
+// ---------- Interview History ----------
+export interface InterviewHistoryQA {
+  question: string;
+  answer: string;
+  score: number;
+  timestamp: string; // "mm:ss" — when this Q&A started in the recording
+}
+
+export interface InterviewHistoryEntry {
+  id: string;
+  date: string;
+  position: string;
+  type: "Technical" | "Behavioral" | "Mixed";
+  duration: string;
+  overallScore: number;
+  questionsAnswered: number;
+  qaPairs: InterviewHistoryQA[];
+  hasRecording: boolean;
+}
+
+export const interviewHistory: InterviewHistoryEntry[] = [
+  {
+    id: "IH001",
+    date: "2026-03-25",
+    position: "Frontend Developer Intern",
+    type: "Technical",
+    duration: "28:14",
+    overallScore: 85,
+    questionsAnswered: 5,
+    hasRecording: true,
+    qaPairs: [
+      {
+        question: "What is your experience with React state management?",
+        answer: "I have worked with React's built-in useState and useReducer hooks for local state management. For global state, I've used Context API in smaller projects and Redux Toolkit in larger applications.",
+        score: 80,
+        timestamp: "01:12",
+      },
+      {
+        question: "How do you approach building responsive and accessible user interfaces?",
+        answer: "I follow a mobile-first approach using CSS Flexbox and Grid for responsive layouts. I use Tailwind CSS utility classes for rapid responsive development. For accessibility, I ensure proper semantic HTML structure.",
+        score: 85,
+        timestamp: "06:34",
+      },
+      {
+        question: "Describe a challenging technical problem you solved.",
+        answer: "In a recent project, I encountered a complex state management issue where components were re-rendering unnecessarily, causing performance problems. I used React DevTools Profiler to identify the bottleneck.",
+        score: 88,
+        timestamp: "12:08",
+      },
+      {
+        question: "How do you handle API error states in a React application?",
+        answer: "I use try-catch blocks with async/await and maintain error state alongside loading and data states. I display user-friendly error messages and implement retry mechanisms where appropriate.",
+        score: 82,
+        timestamp: "18:41",
+      },
+      {
+        question: "Explain the difference between useMemo and useCallback.",
+        answer: "useMemo memoizes a computed value while useCallback memoizes a function reference. Both accept a dependency array and only recompute when dependencies change. They help prevent unnecessary re-renders.",
+        score: 90,
+        timestamp: "23:55",
+      },
+    ],
+  },
+  {
+    id: "IH002",
+    date: "2026-03-22",
+    position: "Frontend Developer Intern",
+    type: "Behavioral",
+    duration: "22:45",
+    overallScore: 78,
+    questionsAnswered: 4,
+    hasRecording: true,
+    qaPairs: [
+      {
+        question: "Tell me about a time you had to work under a tight deadline.",
+        answer: "During my university capstone project, we had 2 weeks to deliver a fully functional web app. I organized daily standups and broke the work into prioritized sprints.",
+        score: 82,
+        timestamp: "00:48",
+      },
+      {
+        question: "How do you handle disagreements with team members?",
+        answer: "I try to understand their perspective first by actively listening. Then I present my reasoning with data or examples. If we still disagree, I suggest we try the approach that is easiest to reverse.",
+        score: 75,
+        timestamp: "06:15",
+      },
+      {
+        question: "Describe a situation where you had to learn something quickly.",
+        answer: "When our team decided to migrate from REST to GraphQL mid-project, I had to learn Apollo Client in three days. I went through the official docs and built a small prototype first.",
+        score: 80,
+        timestamp: "12:30",
+      },
+      {
+        question: "What motivates you to pursue a career in frontend development?",
+        answer: "I love the immediate visual feedback of building interfaces. Seeing users interact with something I built is very rewarding. I'm also drawn to the rapid evolution of the frontend ecosystem.",
+        score: 76,
+        timestamp: "17:52",
+      },
+    ],
+  },
+  {
+    id: "IH003",
+    date: "2026-03-18",
+    position: "React Developer",
+    type: "Technical",
+    duration: "35:02",
+    overallScore: 72,
+    questionsAnswered: 5,
+    hasRecording: false,
+    qaPairs: [
+      {
+        question: "What is the virtual DOM and how does React use it?",
+        answer: "The virtual DOM is a lightweight JavaScript representation of the real DOM. React uses it to batch updates and minimize direct DOM manipulation by comparing the previous and new virtual DOM trees.",
+        score: 85,
+        timestamp: "01:05",
+      },
+      {
+        question: "Explain how React's reconciliation algorithm works.",
+        answer: "React compares the old and new virtual DOM trees using a diffing algorithm. It assumes elements of different types produce different trees, and uses keys to identify which items changed in lists.",
+        score: 70,
+        timestamp: "08:20",
+      },
+      {
+        question: "How would you optimize a slow React application?",
+        answer: "I would use React DevTools Profiler to identify bottlenecks, then apply React.memo, useMemo, and useCallback where needed. I'd also consider code splitting and lazy loading.",
+        score: 68,
+        timestamp: "15:44",
+      },
+      {
+        question: "What are React Server Components?",
+        answer: "Server Components render on the server and send HTML to the client, reducing the JavaScript bundle size. They can access backend resources directly but cannot use hooks or browser APIs.",
+        score: 72,
+        timestamp: "22:18",
+      },
+      {
+        question: "Describe how you would implement authentication in a Next.js app.",
+        answer: "I would use NextAuth.js or a similar library, set up JWT or session-based auth with middleware to protect routes. For sensitive pages, I'd use server-side session validation.",
+        score: 65,
+        timestamp: "28:36",
+      },
+    ],
+  },
 ];
 
 export const MOCK_USER = {

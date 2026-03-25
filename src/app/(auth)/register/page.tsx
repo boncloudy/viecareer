@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Sparkles, User, Mail, Lock, ShieldCheck } from "lucide-react";
+import { BrainCircuit, User, Mail, Lock, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {

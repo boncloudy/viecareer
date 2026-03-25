@@ -10,7 +10,7 @@ import {
   ChevronDown,
   Play,
   Send,
-  Sparkles,
+  BrainCircuit,
   Loader2,
   CheckCircle2,
   Mic,
@@ -29,7 +29,6 @@ import {
   Check,
   RotateCcw,
   Code2,
-  BrainCircuit,
   Zap,
   LogOut,
   Code,
@@ -43,6 +42,7 @@ import {
 import CodeEditor from "@/components/coding/code-editor";
 import TestCasePanel from "@/components/coding/test-case-panel";
 import AnalysisSteps from "@/components/coding/analysis-steps";
+import AlgorithmDiagram from "@/components/coding/algorithm-diagram";
 
 type ProblemTab = "description" | "testcases" | "hint";
 type EditorTab = "code" | "diagram";
@@ -555,17 +555,7 @@ export default function CodingPage() {
             </>
           ) : (
             /* AI Diagram tab content */
-            <div className="flex-1 flex items-center justify-center bg-[#111827]">
-              <div className="text-center">
-                <BrainCircuit className="w-12 h-12 text-teal-500/30 mx-auto mb-3" />
-                <p className="text-sm text-slate-400 font-medium">
-                  AI Diagram Visualization
-                </p>
-                <p className="text-xs text-slate-600 mt-1">
-                  Visual representation of your algorithm flow
-                </p>
-              </div>
-            </div>
+            <AlgorithmDiagram />
           )}
         </div>
 
