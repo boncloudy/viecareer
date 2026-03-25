@@ -34,7 +34,7 @@ export default function ActionPlanPage() {
                 <span className="text-[10px] font-black text-[#5378EF] uppercase tracking-[.2em]">Personalized Learning Path</span>
               </div>
               <h1 className="text-4xl font-black text-[#191A23] tracking-tight">Growth Roadmap</h1>
-              <p className="text-[#191A23]/60 mt-2">Strategically closing your gaps for <span className="font-bold text-[#191A23] underline decoration-[#5378EF]">Senior Software Engineer</span> roles.</p>
+              <p className="text-[#191A23]/60 mt-2">Strategically closing your gaps for <span className="font-bold text-[#191A23] underline decoration-[#5378EF]">Frontend Developer Intern</span> roles.</p>
             </div>
             <div className="text-right">
               <p className="text-sm font-bold text-[#191A23]/40 uppercase tracking-widest mb-1">Overall Progress</p>

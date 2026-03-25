@@ -16,180 +16,9 @@ const NUDGES = [
 ];
 
 // ---------------------------------------------------------------------------
-// Rule-based engine
+// API config
 // ---------------------------------------------------------------------------
-type Rule = { pattern: RegExp; response: string };
-
-const RULES: Rule[] = [
-  {
-    pattern: /road[\s-]?map|what should i (learn|study)|where (do i |to )?start|learning path|study plan/i,
-    response: `Alright bestie 🚀 here's your **career glow-up roadmap**:
-
-**🧩 Phase 1 – Foundation** ("don't panic, take it slow")
-- Master HTML, CSS, JavaScript basics
-- Understand Git (no more "why did my code disappear??" 💀)
-- Build small projects: landing page, todo app
-
-**⚡ Phase 2 – Level Up** (time to cook 🔥)
-- Learn ReactJS: components, hooks, state management
-- API calling with fetch / axios
-- UI/UX basics — make it look good, not just run 😭
-
-**🧠 Phase 3 – Real-World Skills**
-- Team workflow: GitHub, pull requests, merge conflicts 💀
-- Testing & debugging (console.log is your best friend fr)
-- Performance optimization — no one likes a slow app
-
-**💼 Phase 4 – Career Mode**
-- Build a portfolio (projects + clean UI = instant rizz)
-- Practice interview questions
-- Apply for internships / jobs
-
-👉 **Final boss:** Become a Frontend Dev with real-world experience 💯`,
-  },
-  {
-    pattern: /\b(job|position|role|career|apply|suitable|fit for|good for|ready for)\b/i,
-    response: `Based on your current stats 📊 (not bad at all 👀), you're ready for:
-
-**🎯 Recommended Roles:**
-
-- **Intern Front-End Developer at FPT IS**
-- **Frontend ReactJS Developer**
-
-**💬 Why you fit:**
-- You know React (or at least survived it 😭)
-- You've built real projects (not just tutorial copy-paste… right? 👀)
-- You're ready to learn — I mean *suffer* — in real projects
-
-👉 **Verdict: Intern-level Frontend Dev — 100% valid 🎯**`,
-  },
-  {
-    pattern: /scar(ed|y)|nerv(ous|ous about)|anxious|afraid|fear(ful)?|worried about (interview|presenting)/i,
-    response: `First of all… SAME 💀
-
-But here's how to not flop:
-
-- **Practice common questions** — Google is free bro
-- **Prepare your project stories:** how you built it, what broke, how you fixed it
-- **Fake confidence** — yes, it works 💅
-- **If you don't know** → say it honestly + explain your thinking out loud
-
-👉 Interviewers don't expect a genius. They want *someone who doesn't give up after 5 minutes* 🔥`,
-  },
-  {
-    pattern: /\b(fail|failed|failing|reject(ed)?|didn.?t pass|didn.?t make it|not selected)\b/i,
-    response: `Congrats 🎉 you just unlocked:
-
-**🧠 Character Development Arc**
-
-- You gain +100 experience points
-- You learn exactly which questions you need to prep
-- You come back stronger (anime training arc fr 🔥)
-
-👉 Failing an interview **≠** you're bad
-👉 It just means: **not yet, bro**
-
-Every rejection is the game telling you to grind a bit more 🎮`,
-  },
-  {
-    pattern: /what (kind of |type of )?(questions?|things?).*(ask|expect|prepare)|interview questions?|what.*(they|do they).*(ask|want)/i,
-    response: `Expect a combo meal 🍔:
-
-**💻 Technical:**
-- What is React? (explain like I'm 5)
-- Difference between state & props
-- How does an API work
-- JS basics: closure, async/await, \`this\` keyword
-
-**🧠 Behavioral:**
-- "Tell me about yourself" (a.k.a. sell yourself time)
-- Your biggest challenge
-- A team conflict you resolved (yes, the drama 💀)
-- Why this company?
-
-👉 **Tip:** If you can explain it to a 5-year-old → you win 🏆`,
-  },
-  {
-    pattern: /stand[\s-]?out|differentiat(e|ing)|impress|get noticed|be (different|unique|better)/i,
-    response: `Easy formula for standing out 😎:
-
-- Have **real projects** (not 20 todo app clones please 😭)
-- **Clean UI** — recruiters genuinely love pretty things
-- **Explain clearly + confidently**, even if you're shaking inside
-- Show a **learning mindset** — not "I know everything" energy
-
-👉 **Bonus:** If you make the interviewer smile = instant +10 points 😎✨`,
-  },
-  {
-    pattern: /\b(advice|tip|tips|suggest(ion)?|recommend|final|last|what should i do|help me|guide me)\b/i,
-    response: `Okay bestie, real talk 🫂:
-
-- **Don't overthink** — done > perfect
-- **Don't compare yourself** to seniors (they were juniors once too 💀)
-- Just be **slightly better than yesterday** — that's literally it
-
-👉 Career is not a speedrun. It's an **open-world game** 🎮
-
-You got this. If not… we pretend we got this 💀✨`,
-  },
-  {
-    pattern: /\b(resume|cv|cover letter|portfolio|profile)\b/i,
-    response: `CV time 📄 let's make it slap:
-
-- **1 page max** — no recruiter wants to read a novel
-- **Lead with projects**, not just your education
-- Use numbers: *"Reduced load time by 40%"* > *"Improved performance"*
-- **Clean layout > fancy design** — ATS can't read your fancy tables 😭
-
-👉 Rule of thumb: If your grandma can't understand what you did → rewrite it 👵`,
-  },
-  {
-    pattern: /mock[\s-]?interview|practice (interview|session)|ai interview|simulate|coding (test|challenge|feedback)/i,
-    response: `Oh you want to practice? Let's GO 🎯
-
-On **VieCareer** you can:
-- 🎤 **AI Mock Interview** — real questions, real pressure, zero judgment
-- 💻 **AI Code Feedback** — submit your code, get roasted (nicely 😅)
-- 📄 **Resume Analysis** — AI tells you exactly what's weak
-
-👉 Hit **"Start Interview"** on your dashboard. No excuses now 😤`,
-  },
-  {
-    pattern: /^(hi+|hey+|hello+|yo+|sup|what.?s up|howdy|hiya)\b/i,
-    response: `Yo! 👋 What's good?
-
-I'm **VieBot** — your AI career bestie 🤖✨
-
-You can ask me about:
-- 🗺️ Your **learning roadmap**
-- 💼 **Job positions** you're ready for
-- 🎤 **Interview tips** and prep
-- 📄 **Resume & portfolio** advice
-- 😤 What to do when you feel like giving up
-
-What are we cooking today? 🔥`,
-  },
-];
-
-const FALLBACK = `Hmm, that's a tough one ngl 🤔
-
-I'm still expanding my knowledge every day (just like you bestie 💪).
-
-Try asking me about:
-- Your **roadmap** 🗺️
-- **Job positions** you're suitable for 💼
-- **Interview tips** 🎤
-- How to **stand out** ✨
-- **Resume** advice 📄
-
-Or just tell me what's on your mind 🫂`;
-
-function getRuleBasedResponse(input: string): string {
-  for (const rule of RULES) {
-    if (rule.pattern.test(input)) return rule.response;
-  }
-  return FALLBACK;
-}
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "https://backend-s5l3.onrender.com";
 
 // ---------------------------------------------------------------------------
 // Markdown renderer
@@ -258,19 +87,42 @@ export function ChatbotBubble() {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [open, messages]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     const trimmed = input.trim();
     if (!trimmed || loading) return;
 
-    setMessages((prev) => [...prev, { role: "user", text: trimmed }]);
+    const newMessages: Message[] = [...messages, { role: "user", text: trimmed }];
+    setMessages(newMessages);
     setInput("");
     setLoading(true);
 
-    setTimeout(() => {
-      const response = getRuleBasedResponse(trimmed);
-      setMessages((prev) => [...prev, { role: "ai", text: response }]);
+    try {
+      // Build conversation history (skip the initial AI greeting)
+      const history = newMessages
+        .slice(1) // skip initial greeting
+        .slice(0, -1) // exclude the current message (sent separately)
+        .map((m) => ({
+          role: m.role === "ai" ? "assistant" : "user",
+          content: m.text,
+        }));
+
+      const res = await fetch(`${API_BASE}/chat/viebot`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: trimmed, history }),
+      });
+
+      if (!res.ok) throw new Error("API error");
+      const data = await res.json();
+      setMessages((prev) => [...prev, { role: "ai", text: data.reply }]);
+    } catch {
+      setMessages((prev) => [
+        ...prev,
+        { role: "ai", text: "Oops, something went wrong 😅 Try again in a sec!" },
+      ]);
+    } finally {
       setLoading(false);
-    }, 600);
+    }
   };
 
   return (

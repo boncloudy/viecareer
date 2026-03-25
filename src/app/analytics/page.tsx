@@ -53,7 +53,7 @@ export default function AnalyticsPage() {
               Post-Interview Analytics
             </h1>
             <p className="text-[#191A23]/60">
-              Senior Software Engineer Role - TechFlow Systems
+              Frontend Developer Intern - TechFlow Systems
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -62,7 +62,7 @@ export default function AnalyticsPage() {
               className="border-2 border-[#191A23] text-[#191A23] gap-2 rounded-full hover:bg-[#F3F3F3]"
             >
               <Share2 className="w-4 h-4" />
-              Share with University
+              Share your result
             </Button>
             <Button className="bg-[#191A23] hover:bg-[#5378EF] text-white gap-2 rounded-full transition-colors">
               <Download className="w-4 h-4" />
@@ -76,7 +76,7 @@ export default function AnalyticsPage() {
           {/* JRI Score */}
           <Card className="p-8 text-center border-2 border-[#191A23] shadow-[4px_4px_0_#191A23] rounded-2xl bg-white">
             <h2 className="text-lg font-bold text-[#191A23] mb-6">
-              Job Delivery Index
+              Job Readiness Index
             </h2>
             <CircularScore
               score={finaljriScore}
