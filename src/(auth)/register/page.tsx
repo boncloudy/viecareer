@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Sparkles, User, Mail, Lock, ShieldCheck } from "lucide-react";
+import { BrainCircuit, User, Mail, Lock, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
@@ -17,7 +17,7 @@ export default function RegisterPage() {
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <div className="flex justify-center">
                     <div className="w-12 h-12 bg-teal-500 rounded-xl flex items-center justify-center shadow-lg shadow-teal-500/20">
-                        <Sparkles className="w-6 h-6 text-white" />
+                        <BrainCircuit className="w-6 h-6 text-white" />
                     </div>
                 </div>
                 <h2 className="mt-6 text-center text-3xl font-black text-slate-900 tracking-tight">

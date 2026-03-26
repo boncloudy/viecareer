@@ -2,7 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
-import { Sparkles, Mail, Lock, ArrowRight } from "lucide-react";
+import { BrainCircuit, Mail, Lock, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function LoginPage() {

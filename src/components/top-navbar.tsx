@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Bell, Sparkles, LogOut } from "lucide-react";
+import { Bell, BrainCircuit, LogOut } from "lucide-react";
 import Image from "next/image";
 
 const navLinks = [

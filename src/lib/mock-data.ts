@@ -61,6 +61,52 @@ export const jobRequirements: JobRequirements = {
   ],
 };
 
+// ---------- Gap Analysis ----------
+export interface GapSkill {
+  skill: string;
+  status: "matched" | "partial" | "missing";
+  cvEvidence: string;
+  jdRequirement: string;
+}
+
+export interface GapCategory {
+  category: string;
+  score: number;
+  skills: GapSkill[];
+}
+
+export const gapAnalysis: GapCategory[] = [
+  {
+    category: "Technical Skills",
+    score: 75,
+    skills: [
+      { skill: "React", status: "matched", cvEvidence: "3 years experience with React, Redux, Hooks", jdRequirement: "Proficiency in React.js" },
+      { skill: "TypeScript", status: "partial", cvEvidence: "Listed as skill, no project examples", jdRequirement: "Strong TypeScript skills required" },
+      { skill: "RESTful API", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Experience with RESTful API design & integration" },
+      { skill: "Next.js", status: "matched", cvEvidence: "Built 2 projects with Next.js App Router", jdRequirement: "Experience with Next.js preferred" },
+      { skill: "Testing (Jest/Cypress)", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Unit & E2E testing experience" },
+    ],
+  },
+  {
+    category: "Soft Skills",
+    score: 80,
+    skills: [
+      { skill: "Team Collaboration", status: "matched", cvEvidence: "Led 4-person team in capstone project", jdRequirement: "Collaborate with cross-functional teams" },
+      { skill: "Communication", status: "partial", cvEvidence: "Presentation experience mentioned", jdRequirement: "Strong verbal & written communication" },
+      { skill: "Agile/Scrum", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Experience working in Agile environment" },
+    ],
+  },
+  {
+    category: "Experience & Education",
+    score: 60,
+    skills: [
+      { skill: "Bachelor's in CS", status: "matched", cvEvidence: "B.S. Computer Science, GPA 3.5", jdRequirement: "Bachelor's Degree in CS or related field" },
+      { skill: "2+ Years Experience", status: "missing", cvEvidence: "Internship + personal projects only", jdRequirement: "Minimum 2 years professional experience" },
+      { skill: "CI/CD Pipeline", status: "missing", cvEvidence: "Not mentioned in CV", jdRequirement: "Familiarity with CI/CD workflows" },
+    ],
+  },
+];
+
 // ---------- ATS Match Score ----------
 export const atsMatchScore = 72;
 
@@ -377,6 +423,11 @@ export const adminRevenueData = [
   { month: "Jun", revenue: 125400000 },
 ];
 
+// --- Admin Synced Statistics (matches Overview KPIs) ---
+export const adminUserStats = { total: 2845, active: 2790, suspended: 12, pending: 43 };
+export const adminSessionStats = { total: 842, completed: 756, inProgress: 24, scheduled: 62, avgScore: 76 };
+export const adminActivityStats = { total: 3284, today: 147 };
+
 // --- Admin Users Management ---
 export type UserStatus = "Active" | "Suspended" | "Pending";
 export type UserPlan = "Free" | "Pro" | "Team";
@@ -455,10 +506,110 @@ export const adminUsers: AdminUser[] = [
     birthYear: 1997, university: "RMIT University", skills: ["Project Management", "Agile", "Scrum"], targetProfile: "Product Manager", quotaUsed: 310, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Product Manager", company: "Momo", status: "Offered" }]
   },
-  { 
+  {
     id: "U010", name: "Tran Quoc Huy", email: "huy.tq@uet.edu.vn", role: "Student", status: "Pending", plan: "Free", joinDate: "2025-03-18", lastActive: "1 day ago", totalSessions: 1, avatarInitials: "TH", avatarColor: "bg-violet-500",
     birthYear: 2004, university: "University of Engineering and Technology (UET)", skills: ["Machine Learning", "Pytorch"], targetProfile: "AI Engineer Intern", quotaUsed: 1, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Push"],
     appliedJobs: []
+  },
+  {
+    id: "U011", name: "Cao Minh Tuan", email: "tuan.cao@gmail.com", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-01-08", lastActive: "15 mins ago", totalSessions: 19, avatarInitials: "CT", avatarColor: "bg-sky-500",
+    birthYear: 2001, university: "Hanoi University of Science and Technology (HUST)", skills: ["React Native", "Flutter", "Dart"], targetProfile: "Mobile Developer", quotaUsed: 18, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Mobile Dev", company: "Tiki", status: "Interviewing" }]
+  },
+  {
+    id: "U012", name: "Nguyen Hoang Anh", email: "anh.nh@tech.vn", role: "Job Seeker", status: "Active", plan: "Free", joinDate: "2025-02-20", lastActive: "4 hours ago", totalSessions: 5, avatarInitials: "NA", avatarColor: "bg-lime-600",
+    birthYear: 2003, university: "Ho Chi Minh City University of Technology (HCMUT)", skills: ["Python", "Django", "PostgreSQL"], targetProfile: "Python Developer", quotaUsed: 5, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: [{ title: "Python Dev", company: "Axon Active", status: "Applied" }]
+  },
+  {
+    id: "U013", name: "Phan Thanh Son", email: "son.phan@outlook.com", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-15", lastActive: "20 mins ago", totalSessions: 36, avatarInitials: "PS", avatarColor: "bg-teal-600",
+    birthYear: 1999, university: "Da Nang University of Science and Technology (DUT)", skills: ["Node.js", "React", "MongoDB", "GraphQL"], targetProfile: "Full Stack Developer", quotaUsed: 32, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Full Stack Dev", company: "NashTech", status: "Interviewing" }, { title: "Senior Frontend", company: "Ến VNG", status: "Applied" }]
+  },
+  {
+    id: "U014", name: "Do Thi Ngoc", email: "ngoc.do@company.vn", role: "Job Seeker", status: "Suspended", plan: "Free", joinDate: "2025-01-22", lastActive: "25 days ago", totalSessions: 3, avatarInitials: "DN", avatarColor: "bg-pink-500",
+    birthYear: 2000, university: "Vietnam National University (VNU)", skills: ["Project Management", "Notion", "Jira"], targetProfile: "Project Manager", quotaUsed: 3, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: []
+  },
+  {
+    id: "U015", name: "Ly Quang Hai", email: "hai.ly@devops.io", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-09-18", lastActive: "8 mins ago", totalSessions: 72, avatarInitials: "LH", avatarColor: "bg-red-500",
+    birthYear: 1997, university: "Posts and Telecommunications Institute of Technology (PTIT)", skills: ["Terraform", "AWS", "CI/CD", "Linux"], targetProfile: "Cloud Engineer", quotaUsed: 245, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
+    appliedJobs: [{ title: "Cloud Architect", company: "FPT Cloud", status: "Offered" }, { title: "DevOps Lead", company: "Viettel IDC", status: "Interviewing" }]
+  },
+  {
+    id: "U016", name: "Vu Thi Thao", email: "thao.vu@design.co", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-01-12", lastActive: "1 hour ago", totalSessions: 14, avatarInitials: "VT", avatarColor: "bg-fuchsia-500",
+    birthYear: 2002, university: "University of Fine Arts (HCMC)", skills: ["Figma", "Adobe XD", "User Research", "Prototyping"], targetProfile: "UX Designer", quotaUsed: 12, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "UX Designer", company: "ZaloPay", status: "Applied" }, { title: "Product Designer", company: "Momo", status: "Interviewing" }]
+  },
+  {
+    id: "U017", name: "Trinh Duc Manh", email: "manh.td@student.edu.vn", role: "Student", status: "Pending", plan: "Free", joinDate: "2025-03-20", lastActive: "2 days ago", totalSessions: 0, avatarInitials: "TM", avatarColor: "bg-zinc-500",
+    birthYear: 2005, university: "FPT University (Can Tho)", skills: ["C#", ".NET", "SQL Server"], targetProfile: ".NET Intern", quotaUsed: 0, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: []
+  },
+  {
+    id: "U018", name: "Lam Thi Kim", email: "kim.lam@data.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-11-08", lastActive: "45 mins ago", totalSessions: 28, avatarInitials: "LK", avatarColor: "bg-yellow-500",
+    birthYear: 2000, university: "University of Science (HCMUS)", skills: ["Python", "TensorFlow", "Spark", "SQL"], targetProfile: "Data Scientist", quotaUsed: 27, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Data Scientist", company: "VinAI", status: "Interviewing" }]
+  },
+  {
+    id: "U019", name: "Ngo Van Thanh", email: "thanh.ngo@dev.com", role: "Job Seeker", status: "Suspended", plan: "Pro", joinDate: "2025-02-01", lastActive: "18 days ago", totalSessions: 11, avatarInitials: "NT", avatarColor: "bg-stone-500",
+    birthYear: 1998, university: "Ton Duc Thang University (TDTU)", skills: ["Java", "Spring Boot", "Kafka"], targetProfile: "Backend Engineer", quotaUsed: 45, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email"],
+    appliedJobs: [{ title: "Java Dev", company: "TechcomBank", status: "Rejected" }]
+  },
+  {
+    id: "U020", name: "Duong Thi Yen", email: "yen.duong@marketing.vn", role: "Job Seeker", status: "Active", plan: "Free", joinDate: "2025-02-28", lastActive: "3 hours ago", totalSessions: 7, avatarInitials: "DY", avatarColor: "bg-rose-400",
+    birthYear: 2002, university: "National Economics University (NEU)", skills: ["SEO", "Google Ads", "Content Strategy"], targetProfile: "Digital Marketing Specialist", quotaUsed: 7, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: [{ title: "Marketing Exec", company: "Sendo", status: "Applied" }]
+  },
+  {
+    id: "U021", name: "Ha Minh Phuc", email: "phuc.ha@ai.tech", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-10-25", lastActive: "10 mins ago", totalSessions: 45, avatarInitials: "HP", avatarColor: "bg-blue-600",
+    birthYear: 1999, university: "Hanoi University of Science and Technology (HUST)", skills: ["PyTorch", "NLP", "Computer Vision", "MLOps"], targetProfile: "ML Engineer", quotaUsed: 38, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "ML Engineer", company: "VinAI Research", status: "Offered" }, { title: "AI Engineer", company: "FPT.AI", status: "Interviewing" }]
+  },
+  {
+    id: "U022", name: "Truong Thi Ly", email: "ly.truong@pm.co", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-08-15", lastActive: "Just now", totalSessions: 95, avatarInitials: "TL", avatarColor: "bg-emerald-600",
+    birthYear: 1996, university: "RMIT University Vietnam", skills: ["Scrum", "Stakeholder Management", "Roadmapping", "OKRs"], targetProfile: "Senior Product Manager", quotaUsed: 380, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
+    appliedJobs: [{ title: "Head of Product", company: "Tiki", status: "Interviewing" }]
+  },
+  {
+    id: "U023", name: "Mai Van Hieu", email: "hieu.mai@student.fpt.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-03-05", lastActive: "6 hours ago", totalSessions: 3, avatarInitials: "MH", avatarColor: "bg-cyan-600",
+    birthYear: 2005, university: "FPT University (Hanoi)", skills: ["JavaScript", "HTML/CSS", "Bootstrap"], targetProfile: "Web Developer Intern", quotaUsed: 3, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: [{ title: "Frontend Intern", company: "CMC Global", status: "Applied" }]
+  },
+  {
+    id: "U024", name: "Dinh Thi Cam", email: "cam.dinh@gmail.com", role: "Student", status: "Pending", plan: "Free", joinDate: "2025-03-22", lastActive: "5 hours ago", totalSessions: 0, avatarInitials: "DC", avatarColor: "bg-amber-600",
+    birthYear: 2004, university: "Banking Academy of Vietnam", skills: ["Excel", "Power BI", "Financial Analysis"], targetProfile: "Finance Intern", quotaUsed: 0, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: []
+  },
+  {
+    id: "U025", name: "Le Quoc Dat", email: "dat.le@frontend.dev", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-20", lastActive: "25 mins ago", totalSessions: 33, avatarInitials: "LD", avatarColor: "bg-indigo-600",
+    birthYear: 2000, university: "University of Information Technology (UIT)", skills: ["Vue.js", "Nuxt.js", "TypeScript", "Tailwind"], targetProfile: "Frontend Developer", quotaUsed: 29, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Frontend Dev", company: "KMS Technology", status: "Interviewing" }, { title: "Vue.js Dev", company: "NashTech", status: "Applied" }]
+  },
+  {
+    id: "U026", name: "Bui Van Tai", email: "tai.bui@qa.vn", role: "Job Seeker", status: "Active", plan: "Free", joinDate: "2025-02-10", lastActive: "2 hours ago", totalSessions: 9, avatarInitials: "BT", avatarColor: "bg-orange-600",
+    birthYear: 2001, university: "Hanoi University of Industry (HaUI)", skills: ["Selenium", "Cypress", "API Testing", "Jira"], targetProfile: "QA Automation Engineer", quotaUsed: 9, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    appliedJobs: [{ title: "QA Engineer", company: "TMA Solutions", status: "Applied" }]
+  },
+  {
+    id: "U027", name: "Tran Thi Huong", email: "huong.tt@cloud.io", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-11-30", lastActive: "35 mins ago", totalSessions: 22, avatarInitials: "TH", avatarColor: "bg-violet-600",
+    birthYear: 1999, university: "Da Nang University of Science and Technology (DUT)", skills: ["Java", "Spring Cloud", "Microservices", "RabbitMQ"], targetProfile: "Java Backend Developer", quotaUsed: 20, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Backend Dev", company: "TechcomBank", status: "Interviewing" }, { title: "Java Engineer", company: "VPBank", status: "Applied" }]
+  },
+  {
+    id: "U028", name: "Hoang Minh Quang", email: "quang.hm@student.hust.edu.vn", role: "Student", status: "Active", plan: "Free", joinDate: "2025-03-08", lastActive: "1 day ago", totalSessions: 4, avatarInitials: "HQ", avatarColor: "bg-teal-400",
+    birthYear: 2004, university: "Hanoi University of Science and Technology (HUST)", skills: ["C++", "Algorithms", "Data Structures"], targetProfile: "Software Engineer Intern", quotaUsed: 4, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Push"],
+    appliedJobs: [{ title: "SWE Intern", company: "Google APAC", status: "Applied" }]
+  },
+  {
+    id: "U029", name: "Nguyen Thi Thuy", email: "thuy.nt@product.co", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-09-05", lastActive: "3 mins ago", totalSessions: 68, avatarInitials: "NT", avatarColor: "bg-purple-600",
+    birthYear: 1997, university: "Foreign Trade University (FTU)", skills: ["Product Strategy", "A/B Testing", "SQL", "Amplitude"], targetProfile: "Product Manager", quotaUsed: 290, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
+    appliedJobs: [{ title: "Senior PM", company: "Shopee", status: "Offered" }, { title: "Product Lead", company: "Grab", status: "Interviewing" }]
+  },
+  {
+    id: "U030", name: "Vo Duc Thinh", email: "thinh.vd@blockchain.dev", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-01-05", lastActive: "50 mins ago", totalSessions: 16, avatarInitials: "VT", avatarColor: "bg-slate-600",
+    birthYear: 2000, university: "Ho Chi Minh City University of Technology (HCMUT)", skills: ["Solidity", "Web3.js", "Ethereum", "Rust"], targetProfile: "Blockchain Developer", quotaUsed: 14, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    appliedJobs: [{ title: "Smart Contract Dev", company: "Sky Mavis", status: "Interviewing" }]
   },
 ];
 
@@ -492,6 +643,21 @@ export const adminSessions: AdminSession[] = [
   { id: "S008", userId: "U004", userName: "Pham Van Khoa", position: "Senior React Dev", company: "Grab Vietnam", date: "2026-03-16 10:00", duration: "60 min", score: 88, status: "Completed", type: "Coding", avatarInitials: "PK", avatarColor: "bg-orange-500" },
   { id: "S009", userId: "U001", userName: "Nguyen Thi Lan", position: "Frontend Developer Intern", company: "FPT Software", date: "2026-03-15 14:30", duration: "35 min", score: 79, status: "Completed", type: "Behavioral", avatarInitials: "NL", avatarColor: "bg-teal-500" },
   { id: "S010", userId: "U010", userName: "Tran Quoc Huy", position: "ML Engineer Intern", company: "VinAI", date: "2026-03-19 16:00", duration: "—", score: null, status: "Scheduled", type: "Technical", avatarInitials: "TH", avatarColor: "bg-violet-500" },
+  { id: "S011", userId: "U011", userName: "Cao Minh Tuan", position: "Mobile Developer", company: "Tiki", date: "2026-03-19 11:00", duration: "44 min", score: 81, status: "Completed", type: "Technical", avatarInitials: "CT", avatarColor: "bg-sky-500" },
+  { id: "S012", userId: "U013", userName: "Phan Thanh Son", position: "Full Stack Developer", company: "NashTech", date: "2026-03-19 14:30", duration: "—", score: null, status: "In Progress", type: "Mixed", avatarInitials: "PS", avatarColor: "bg-teal-600" },
+  { id: "S013", userId: "U015", userName: "Ly Quang Hai", position: "Cloud Architect", company: "FPT Cloud", date: "2026-03-18 09:00", duration: "58 min", score: 91, status: "Completed", type: "Technical", avatarInitials: "LH", avatarColor: "bg-red-500" },
+  { id: "S014", userId: "U016", userName: "Vu Thi Thao", position: "UX Designer", company: "ZaloPay", date: "2026-03-18 14:00", duration: "40 min", score: 77, status: "Completed", type: "Behavioral", avatarInitials: "VT", avatarColor: "bg-fuchsia-500" },
+  { id: "S015", userId: "U018", userName: "Lam Thi Kim", position: "Data Scientist", company: "VinAI", date: "2026-03-17 10:30", duration: "52 min", score: 83, status: "Completed", type: "Coding", avatarInitials: "LK", avatarColor: "bg-yellow-500" },
+  { id: "S016", userId: "U021", userName: "Ha Minh Phuc", position: "ML Engineer", company: "VinAI Research", date: "2026-03-17 14:00", duration: "48 min", score: 89, status: "Completed", type: "Technical", avatarInitials: "HP", avatarColor: "bg-blue-600" },
+  { id: "S017", userId: "U025", userName: "Le Quoc Dat", position: "Frontend Developer", company: "KMS Technology", date: "2026-03-16 09:30", duration: "39 min", score: 72, status: "Completed", type: "Technical", avatarInitials: "LD", avatarColor: "bg-indigo-600" },
+  { id: "S018", userId: "U022", userName: "Truong Thi Ly", position: "Head of Product", company: "Tiki", date: "2026-03-16 15:00", duration: "55 min", score: 94, status: "Completed", type: "Behavioral", avatarInitials: "TL", avatarColor: "bg-emerald-600" },
+  { id: "S019", userId: "U027", userName: "Tran Thi Huong", position: "Backend Developer", company: "TechcomBank", date: "2026-03-20 09:00", duration: "—", score: null, status: "Scheduled", type: "Technical", avatarInitials: "TH", avatarColor: "bg-violet-600" },
+  { id: "S020", userId: "U029", userName: "Nguyen Thi Thuy", position: "Senior PM", company: "Shopee", date: "2026-03-15 11:00", duration: "50 min", score: 87, status: "Completed", type: "Mixed", avatarInitials: "NT", avatarColor: "bg-purple-600" },
+  { id: "S021", userId: "U030", userName: "Vo Duc Thinh", position: "Blockchain Developer", company: "Sky Mavis", date: "2026-03-20 10:30", duration: "—", score: null, status: "Scheduled", type: "Coding", avatarInitials: "VT", avatarColor: "bg-slate-600" },
+  { id: "S022", userId: "U012", userName: "Nguyen Hoang Anh", position: "Python Developer", company: "Axon Active", date: "2026-03-14 14:00", duration: "36 min", score: 69, status: "Completed", type: "Coding", avatarInitials: "NA", avatarColor: "bg-lime-600" },
+  { id: "S023", userId: "U026", userName: "Bui Van Tai", position: "QA Automation Engineer", company: "TMA Solutions", date: "2026-03-15 09:30", duration: "—", score: null, status: "Cancelled", type: "Technical", avatarInitials: "BT", avatarColor: "bg-orange-600" },
+  { id: "S024", userId: "U020", userName: "Duong Thi Yen", position: "Marketing Executive", company: "Sendo", date: "2026-03-14 10:00", duration: "33 min", score: 71, status: "Completed", type: "Behavioral", avatarInitials: "DY", avatarColor: "bg-rose-400" },
+  { id: "S025", userId: "U023", userName: "Mai Van Hieu", position: "Web Developer Intern", company: "CMC Global", date: "2026-03-20 14:00", duration: "—", score: null, status: "Scheduled", type: "Mixed", avatarInitials: "MH", avatarColor: "bg-cyan-600" },
 ];
 
 // --- Admin Activity Logs ---
@@ -523,6 +689,24 @@ export const adminActivityLogs: ActivityLog[] = [
   { id: "L010", userId: "U009", userName: "Nguyen Bao Chau", action: "Payment Processed", detail: "Team Plan renewal — 799,000 ₫ charged", timestamp: "2026-03-18 20:05:55", ip: "42.117.185.9", type: "Payment", avatarInitials: "NC", avatarColor: "bg-emerald-500" },
   { id: "L011", userId: "U003", userName: "Le Thi Hoa", action: "Session Cancelled", detail: "Cancelled UI/UX Designer Interview — Zalo", timestamp: "2026-03-18 18:30:12", ip: "103.82.22.5", type: "Session", avatarInitials: "LH", avatarColor: "bg-purple-500" },
   { id: "L012", userId: "U004", userName: "Pham Van Khoa", action: "Session Completed", detail: "Completed Coding Interview — Score: 88/100", timestamp: "2026-03-16 11:00:44", ip: "113.161.44.12", type: "Session", avatarInitials: "PK", avatarColor: "bg-orange-500" },
+  { id: "L013", userId: "U011", userName: "Cao Minh Tuan", action: "Session Completed", detail: "Completed Technical Interview — Score: 81/100", timestamp: "2026-03-19 11:44:18", ip: "14.232.166.55", type: "Session", avatarInitials: "CT", avatarColor: "bg-sky-500" },
+  { id: "L014", userId: "U013", userName: "Phan Thanh Son", action: "Session Started", detail: "Started Mixed Interview — Full Stack Dev @ NashTech", timestamp: "2026-03-19 14:30:05", ip: "171.252.33.80", type: "Session", avatarInitials: "PS", avatarColor: "bg-teal-600" },
+  { id: "L015", userId: "U015", userName: "Ly Quang Hai", action: "User Login", detail: "Logged in via email & password", timestamp: "2026-03-19 08:45:22", ip: "113.185.72.14", type: "Auth", avatarInitials: "LH", avatarColor: "bg-red-500" },
+  { id: "L016", userId: "U022", userName: "Truong Thi Ly", action: "Payment Processed", detail: "Team Plan monthly — 799,000 ₫ charged", timestamp: "2026-03-19 07:30:00", ip: "42.112.88.201", type: "Payment", avatarInitials: "TL", avatarColor: "bg-emerald-600" },
+  { id: "L017", userId: "U014", userName: "Do Thi Ngoc", action: "Account Suspended", detail: "Suspended by admin — Multiple failed payment attempts", timestamp: "2026-03-18 16:22:10", ip: "—", type: "Account", avatarInitials: "DN", avatarColor: "bg-pink-500" },
+  { id: "L018", userId: "U021", userName: "Ha Minh Phuc", action: "Session Completed", detail: "Completed Technical Interview — Score: 89/100", timestamp: "2026-03-17 14:48:33", ip: "14.160.27.91", type: "Session", avatarInitials: "HP", avatarColor: "bg-blue-600" },
+  { id: "L019", userId: "U016", userName: "Vu Thi Thao", action: "Plan Upgraded", detail: "Upgraded from Free to Pro — 299,000 ₫ charged", timestamp: "2026-03-18 10:15:44", ip: "27.68.144.22", type: "Payment", avatarInitials: "VT", avatarColor: "bg-fuchsia-500" },
+  { id: "L020", userId: "SYSTEM", userName: "System", action: "Maintenance Window", detail: "Scheduled maintenance completed — DB optimization", timestamp: "2026-03-18 04:00:00", ip: "Internal", type: "System", avatarInitials: "SY", avatarColor: "bg-slate-500" },
+  { id: "L021", userId: "U025", userName: "Le Quoc Dat", action: "Profile Updated", detail: "Added Vue.js certification and updated portfolio link", timestamp: "2026-03-17 20:30:15", ip: "115.73.214.88", type: "Account", avatarInitials: "LD", avatarColor: "bg-indigo-600" },
+  { id: "L022", userId: "U018", userName: "Lam Thi Kim", action: "Session Completed", detail: "Completed Coding Interview — Score: 83/100", timestamp: "2026-03-17 11:22:07", ip: "103.7.39.150", type: "Session", avatarInitials: "LK", avatarColor: "bg-yellow-500" },
+  { id: "L023", userId: "U029", userName: "Nguyen Thi Thuy", action: "User Login", detail: "Logged in via Google OAuth", timestamp: "2026-03-17 09:05:33", ip: "42.117.185.42", type: "Auth", avatarInitials: "NT", avatarColor: "bg-purple-600" },
+  { id: "L024", userId: "U019", userName: "Ngo Van Thanh", action: "Account Suspended", detail: "Suspended by admin — Quota abuse detected", timestamp: "2026-03-16 14:50:22", ip: "—", type: "Account", avatarInitials: "NT", avatarColor: "bg-stone-500" },
+  { id: "L025", userId: "U030", userName: "Vo Duc Thinh", action: "Session Scheduled", detail: "Booked Coding Interview — Blockchain Dev @ Sky Mavis for Mar 20", timestamp: "2026-03-16 09:15:30", ip: "118.69.182.44", type: "Session", avatarInitials: "VT", avatarColor: "bg-slate-600" },
+  { id: "L026", userId: "U027", userName: "Tran Thi Huong", action: "Plan Upgraded", detail: "Upgraded from Free to Pro — 299,000 ₫ charged", timestamp: "2026-03-15 18:40:12", ip: "171.252.33.95", type: "Payment", avatarInitials: "TH", avatarColor: "bg-violet-600" },
+  { id: "L027", userId: "SYSTEM", userName: "System", action: "SSL Certificate Renewed", detail: "Auto-renewal for *.viecareer.com — valid until 2027-03-15", timestamp: "2026-03-15 02:00:00", ip: "Internal", type: "System", avatarInitials: "SY", avatarColor: "bg-slate-500" },
+  { id: "L028", userId: "U012", userName: "Nguyen Hoang Anh", action: "Session Completed", detail: "Completed Coding Interview — Score: 69/100", timestamp: "2026-03-14 14:36:44", ip: "14.161.12.77", type: "Session", avatarInitials: "NA", avatarColor: "bg-lime-600" },
+  { id: "L029", userId: "U020", userName: "Duong Thi Yen", action: "User Login", detail: "Logged in via email & password", timestamp: "2026-03-14 09:22:10", ip: "27.72.100.53", type: "Auth", avatarInitials: "DY", avatarColor: "bg-rose-400" },
+  { id: "L030", userId: "U023", userName: "Mai Van Hieu", action: "Profile Updated", detail: "Updated target position to Web Developer Intern", timestamp: "2026-03-13 21:15:30", ip: "1.53.44.120", type: "Account", avatarInitials: "MH", avatarColor: "bg-cyan-600" },
 ];
 
 // --- Profile Sidebar Data ---
@@ -581,6 +765,149 @@ export const profileNextSteps = [
   "Complete the TypeScript Advanced module",
   "Schedule your next mock interview",
   "Review System Design fundamentals",
+];
+
+// ---------- Interview History ----------
+export interface InterviewHistoryQA {
+  question: string;
+  answer: string;
+  score: number;
+  timestamp: string; // "mm:ss" — when this Q&A started in the recording
+}
+
+export interface InterviewHistoryEntry {
+  id: string;
+  date: string;
+  position: string;
+  type: "Technical" | "Behavioral" | "Mixed";
+  duration: string;
+  overallScore: number;
+  questionsAnswered: number;
+  qaPairs: InterviewHistoryQA[];
+  hasRecording: boolean;
+}
+
+export const interviewHistory: InterviewHistoryEntry[] = [
+  {
+    id: "IH001",
+    date: "2026-03-25",
+    position: "Frontend Developer Intern",
+    type: "Technical",
+    duration: "28:14",
+    overallScore: 85,
+    questionsAnswered: 5,
+    hasRecording: true,
+    qaPairs: [
+      {
+        question: "What is your experience with React state management?",
+        answer: "I have worked with React's built-in useState and useReducer hooks for local state management. For global state, I've used Context API in smaller projects and Redux Toolkit in larger applications.",
+        score: 80,
+        timestamp: "01:12",
+      },
+      {
+        question: "How do you approach building responsive and accessible user interfaces?",
+        answer: "I follow a mobile-first approach using CSS Flexbox and Grid for responsive layouts. I use Tailwind CSS utility classes for rapid responsive development. For accessibility, I ensure proper semantic HTML structure.",
+        score: 85,
+        timestamp: "06:34",
+      },
+      {
+        question: "Describe a challenging technical problem you solved.",
+        answer: "In a recent project, I encountered a complex state management issue where components were re-rendering unnecessarily, causing performance problems. I used React DevTools Profiler to identify the bottleneck.",
+        score: 88,
+        timestamp: "12:08",
+      },
+      {
+        question: "How do you handle API error states in a React application?",
+        answer: "I use try-catch blocks with async/await and maintain error state alongside loading and data states. I display user-friendly error messages and implement retry mechanisms where appropriate.",
+        score: 82,
+        timestamp: "18:41",
+      },
+      {
+        question: "Explain the difference between useMemo and useCallback.",
+        answer: "useMemo memoizes a computed value while useCallback memoizes a function reference. Both accept a dependency array and only recompute when dependencies change. They help prevent unnecessary re-renders.",
+        score: 90,
+        timestamp: "23:55",
+      },
+    ],
+  },
+  {
+    id: "IH002",
+    date: "2026-03-22",
+    position: "Frontend Developer Intern",
+    type: "Behavioral",
+    duration: "22:45",
+    overallScore: 78,
+    questionsAnswered: 4,
+    hasRecording: true,
+    qaPairs: [
+      {
+        question: "Tell me about a time you had to work under a tight deadline.",
+        answer: "During my university capstone project, we had 2 weeks to deliver a fully functional web app. I organized daily standups and broke the work into prioritized sprints.",
+        score: 82,
+        timestamp: "00:48",
+      },
+      {
+        question: "How do you handle disagreements with team members?",
+        answer: "I try to understand their perspective first by actively listening. Then I present my reasoning with data or examples. If we still disagree, I suggest we try the approach that is easiest to reverse.",
+        score: 75,
+        timestamp: "06:15",
+      },
+      {
+        question: "Describe a situation where you had to learn something quickly.",
+        answer: "When our team decided to migrate from REST to GraphQL mid-project, I had to learn Apollo Client in three days. I went through the official docs and built a small prototype first.",
+        score: 80,
+        timestamp: "12:30",
+      },
+      {
+        question: "What motivates you to pursue a career in frontend development?",
+        answer: "I love the immediate visual feedback of building interfaces. Seeing users interact with something I built is very rewarding. I'm also drawn to the rapid evolution of the frontend ecosystem.",
+        score: 76,
+        timestamp: "17:52",
+      },
+    ],
+  },
+  {
+    id: "IH003",
+    date: "2026-03-18",
+    position: "React Developer",
+    type: "Technical",
+    duration: "35:02",
+    overallScore: 72,
+    questionsAnswered: 5,
+    hasRecording: false,
+    qaPairs: [
+      {
+        question: "What is the virtual DOM and how does React use it?",
+        answer: "The virtual DOM is a lightweight JavaScript representation of the real DOM. React uses it to batch updates and minimize direct DOM manipulation by comparing the previous and new virtual DOM trees.",
+        score: 85,
+        timestamp: "01:05",
+      },
+      {
+        question: "Explain how React's reconciliation algorithm works.",
+        answer: "React compares the old and new virtual DOM trees using a diffing algorithm. It assumes elements of different types produce different trees, and uses keys to identify which items changed in lists.",
+        score: 70,
+        timestamp: "08:20",
+      },
+      {
+        question: "How would you optimize a slow React application?",
+        answer: "I would use React DevTools Profiler to identify bottlenecks, then apply React.memo, useMemo, and useCallback where needed. I'd also consider code splitting and lazy loading.",
+        score: 68,
+        timestamp: "15:44",
+      },
+      {
+        question: "What are React Server Components?",
+        answer: "Server Components render on the server and send HTML to the client, reducing the JavaScript bundle size. They can access backend resources directly but cannot use hooks or browser APIs.",
+        score: 72,
+        timestamp: "22:18",
+      },
+      {
+        question: "Describe how you would implement authentication in a Next.js app.",
+        answer: "I would use NextAuth.js or a similar library, set up JWT or session-based auth with middleware to protect routes. For sensitive pages, I'd use server-side session validation.",
+        score: 65,
+        timestamp: "28:36",
+      },
+    ],
+  },
 ];
 
 export const MOCK_USER = {

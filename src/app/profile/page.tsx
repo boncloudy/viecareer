@@ -1,16 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { TopNavbar } from "@/components/top-navbar";
+import { useApp } from "@/lib/app-context";
 import {
   MOCK_USER,
   profileSkillProgress,
   profileLearningGoal,
   profileRecentActivity,
   skillRecommendations,
+  interviewHistory,
   type SkillProgress,
   type RoadmapStep,
   type ProfileActivityItem,
+  type InterviewHistoryEntry,
 } from "@/lib/mock-data";
 import {
   User, Mail, MapPin, Calendar,
@@ -21,17 +24,20 @@ import {
   Trophy, Zap,
   ArrowUpRight, CreditCard,
   BarChart2, Star,
-  Lock,
+  Lock, History, Play,
+  ChevronDown, ChevronUp,
+  MessageSquare, Video,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
-type Section = "profile" | "goal" | "usage";
+type Section = "profile" | "goal" | "usage" | "history";
 
 const NAV_ITEMS: { id: Section; label: string; icon: React.ElementType }[] = [
   { id: "profile", label: "Profile",      icon: User },
   { id: "goal",    label: "Your Goal",    icon: Target },
+  { id: "history", label: "History",      icon: History },
   { id: "usage",   label: "Usage & Plan", icon: CreditCard },
 ];
 
@@ -255,6 +261,283 @@ function GoalContent() {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
+// HISTORY
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ── Helpers ──
+
+const scoreBadge = (score: number) =>
+  score >= 85 ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+  : score >= 70 ? "text-blue-700 bg-blue-50 border-blue-200"
+  : "text-amber-700 bg-amber-50 border-amber-200";
+
+const scoreBar = (score: number) =>
+  score >= 85 ? "bg-emerald-500" : score >= 70 ? "bg-blue-500" : "bg-amber-500";
+
+const typeBadge: Record<InterviewHistoryEntry["type"], string> = {
+  Technical:  "text-violet-600 bg-violet-50",
+  Behavioral: "text-teal-600 bg-teal-50",
+  Mixed:      "text-slate-600 bg-slate-100",
+};
+
+function parseTimestamp(ts: string): number {
+  const [m, s] = ts.split(":").map(Number);
+  return m * 60 + s;
+}
+
+// Mock Q&A captured during the latest live interview
+const LATEST_SESSION_QA: { question: string; answer: string; score: number; timestamp: string }[] = [
+  { question: "Can you explain the difference between var, let, and const in JavaScript?", answer: "var is function-scoped and hoisted, let and const are block-scoped. const cannot be reassigned after declaration, while let can. I always default to const and only use let when reassignment is needed.", score: 88, timestamp: "00:45" },
+  { question: "How does React's useEffect hook work and when would you use it?", answer: "useEffect runs side effects after render. It takes a callback and a dependency array. An empty array means it runs once on mount. I use it for API calls, subscriptions, and DOM manipulation.", score: 82, timestamp: "04:20" },
+  { question: "What is the purpose of keys in React lists?", answer: "Keys help React identify which items changed, were added, or removed during reconciliation. They should be stable, unique identifiers — not array indices — so React can efficiently update the DOM.", score: 90, timestamp: "08:55" },
+  { question: "Describe how you would debug a performance issue in a React app.", answer: "I'd start with React DevTools Profiler to find slow renders, check for unnecessary re-renders with why-did-you-render, then use React.memo, useMemo, or useCallback as needed. I'd also check bundle size.", score: 78, timestamp: "13:10" },
+  { question: "How do you handle asynchronous operations in JavaScript?", answer: "I primarily use async/await with try-catch for error handling. For parallel operations I use Promise.all. I understand the event loop, microtask queue, and how callbacks, promises, and async/await relate.", score: 85, timestamp: "18:35" },
+];
+
+// ── Shared Q&A row component ──
+function QARow({
+  qa,
+  idx,
+  isActive,
+  onSeek,
+  showTimestamp,
+}: {
+  qa: { question: string; answer: string; score: number; timestamp: string };
+  idx: number;
+  isActive: boolean;
+  onSeek?: () => void;
+  showTimestamp: boolean;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className={cn("transition-colors", isActive && "bg-[#5378EF]/[0.03]")}>
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-3 px-5 py-3.5 text-left hover:bg-slate-50/60 transition-colors"
+      >
+        {/* Number */}
+        <span className="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-[11px] font-bold text-slate-500 shrink-0">
+          {idx + 1}
+        </span>
+
+        {/* Question */}
+        <p className="text-[13px] text-slate-800 flex-1 min-w-0 truncate leading-snug">{qa.question}</p>
+
+        {/* Timestamp pill */}
+        {showTimestamp && onSeek && (
+          <span
+            onClick={(e) => { e.stopPropagation(); onSeek(); }}
+            className="flex items-center gap-1 text-[10px] font-mono text-[#5378EF] bg-[#5378EF]/[0.06] hover:bg-[#5378EF]/10 px-2 py-0.5 rounded-full cursor-pointer transition-colors shrink-0"
+          >
+            <Play className="w-2.5 h-2.5" />
+            {qa.timestamp}
+          </span>
+        )}
+        {!showTimestamp && (
+          <span className="text-[10px] font-mono text-slate-400 shrink-0">{qa.timestamp}</span>
+        )}
+
+        {/* Score bar */}
+        <div className="flex items-center gap-1.5 shrink-0 w-16">
+          <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+            <div className={cn("h-full rounded-full", scoreBar(qa.score))} style={{ width: `${qa.score}%` }} />
+          </div>
+          <span className="text-[11px] font-bold text-slate-600 w-6 text-right">{qa.score}</span>
+        </div>
+
+        <ChevronDown className={cn("w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform", open && "rotate-180")} />
+      </button>
+
+      {/* Answer */}
+      {open && (
+        <div className="px-5 pb-4 pt-0 pl-14">
+          <p className="text-[13px] text-slate-600 leading-relaxed bg-slate-50 rounded-lg px-4 py-3 border border-slate-100">
+            {qa.answer}
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Main History Content ──
+
+function HistoryContent() {
+  const app = useApp();
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [activeQIdx, setActiveQIdx] = useState<number>(-1);
+  const videoRefs = useRef<Record<string, HTMLVideoElement | null>>({});
+
+  const latestRecordingUrl = app.interviewRecordingUrl;
+
+  const seekTo = (entryId: string, timestamp: string, qIdx: number) => {
+    const video = videoRefs.current[entryId];
+    if (video) {
+      video.currentTime = parseTimestamp(timestamp);
+      video.play().catch(() => {});
+    }
+    setActiveQIdx(qIdx);
+  };
+
+  // Compute average score for latest session
+  const latestAvg = Math.round(LATEST_SESSION_QA.reduce((s, q) => s + q.score, 0) / LATEST_SESSION_QA.length);
+
+  return (
+    <div className="space-y-5">
+
+      {/* ═══ Latest Recording ═══ */}
+      {latestRecordingUrl && (() => {
+        const isLatestExpanded = expandedId === "latest";
+        return (
+          <Card className="overflow-hidden">
+            {/* Header bar — same style as past interviews */}
+            <button
+              onClick={() => { setExpandedId(isLatestExpanded ? null : "latest"); setActiveQIdx(-1); }}
+              className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-slate-50/50 transition-colors"
+            >
+              {/* Score circle */}
+              <div className={cn("w-11 h-11 rounded-full flex items-center justify-center text-[15px] font-black border-2 shrink-0", scoreBadge(latestAvg))}>
+                {latestAvg}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-slate-900 truncate">Today&apos;s Interview</span>
+                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0", typeBadge.Technical)}>
+                    Technical
+                  </span>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0 bg-[#5378EF]/10 text-[#5378EF]">
+                    Latest
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400">
+                  <Calendar className="w-3 h-3" />
+                  <span>Today</span>
+                  <span className="text-slate-300">·</span>
+                  <span>{Math.floor(app.interviewDuration / 60)}:{(app.interviewDuration % 60).toString().padStart(2, "0")}</span>
+                  <span className="text-slate-300">·</span>
+                  <span>{LATEST_SESSION_QA.length}Q</span>
+                  <span className="text-slate-300">·</span>
+                  <span className="flex items-center gap-0.5 text-[#5378EF]"><Video className="w-3 h-3" /></span>
+                </div>
+              </div>
+
+              <ChevronDown className={cn("w-4 h-4 text-slate-400 shrink-0 transition-transform", isLatestExpanded && "rotate-180")} />
+            </button>
+
+            {/* Expanded content */}
+            {isLatestExpanded && (
+              <div className="border-t border-slate-100">
+                {/* Video */}
+                <div className="bg-black">
+                  <video
+                    ref={(el) => { videoRefs.current["latest"] = el; }}
+                    src={latestRecordingUrl}
+                    controls
+                    className="w-full aspect-video object-contain"
+                  />
+                </div>
+
+                {/* Q&A rows */}
+                <div className="divide-y divide-slate-100/80">
+                  {LATEST_SESSION_QA.map((qa, idx) => (
+                    <QARow
+                      key={idx}
+                      qa={qa}
+                      idx={idx}
+                      isActive={activeQIdx === idx && expandedId === "latest"}
+                      onSeek={() => seekTo("latest", qa.timestamp, idx)}
+                      showTimestamp
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+        );
+      })()}
+
+      {/* ═══ Past Interviews ═══ */}
+      {interviewHistory.map((entry) => {
+        const isExpanded = expandedId === entry.id;
+        return (
+          <Card key={entry.id} className="overflow-hidden">
+            {/* Header */}
+            <button
+              onClick={() => { setExpandedId(isExpanded ? null : entry.id); setActiveQIdx(-1); }}
+              className="w-full flex items-center gap-4 px-5 py-4 text-left hover:bg-slate-50/50 transition-colors"
+            >
+              {/* Score circle */}
+              <div className={cn("w-11 h-11 rounded-full flex items-center justify-center text-[15px] font-black border-2 shrink-0", scoreBadge(entry.overallScore))}>
+                {entry.overallScore}
+              </div>
+
+              {/* Info */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-bold text-slate-900 truncate">{entry.position}</span>
+                  <span className={cn("text-[10px] font-bold px-2 py-0.5 rounded-full shrink-0", typeBadge[entry.type])}>
+                    {entry.type}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 mt-0.5 text-xs text-slate-400">
+                  <Calendar className="w-3 h-3" />
+                  <span>{entry.date}</span>
+                  <span className="text-slate-300">·</span>
+                  <span>{entry.duration}</span>
+                  <span className="text-slate-300">·</span>
+                  <span>{entry.questionsAnswered}Q</span>
+                  {entry.hasRecording && (
+                    <>
+                      <span className="text-slate-300">·</span>
+                      <span className="flex items-center gap-0.5 text-[#5378EF]"><Video className="w-3 h-3" /></span>
+                    </>
+                  )}
+                </div>
+              </div>
+
+              <ChevronDown className={cn("w-4 h-4 text-slate-400 shrink-0 transition-transform", isExpanded && "rotate-180")} />
+            </button>
+
+            {/* Expanded */}
+            {isExpanded && (
+              <div className="border-t border-slate-100">
+                {/* Recording placeholder */}
+                {entry.hasRecording && (
+                  <div className="px-5 py-3 bg-slate-50/60 border-b border-slate-100 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-slate-200 flex items-center justify-center">
+                      <Video className="w-4 h-4 text-slate-400" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xs font-semibold text-slate-600">Video Recording</p>
+                      <p className="text-[10px] text-slate-400">Stored on server · {entry.duration}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Q&A rows */}
+                <div className="divide-y divide-slate-100/80">
+                  {entry.qaPairs.map((qa, idx) => (
+                    <QARow
+                      key={idx}
+                      qa={qa}
+                      idx={idx}
+                      isActive={activeQIdx === idx && expandedId === entry.id}
+                      showTimestamp={false}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </Card>
+        );
+      })}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════════════════════
 // USAGE & PLAN
 // ═══════════════════════════════════════════════════════════════════════════════
 
@@ -443,6 +726,7 @@ function UsageContent() {
 const SECTION_HEADER: Record<Section, { title: string; subtitle: string }> = {
   profile: { title: "My Profile",   subtitle: "Your personal information and skills" },
   goal:    { title: "Your Goal",    subtitle: "Roadmap, progress & skills to master" },
+  history: { title: "History",      subtitle: "Review past interviews, Q&A, and recordings" },
   usage:   { title: "Usage & Plan", subtitle: "Interview quota and subscription details" },
 };
 
@@ -493,6 +777,7 @@ export default function ProfilePage() {
 
             {active === "profile" && <ProfileContent />}
             {active === "goal"    && <GoalContent />}
+            {active === "history" && <HistoryContent />}
             {active === "usage"   && <UsageContent />}
           </div>
 

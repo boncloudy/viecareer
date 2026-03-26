@@ -8,7 +8,7 @@ import { RadarChartComponent } from "@/components/radar-chart";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { jriScore, dashboardRadarData, upcomingMilestones } from "@/lib/mock-data";
-import { Bell, PlayCircle, ChevronRight, Target, BarChart3, Sparkles } from "lucide-react";
+import { Bell, PlayCircle, ChevronRight, Target, BarChart3, BrainCircuit } from "lucide-react";
 import { ChatbotBubble } from "@/components/chatbot-bubble";
 
 export default function DashboardPage() {
@@ -23,7 +23,7 @@ export default function DashboardPage() {
         {/* Top bar */}
         <header className="h-16 bg-white border-b-2 border-[#191A23] flex items-center justify-between px-8 sticky top-0 z-20">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-[#5378EF]" />
+            <BrainCircuit className="w-5 h-5 text-[#5378EF]" />
             <span className="font-semibold text-[#191A23]">Performance Dashboard</span>
           </div>
           <div className="flex items-center gap-4">

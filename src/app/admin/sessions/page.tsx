@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
-import { adminSessions, AdminSession, SessionStatus, SessionType } from "@/lib/mock-data";
+import { adminSessions, adminSessionStats, AdminSession, SessionStatus, SessionType } from "@/lib/mock-data";
 import {
   Search,
   Video,
@@ -55,24 +55,15 @@ function StatCard({ icon: Icon, label, value, iconBg }: { icon: React.ElementTyp
   );
 }
 
+const SESSION_PAGE_SIZE = 8;
+
 export default function InterviewSessionsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<SessionStatus | "All">("All");
   const [typeFilter, setTypeFilter] = useState<SessionType | "All">("All");
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const stats = useMemo(() => {
-    const completed = adminSessions.filter((s) => s.status === "Completed");
-    const avgScore = completed.length
-      ? Math.round(completed.reduce((acc, s) => acc + (s.score ?? 0), 0) / completed.length)
-      : 0;
-    return {
-      total: adminSessions.length,
-      completed: completed.length,
-      inProgress: adminSessions.filter((s) => s.status === "In Progress").length,
-      scheduled: adminSessions.filter((s) => s.status === "Scheduled").length,
-      avgScore,
-    };
-  }, []);
+  const stats = adminSessionStats;
 
   const filtered: AdminSession[] = useMemo(() =>
     adminSessions.filter((s) => {
@@ -84,6 +75,11 @@ export default function InterviewSessionsPage() {
     }),
     [search, statusFilter, typeFilter]
   );
+
+  const totalPages = Math.ceil(filtered.length / SESSION_PAGE_SIZE);
+  const paged = filtered.slice((currentPage - 1) * SESSION_PAGE_SIZE, currentPage * SESSION_PAGE_SIZE);
+
+  useMemo(() => { setCurrentPage(1); }, [search, statusFilter, typeFilter]);
 
   return (
     <div className="space-y-7">
@@ -176,14 +172,14 @@ export default function InterviewSessionsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {filtered.length === 0 ? (
+              {paged.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="px-5 py-12 text-center text-slate-400 text-sm">
                     No sessions match your filters.
                   </td>
                 </tr>
               ) : (
-                filtered.map((session) => {
+                paged.map((session) => {
                   const StatusIcon = statusConfig[session.status].icon;
                   return (
                     <tr key={session.id} className="hover:bg-slate-50/60 transition-colors">
@@ -233,8 +229,37 @@ export default function InterviewSessionsPage() {
 
         <div className="px-5 py-3 border-t border-slate-100 flex items-center justify-between">
           <p className="text-xs text-slate-400">
-            Showing <span className="font-semibold text-slate-600">{filtered.length}</span> of <span className="font-semibold text-slate-600">{adminSessions.length}</span> sessions
+            Showing <span className="font-semibold text-slate-600">{(currentPage - 1) * SESSION_PAGE_SIZE + 1}–{Math.min(currentPage * SESSION_PAGE_SIZE, filtered.length)}</span> of <span className="font-semibold text-slate-600">{filtered.length}</span> sessions
           </p>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
+              disabled={currentPage === 1}
+              className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-40"
+            >
+              Previous
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                  page === currentPage
+                    ? "text-white bg-slate-800 hover:bg-slate-700"
+                    : "text-slate-500 bg-slate-100 hover:bg-slate-200"
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
+              disabled={currentPage === totalPages}
+              className="px-3 py-1.5 text-xs font-medium text-slate-500 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors disabled:opacity-40"
+            >
+              Next
+            </button>
+          </div>
         </div>
       </Card>
     </div>

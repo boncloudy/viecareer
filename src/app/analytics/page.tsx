@@ -21,7 +21,7 @@ import {
   ChevronDown,
   ChevronUp,
   ArrowRight,
-  Sparkles,
+  BrainCircuit,
 } from "lucide-react";
 
 export default function AnalyticsPage() {
@@ -289,7 +289,7 @@ export default function AnalyticsPage() {
         {/* CTA Banner */}
         <div className="bg-[#191A23] rounded-2xl border-2 border-[#191A23] shadow-[4px_4px_0_#191A23] p-10 text-center text-white mb-8 relative overflow-hidden">
           <div className="absolute top-8 right-8 w-32 h-32 bg-[#5378EF]/10 rounded-full blur-2xl" />
-          <Sparkles className="w-8 h-8 text-[#5378EF] mx-auto mb-4" />
+          <BrainCircuit className="w-8 h-8 text-[#5378EF] mx-auto mb-4" />
           <h2 className="text-2xl font-bold mb-2">
             Ready to take the next step?
           </h2>
@@ -314,8 +314,8 @@ export default function AnalyticsPage() {
         {/* Footer */}
         <footer className="flex items-center justify-between py-6 border-t-2 border-[#191A23]/10 text-sm text-[#191A23]/40">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[#5378EF]" />
-            <span>VieCareer Powered Performance Analytics © 2024</span>
+            <BrainCircuit className="w-4 h-4 text-[#5378EF]" />
+            <span>VieCareer Powered Performance Analytics © 2026</span>
           </div>
           <div className="flex items-center gap-6">
             <button className="hover:text-[#191A23] font-medium uppercase text-xs tracking-wider">

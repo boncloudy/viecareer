@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { Sparkles, X, Send, ChevronDown } from "lucide-react";
+import { BrainCircuit, X, Send, ChevronDown } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Nudges
@@ -134,7 +134,7 @@ export function ChatbotBubble() {
           <div className="flex items-center justify-between px-4 py-3 bg-[#191A23] shrink-0">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 bg-[#5378EF] rounded-lg flex items-center justify-center">
-                <Sparkles className="w-3.5 h-3.5 text-white" />
+                <BrainCircuit className="w-3.5 h-3.5 text-white" />
               </div>
               <div>
                 <p className="text-white text-sm font-bold leading-none">VieBot</p>
@@ -155,7 +155,7 @@ export function ChatbotBubble() {
               <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                 {msg.role === "ai" && (
                   <div className="w-6 h-6 bg-[#5378EF] rounded-full flex items-center justify-center mr-2 shrink-0 mt-0.5">
-                    <Sparkles className="w-3 h-3 text-white" />
+                    <BrainCircuit className="w-3 h-3 text-white" />
                   </div>
                 )}
                 <div
@@ -174,7 +174,7 @@ export function ChatbotBubble() {
             {loading && (
               <div className="flex justify-start">
                 <div className="w-6 h-6 bg-[#5378EF] rounded-full flex items-center justify-center mr-2 shrink-0 mt-0.5">
-                  <Sparkles className="w-3 h-3 text-white" />
+                  <BrainCircuit className="w-3 h-3 text-white" />
                 </div>
                 <div className="bg-white border border-[#191A23]/10 rounded-2xl rounded-bl-sm px-4 py-3 shadow-sm flex items-center gap-1">
                   <span className="w-1.5 h-1.5 bg-[#5378EF] rounded-full animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -209,7 +209,7 @@ export function ChatbotBubble() {
       {/* Nudge Tooltip */}
       {nudgeVisible && !open && (
         <div className="flex items-center gap-2 bg-white border-2 border-[#191A23] shadow-[3px_3px_0_#191A23] rounded-2xl rounded-br-sm px-4 py-2.5 max-w-[260px] animate-fade-in-up">
-          <Sparkles className="w-3.5 h-3.5 text-[#5378EF] shrink-0" />
+          <BrainCircuit className="w-3.5 h-3.5 text-[#5378EF] shrink-0" />
           <p className="text-[#191A23] text-sm font-medium leading-snug">{nudge}</p>
           <button
             onClick={() => setNudgeVisible(false)}
@@ -225,7 +225,7 @@ export function ChatbotBubble() {
         onClick={() => setOpen((v) => !v)}
         className="w-14 h-14 bg-[#5378EF] hover:bg-[#4060d0] rounded-full flex items-center justify-center shadow-[3px_3px_0_#191A23] border-2 border-[#191A23] transition-all active:scale-95 relative"
       >
-        <Sparkles className="w-6 h-6 text-white" />
+        <BrainCircuit className="w-6 h-6 text-white" />
         {!open && (
           <span className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-red-500 rounded-full border-2 border-white animate-pulse" />
         )}
