@@ -8,7 +8,7 @@ import {
   Plus,
   Minus,
   Linkedin,
-  Sparkles,
+  BrainCircuit,
   Facebook,
   Twitter,
 } from "lucide-react";
@@ -359,14 +359,30 @@ export default function VieCareer() {
         </div>
       </section>
 
-      {/* ============ 3. BRAND LOGOS BAR ============ */}
+      {/* ============ 3. BRAND LOGOS BAR (Conveyor) ============ */}
       <section className="border-y border-[#191A23]/10 py-8 mb-16">
-        <div className="max-w-7xl mx-auto px-6 md:px-12 flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-50">
-          {["FPT", "Viettel", "Momo", "Grab", "Shopee", "Google"].map((name) => (
-            <span key={name} className="text-lg md:text-xl font-bold tracking-tight text-[#191A23]">
-              {name}
-            </span>
-          ))}
+        <div className="max-w-7xl mx-auto px-6 md:px-12 overflow-hidden">
+          <div className="flex animate-marquee w-max will-change-transform">
+            {[0, 1, 2, 3].map((copy) => (
+              <div key={copy} className="flex items-center gap-16 px-8">
+                {[
+                  { name: "FPT", logo: "/Logo-FPT.webp" },
+                  { name: "Viettel", logo: "/viettel-logo-1.png" },
+                  { name: "Momo", logo: "/MoMo_Logo_App.svg.png" },
+                  { name: "Grab", logo: "/Grab_Logo.svg.png" },
+                  { name: "Shopee", logo: "/Shopee.svg.png" },
+                  { name: "VNG", logo: "/VNG_Corp._logo.svg.png" },
+                ].map((brand) => (
+                  <img
+                    key={brand.name}
+                    src={brand.logo}
+                    alt={brand.name}
+                    className="h-10 md:h-12 w-auto object-contain flex-shrink-0"
+                  />
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -654,7 +670,7 @@ export default function VieCareer() {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 mb-10">
             <div className="p-5 pb-8">
               <div className="w-8 h-8 bg-teal-400 rounded-lg flex items-center justify-center">
-                <Sparkles className="w-4 h-4 text-[#0F172A]" />
+                <BrainCircuit className="w-4 h-4 text-[#0F172A]" />
               </div>
               <span className="text-lg font-bold">VieCareer</span>
             </div>

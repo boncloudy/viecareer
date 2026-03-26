@@ -304,7 +304,7 @@ export function Sidebar() {
           <div>
             <h1 className="text-lg font-bold tracking-tight">VieCareer</h1>
             <p className="text-[10px] text-slate-400 uppercase tracking-widest">
-              Job Readiness
+              Your Career
             </p>
           </div>
         </Link>
