@@ -477,7 +477,7 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: []
   },
   { 
-    id: "U004", name: "Pham Van Khoa", email: "khoa.pham@gmail.com", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-11-20", lastActive: "5 mins ago", totalSessions: 57, avatarInitials: "PK", avatarColor: "bg-orange-500",
+    id: "U004", name: "Pham Van Khoa", email: "khoa.pham@gmail.com", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2025-11-20", lastActive: "5 mins ago", totalSessions: 57, avatarInitials: "PK", avatarColor: "bg-orange-500",
     birthYear: 1998, university: "Bach Khoa University (HUST)", skills: ["Python", "AWS", "Docker", "Kubernetes"], targetProfile: "DevOps Engineer", quotaUsed: 120, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
     appliedJobs: [{ title: "DevOps Engineer", company: "Viettel Group", status: "Offered" }, { title: "SRE", company: "Grab", status: "Interviewing" }]
   },
@@ -487,7 +487,7 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: [{ title: "DA Intern", company: "Shopee", status: "Rejected" }]
   },
   { 
-    id: "U006", name: "Hoang Duc Nam", email: "nam.hoang@dev.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-05", lastActive: "30 mins ago", totalSessions: 31, avatarInitials: "HN", avatarColor: "bg-cyan-500",
+    id: "U006", name: "Hoang Duc Nam", email: "nam.hoang@dev.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-12-05", lastActive: "30 mins ago", totalSessions: 31, avatarInitials: "HN", avatarColor: "bg-cyan-500",
     birthYear: 2000, university: "University of Engineering and Technology (UET)", skills: ["Golang", "Microservices", "Redis"], targetProfile: "Backend Developer", quotaUsed: 22, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Backend Dev", company: "ZaloPay", status: "Interviewing" }]
   },
@@ -498,12 +498,12 @@ export const adminUsers: AdminUser[] = [
   },
   { 
     id: "U008", name: "Dang Van Long", email: "long.dang@corp.com", role: "Job Seeker", status: "Suspended", plan: "Free", joinDate: "2025-02-14", lastActive: "20 days ago", totalSessions: 4, avatarInitials: "DL", avatarColor: "bg-amber-500",
-    birthYear: 1996, university: "Hanoi University of Industry (HaUI)", skills: ["Manual Testing", "Jira"], targetProfile: "QC Engineer", quotaUsed: 10, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
+    birthYear: 2006, university: "Hanoi University of Industry (HaUI)", skills: ["Manual Testing", "Jira"], targetProfile: "QC Engineer", quotaUsed: 10, quotaTotal: 10, rateLimit: "20 req/min", notifications: ["Email"],
     appliedJobs: []
   },
   { 
-    id: "U009", name: "Nguyen Bao Chau", email: "chau.nb@viecviet.vn", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-10-10", lastActive: "Just now", totalSessions: 89, avatarInitials: "NC", avatarColor: "bg-emerald-500",
-    birthYear: 1997, university: "RMIT University", skills: ["Project Management", "Agile", "Scrum"], targetProfile: "Product Manager", quotaUsed: 310, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push"],
+    id: "U009", name: "Nguyen Bao Chau", email: "chau.nb@rmit.com", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2025-10-10", lastActive: "Just now", totalSessions: 89, avatarInitials: "NC", avatarColor: "bg-emerald-500",
+    birthYear: 2005, university: "RMIT University", skills: ["Project Management", "Agile", "Scrum"], targetProfile: "Product Manager", quotaUsed: 310, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Product Manager", company: "Momo", status: "Offered" }]
   },
   {
@@ -522,8 +522,8 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: [{ title: "Python Dev", company: "Axon Active", status: "Applied" }]
   },
   {
-    id: "U013", name: "Phan Thanh Son", email: "son.phan@outlook.com", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-15", lastActive: "20 mins ago", totalSessions: 36, avatarInitials: "PS", avatarColor: "bg-teal-600",
-    birthYear: 1999, university: "Da Nang University of Science and Technology (DUT)", skills: ["Node.js", "React", "MongoDB", "GraphQL"], targetProfile: "Full Stack Developer", quotaUsed: 32, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    id: "U013", name: "Phan Thanh Son", email: "son.phan@outlook.com", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-12-15", lastActive: "20 mins ago", totalSessions: 36, avatarInitials: "PS", avatarColor: "bg-teal-600",
+    birthYear: 2005, university: "Da Nang University of Science and Technology (DUT)", skills: ["Node.js", "React", "MongoDB", "GraphQL"], targetProfile: "Full Stack Developer", quotaUsed: 32, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Full Stack Dev", company: "NashTech", status: "Interviewing" }, { title: "Senior Frontend", company: "Ến VNG", status: "Applied" }]
   },
   {
@@ -532,8 +532,8 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: []
   },
   {
-    id: "U015", name: "Ly Quang Hai", email: "hai.ly@devops.io", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-09-18", lastActive: "8 mins ago", totalSessions: 72, avatarInitials: "LH", avatarColor: "bg-red-500",
-    birthYear: 1997, university: "Posts and Telecommunications Institute of Technology (PTIT)", skills: ["Terraform", "AWS", "CI/CD", "Linux"], targetProfile: "Cloud Engineer", quotaUsed: 245, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
+    id: "U015", name: "Ly Quang Hai", email: "hai.ly@devops.io", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2025-09-18", lastActive: "8 mins ago", totalSessions: 72, avatarInitials: "LH", avatarColor: "bg-red-500",
+    birthYear: 2005, university: "Posts and Telecommunications Institute of Technology (PTIT)", skills: ["Terraform", "AWS", "CI/CD", "Linux"], targetProfile: "Cloud Engineer", quotaUsed: 245, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
     appliedJobs: [{ title: "Cloud Architect", company: "FPT Cloud", status: "Offered" }, { title: "DevOps Lead", company: "Viettel IDC", status: "Interviewing" }]
   },
   {
@@ -547,7 +547,7 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: []
   },
   {
-    id: "U018", name: "Lam Thi Kim", email: "kim.lam@data.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-11-08", lastActive: "45 mins ago", totalSessions: 28, avatarInitials: "LK", avatarColor: "bg-yellow-500",
+    id: "U018", name: "Lam Thi Kim", email: "kim.lam@data.vn", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-11-08", lastActive: "45 mins ago", totalSessions: 28, avatarInitials: "LK", avatarColor: "bg-yellow-500",
     birthYear: 2000, university: "University of Science (HCMUS)", skills: ["Python", "TensorFlow", "Spark", "SQL"], targetProfile: "Data Scientist", quotaUsed: 27, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Data Scientist", company: "VinAI", status: "Interviewing" }]
   },
@@ -562,13 +562,13 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: [{ title: "Marketing Exec", company: "Sendo", status: "Applied" }]
   },
   {
-    id: "U021", name: "Ha Minh Phuc", email: "phuc.ha@ai.tech", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-10-25", lastActive: "10 mins ago", totalSessions: 45, avatarInitials: "HP", avatarColor: "bg-blue-600",
-    birthYear: 1999, university: "Hanoi University of Science and Technology (HUST)", skills: ["PyTorch", "NLP", "Computer Vision", "MLOps"], targetProfile: "ML Engineer", quotaUsed: 38, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    id: "U021", name: "Ha Minh Phuc", email: "phuc.ha@ai.tech", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-10-25", lastActive: "10 mins ago", totalSessions: 45, avatarInitials: "HP", avatarColor: "bg-blue-600",
+    birthYear: 2005, university: "Hanoi University of Science and Technology (HUST)", skills: ["PyTorch", "NLP", "Computer Vision", "MLOps"], targetProfile: "ML Engineer", quotaUsed: 38, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "ML Engineer", company: "VinAI Research", status: "Offered" }, { title: "AI Engineer", company: "FPT.AI", status: "Interviewing" }]
   },
   {
-    id: "U022", name: "Truong Thi Ly", email: "ly.truong@pm.co", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-08-15", lastActive: "Just now", totalSessions: 95, avatarInitials: "TL", avatarColor: "bg-emerald-600",
-    birthYear: 1996, university: "RMIT University Vietnam", skills: ["Scrum", "Stakeholder Management", "Roadmapping", "OKRs"], targetProfile: "Senior Product Manager", quotaUsed: 380, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
+    id: "U022", name: "Truong Thi Ly", email: "ly.truong@pm.co", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2025-08-15", lastActive: "Just now", totalSessions: 95, avatarInitials: "TL", avatarColor: "bg-emerald-600",
+    birthYear: 2006, university: "RMIT University Vietnam", skills: ["Scrum", "Stakeholder Management", "Roadmapping", "OKRs"], targetProfile: "Senior Product Manager", quotaUsed: 380, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
     appliedJobs: [{ title: "Head of Product", company: "Tiki", status: "Interviewing" }]
   },
   {
@@ -582,7 +582,7 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: []
   },
   {
-    id: "U025", name: "Le Quoc Dat", email: "dat.le@frontend.dev", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-12-20", lastActive: "25 mins ago", totalSessions: 33, avatarInitials: "LD", avatarColor: "bg-indigo-600",
+    id: "U025", name: "Le Quoc Dat", email: "dat.le@frontend.dev", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-12-20", lastActive: "25 mins ago", totalSessions: 33, avatarInitials: "LD", avatarColor: "bg-indigo-600",
     birthYear: 2000, university: "University of Information Technology (UIT)", skills: ["Vue.js", "Nuxt.js", "TypeScript", "Tailwind"], targetProfile: "Frontend Developer", quotaUsed: 29, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Frontend Dev", company: "KMS Technology", status: "Interviewing" }, { title: "Vue.js Dev", company: "NashTech", status: "Applied" }]
   },
@@ -592,8 +592,8 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: [{ title: "QA Engineer", company: "TMA Solutions", status: "Applied" }]
   },
   {
-    id: "U027", name: "Tran Thi Huong", email: "huong.tt@cloud.io", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2024-11-30", lastActive: "35 mins ago", totalSessions: 22, avatarInitials: "TH", avatarColor: "bg-violet-600",
-    birthYear: 1999, university: "Da Nang University of Science and Technology (DUT)", skills: ["Java", "Spring Cloud", "Microservices", "RabbitMQ"], targetProfile: "Java Backend Developer", quotaUsed: 20, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
+    id: "U027", name: "Tran Thi Huong", email: "huong.tt@cloud.io", role: "Job Seeker", status: "Active", plan: "Pro", joinDate: "2025-11-30", lastActive: "35 mins ago", totalSessions: 22, avatarInitials: "TH", avatarColor: "bg-violet-600",
+    birthYear: 2005, university: "Da Nang University of Science and Technology (DUT)", skills: ["Java", "Spring Cloud", "Microservices", "RabbitMQ"], targetProfile: "Java Backend Developer", quotaUsed: 20, quotaTotal: 50, rateLimit: "50 req/min", notifications: ["Email", "Push"],
     appliedJobs: [{ title: "Backend Dev", company: "TechcomBank", status: "Interviewing" }, { title: "Java Engineer", company: "VPBank", status: "Applied" }]
   },
   {
@@ -602,8 +602,8 @@ export const adminUsers: AdminUser[] = [
     appliedJobs: [{ title: "SWE Intern", company: "Google APAC", status: "Applied" }]
   },
   {
-    id: "U029", name: "Nguyen Thi Thuy", email: "thuy.nt@product.co", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2024-09-05", lastActive: "3 mins ago", totalSessions: 68, avatarInitials: "NT", avatarColor: "bg-purple-600",
-    birthYear: 1997, university: "Foreign Trade University (FTU)", skills: ["Product Strategy", "A/B Testing", "SQL", "Amplitude"], targetProfile: "Product Manager", quotaUsed: 290, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
+    id: "U029", name: "Nguyen Thi Thuy", email: "thuy.nt@product.co", role: "Job Seeker", status: "Active", plan: "Team", joinDate: "2025-09-05", lastActive: "3 mins ago", totalSessions: 68, avatarInitials: "NT", avatarColor: "bg-purple-600",
+    birthYear: 2005, university: "Foreign Trade University (FTU)", skills: ["Product Strategy", "A/B Testing", "SQL", "Amplitude"], targetProfile: "Product Manager", quotaUsed: 290, quotaTotal: 500, rateLimit: "Unlimited", notifications: ["Email", "Push", "SMS"],
     appliedJobs: [{ title: "Senior PM", company: "Shopee", status: "Offered" }, { title: "Product Lead", company: "Grab", status: "Interviewing" }]
   },
   {
