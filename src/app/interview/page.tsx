@@ -381,6 +381,15 @@ export default function InterviewPage() {
             currentAgentTextRef.current = "";
           }
         });
+        // ── Interruption handling (from s2p.py) ──
+        // When user starts speaking mid-response, stop playing old audio
+        session.on?.("input_audio_buffer.speech_started", () => {
+          setIsSpeaking(false);
+        });
+
+        session.on?.("response.cancelled", () => {
+          setIsSpeaking(false);
+        });
       } catch (evErr) {
         console.warn("Could not attach transcript listeners:", evErr);
       }
